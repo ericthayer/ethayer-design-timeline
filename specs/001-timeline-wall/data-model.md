@@ -156,7 +156,7 @@ Artwork is decorative (`aria-hidden`), so art colors carry no contrast requireme
 | 12 | `pinwheels` | Repeated 4-blade glyphs in a staggered grid | — | interaction or prototypes | B |
 | 13 | `impossible-hex` | Interlocking hexagonal bands, 3 tones | — | 3D or VR | B |
 | 14 | `concentric-knot` | Concentric stroked loops | — | workshops or facilitation | B |
-| 15 | `horizon-lines` | Horizontal bars tapering in thickness | — | landing pages, horizons | B |
+| 15 | `horizon-lines` | Horizontal bars tapering in thickness | one accent bar | landing pages, horizons | A (promoted for v1) |
 | 16 | `tri-stack` | Stacked translucent triangles, color ramp | — | media production | B |
 | 17 | `orbit-rings` | Concentric arcs with offset stroke dashes | — | motion or time | B |
 

@@ -71,7 +71,7 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 ### Wall layout
 - **FR-001** The wall is one ordered list (`<ol>`) of grid items in reverse-chronological order, grouped by era (data-model §5).
 - **FR-002** Cells are square. Width ≤ 1800 px: column count steps by **container** width (2 / 3 / 4 / 5 / 6 at 0 / 600 / 900 / 1200 / 1500 px). Cell size is `(100cqi − gaps) / cols`, so cells stay fluid between steps.
-- **FR-003** Width > 1800 px (`@container wall (width > 1800px)`, with an `@media` fallback): the grid flows by column. Row count is 2 / 3 / 4 for viewport height < 800 / < 1100 / ≥ 1100 px. Cell size is `(wall block-size − gaps) / rows`. The wall scrolls on the x-axis, and `overscroll-behavior-x: contain` prevents back-swipe navigation.
+- **FR-003** Viewport width > 1800 px (`@media (min-width: 1801px)`; a viewport query because the requirement is about screen width, and a container measurement would shift by the scrollbar gutter): the grid flows by column. Row count is 2 / 3 / 4 for viewport height < 800 / < 1100 / ≥ 1100 px. Cell size is `(wall block-size − gaps) / rows`. The wall scrolls on the x-axis, and `overscroll-behavior-x: contain` prevents back-swipe navigation.
 - **FR-004** Card spans: `sm` 1×1, `wide` 2×1, `tall` 1×2, `feature` 2×2. Packing uses `dense`. The owner accepted the small visual reordering this causes (§11), so there's no displacement assertion.
 - **FR-005** In horizontal mode, a vertical wheel scroll (|ΔY| > |ΔX|, no Ctrl/Meta) scrolls the wall horizontally. `deltaMode` is normalized. Native horizontal trackpad gestures are untouched.
 - **FR-006** The wall gap is a token (default 4 px). The wall background is `ink`.
@@ -105,7 +105,7 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 
 ### Swiss artwork
 - **FR-040** `<swiss-artwork motif theme seed>` renders a deterministic SVG (same inputs give the same output) with `aria-hidden="true"`, built with `createElementNS`. Each motif is capped at 400 nodes.
-- **FR-041** v1 ships 8 motifs (batch A). Batch B is deferred, since only about 25 % of cards are Swiss (data-model §4). Each motif supports an `outlier` (one deviating element) seeded by `seed`.
+- **FR-041** v1 ships 9 motifs (batch A, plus `horizon-lines` promoted from batch B for the NYT UI poster). Batch B is deferred, since only about 25 % of cards are Swiss (data-model §4). Each motif supports an `outlier` (one deviating element) seeded by `seed`.
 - **FR-042** Every project has a `motif` even when its card shows other media. The dialog hero and the OG image use it.
 
 ### Dialog

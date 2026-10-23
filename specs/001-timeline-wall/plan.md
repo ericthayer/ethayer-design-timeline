@@ -49,23 +49,21 @@ index.html                     shell, <template>s for card tiers, header, skip l
 netlify.toml                   build, headers (CSP generated), /work/* rewrite
 src/
   index.ts                     barrel: export classes and define() for all elements
-  main.ts                      bootstrap: define(), mount wall, init router on intent
+  main.ts                      bootstrap: define(), mount wall, router, lazy dialog
   components/
     timeline-wall/             timeline-wall.ts · timeline-wall.css
-    project-card/              project-card.ts · project-card.css · anatomy.ts
-    card-media/                image.ts · video.ts · iframe.ts · card-media.css
-    swiss-artwork/             swiss-artwork.ts · registry.ts · rng.ts · motifs/*.ts
-    era-marker/                era-marker.ts · era-marker.css
-    identity-poster/           identity-poster.ts · identity-poster.css
-    project-dialog/            project-dialog.ts · dialog-layout.ts · project-dialog.css
+    project-card/              project-card.ts · anatomy.ts (module-level templates) · project-card.css
+    card-media/                card-media.ts · image.ts · video.ts · iframe.ts · placeholder.ts · card-media.css
+    swiss-artwork/             swiss-artwork.ts · motifs-grid.ts · motifs-form.ts · motif-types.ts · .css
+    wall-tiles/                wall-tiles.ts (identity poster, era marker, end-cap render functions) · .css
+    project-dialog/            project-dialog.ts · dialog-content.ts · project-dialog.css (lazy chunk)
     motion-toggle/             motion-toggle.ts
-  core/                        order · format · media-scheduler · router · wheel · spatial-nav · motion · dom
-  content/                     types.ts · projects.ts · eras.ts · themes.ts · motifs.ts
-  styles/                      layers.css · tokens.css · base.css · fonts.css
+  core/                        order · format · rng · media-scheduler · router · transition · wheel · spatial-nav · motion · dom
+  content/                     types.ts · eras.ts · themes.ts · motifs.ts · site.ts · media-manifest.json · projects/*.ts
+  styles/                      layers.css · tokens.css · base.css · fonts.css · header.css
 public/  fonts/ · media/<slug>/ · _headers (generated)
-scripts/ check-frameable · capture-screens · capture-clips · encode-media · optimize-images · gen-csp · check-budgets · prerender · og-images
-tests/   unit/ (vitest) · e2e/ (playwright) · visual/ (baselines = design lock)
-dev/     motifs.html (motif × theme gallery) · cards.html (tier × media matrix)
+scripts/ optimize-images · capture-clip · check-budgets (v1) · check-frameable · gen-csp · prerender · og-images (backlog)
+tests/   unit/ (vitest) · e2e/ (playwright + axe) · visual/ (baselines = design lock, after CP1)
 ```
 
 ## 4. Card anatomy by tier
@@ -123,8 +121,8 @@ Each card module builds its skeleton once as a module-level `<template>` (with `
   @container wall (width >= 1200px) { .wall__grid { --cols: 5; } }
   @container wall (width >= 1500px) { .wall__grid { --cols: 6; } }
 
-  /* Horizontal mode */
-  @container wall (width > 1800px) {
+  /* Horizontal mode: a viewport query (the requirement is screen width; see FR-003) */
+  @media (min-width: 1801px) {
     .wall__grid {
       --rows: var(--wall-rows, 3);
       --cell: calc((var(--wall-block) - (var(--rows) - 1) * var(--gap)) / var(--rows));
