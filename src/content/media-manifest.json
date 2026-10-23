@@ -1,0 +1,42 @@
+{
+  "curiteva/cover": {
+    "width": 1920,
+    "height": 1200,
+    "widths": [480, 960, 1440]
+  },
+  "dmns/cover": {
+    "width": 1920,
+    "height": 1080,
+    "widths": [480, 960, 1440]
+  },
+  "hs-vue-library/cover": {
+    "width": 2774,
+    "height": 1734,
+    "widths": [480, 960, 1440]
+  },
+  "madramps/cover": {
+    "width": 1400,
+    "height": 875,
+    "widths": [480, 960]
+  },
+  "merchants/cover": {
+    "width": 1920,
+    "height": 1200,
+    "widths": [480, 960, 1440]
+  },
+  "onsite-figma-template/cover": {
+    "width": 5120,
+    "height": 2880,
+    "widths": [480, 960, 1440]
+  },
+  "qr-landing/cover": {
+    "width": 3558,
+    "height": 1996,
+    "widths": [480, 960, 1440]
+  },
+  "sublist/cover": {
+    "width": 1920,
+    "height": 1080,
+    "widths": [480, 960, 1440]
+  }
+}

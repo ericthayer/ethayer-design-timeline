@@ -1,0 +1,90 @@
+@layer components {
+  .site-header {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    block-size: var(--header-h);
+    padding-inline: var(--space-4);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.875rem;
+    font-weight: var(--weight-meta);
+  }
+  .site-header__brand {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    min-inline-size: 0;
+    white-space: nowrap;
+  }
+  .site-header__name {
+    font-size: 1rem;
+    font-weight: var(--weight-display);
+    letter-spacing: -0.01em;
+  }
+  .site-header__role {
+    color: var(--stone);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .site-header__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .site-header__links {
+    display: flex;
+    gap: var(--space-4);
+    list-style: none;
+  }
+  .site-header__links a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 24px;
+    text-decoration: none;
+  }
+  .site-header__links a:hover {
+    text-decoration: underline;
+  }
+
+  .motion-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-block-size: 32px;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--stone);
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  .motion-toggle[aria-pressed='true'] {
+    background: var(--paper);
+    border-color: var(--paper);
+    color: var(--ink);
+  }
+  .motion-toggle__icon {
+    inline-size: 0.6rem;
+    block-size: 0.7rem;
+    border-inline: 0.2rem solid currentColor;
+  }
+  .motion-toggle[aria-pressed='true'] .motion-toggle__icon {
+    border-inline-end: 0;
+    border-block: 0.35rem solid transparent;
+    border-inline-start: 0.6rem solid currentColor;
+    inline-size: 0;
+    block-size: 0;
+  }
+
+  @media (max-width: 719px) {
+    .site-header__role,
+    .site-header__links li:not(:first-child) {
+      display: none;
+    }
+  }
+}
