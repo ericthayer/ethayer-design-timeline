@@ -50,6 +50,7 @@
     position: absolute;
     inset-block-start: 0;
     inset-inline-start: 0;
+    max-inline-size: none; /* the reset caps iframes at 100 %; this one is a virtual viewport */
     border: 0;
     transform: scale(var(--frame-scale, 0.25));
     transform-origin: 0 0;
