@@ -1,0 +1,137 @@
+@layer components {
+  .tile {
+    --u: 1cqi;
+    position: relative;
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .tile__index {
+    display: grid;
+    font-variant-numeric: tabular-nums;
+    line-height: 0.92;
+  }
+  .tile__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.9rem;
+    list-style: none;
+    font-weight: var(--weight-meta);
+  }
+  .tile__links a {
+    display: inline-block;
+    min-block-size: 24px;
+    padding-block: 0.15rem;
+  }
+
+  /* Identity poster (feature 2×2) */
+  .tile--identity {
+    --u: 0.5cqi;
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: calc(var(--u) * 4);
+    padding: calc(var(--u) * 6);
+  }
+  .tile--identity .tile__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 1rem;
+    font-size: clamp(0.75rem, calc(var(--u) * 4.6), 1.125rem);
+    font-weight: var(--weight-display);
+    line-height: 1.02;
+  }
+  .tile--identity .tile__head > p:first-child {
+    max-inline-size: 12ch;
+  }
+  .tile--identity .tile__index {
+    text-align: end;
+    line-height: 1.02;
+  }
+  .tile--identity .tile__title {
+    color: var(--title);
+    font-size: clamp(2rem, calc(var(--u) * 21), 7rem);
+    font-weight: var(--weight-display);
+    line-height: 0.9;
+    letter-spacing: -0.035em;
+  }
+  .tile--identity .tile__art {
+    min-block-size: 0;
+  }
+  .tile--identity .tile__foot {
+    display: grid;
+    gap: calc(var(--u) * 3);
+    font-size: clamp(0.8125rem, calc(var(--u) * 3.4), 1rem);
+    line-height: 1.35;
+  }
+  .tile--identity .tile__summary {
+    max-inline-size: 46ch;
+    font-weight: 500;
+  }
+
+  /* Era marker (sm): chapter numerals + label on the wall color */
+  .tile--era {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: calc(var(--u) * 7);
+    background: transparent;
+    color: var(--paper);
+    border-block-start: 2px solid var(--paper);
+  }
+  .tile--era .tile__index {
+    font-size: clamp(2rem, calc(var(--u) * 30), 7rem);
+    font-weight: var(--weight-display);
+    letter-spacing: -0.04em;
+  }
+  .tile__era-label {
+    font-size: clamp(0.875rem, calc(var(--u) * 6.4), 1.5rem);
+    font-weight: var(--weight-display);
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  /* End-cap (tall) */
+  .tile--end {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--u) * 6);
+    padding: calc(var(--u) * 7);
+  }
+  .tile--end .tile__title {
+    color: var(--title);
+    font-size: clamp(1.5rem, calc(var(--u) * 13), 3.5rem);
+    font-weight: var(--weight-display);
+    line-height: 0.95;
+    letter-spacing: var(--tracking-display);
+  }
+  .tile--end .tile__title:focus-visible {
+    outline-offset: 4px;
+  }
+  .tile__education {
+    display: grid;
+    gap: calc(var(--u) * 5);
+    list-style: none;
+    font-size: clamp(0.875rem, calc(var(--u) * 5), 1.125rem);
+    line-height: 1.2;
+  }
+  .tile__education li {
+    display: grid;
+  }
+  .tile__year {
+    font-size: 1.6em;
+    font-weight: var(--weight-display);
+    font-variant-numeric: tabular-nums;
+  }
+  .tile__school {
+    font-size: 0.8em;
+    opacity: 0.85;
+  }
+  .tile__cta {
+    margin-block-start: auto;
+    font-size: clamp(0.875rem, calc(var(--u) * 5), 1.125rem);
+    font-weight: var(--weight-meta);
+  }
+}

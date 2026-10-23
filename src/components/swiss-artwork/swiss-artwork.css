@@ -1,0 +1,64 @@
+@layer components {
+  swiss-artwork {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .swiss-art {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+  .swiss-art .bg {
+    fill: var(--bg);
+  }
+  .swiss-art .a1 {
+    fill: var(--art-1);
+  }
+  .swiss-art .a2 {
+    fill: var(--art-2);
+  }
+  .swiss-art .a3 {
+    fill: var(--art-3);
+  }
+  .swiss-art .a4 {
+    fill: var(--art-4);
+  }
+  .swiss-art .stroke-a1 {
+    stroke: var(--art-1);
+    stroke-width: 1.6;
+  }
+  .swiss-art .hair {
+    stroke: var(--art-1);
+    stroke-width: 0.3;
+    opacity: 0.7;
+  }
+  /* Tonal ramp art-1 → art-3 for tone-dots */
+  .swiss-art .t0 {
+    fill: var(--art-1);
+  }
+  .swiss-art .t1 {
+    fill: color-mix(in oklab, var(--art-1) 75%, var(--art-3));
+  }
+  .swiss-art .t2 {
+    fill: color-mix(in oklab, var(--art-1) 50%, var(--art-3));
+  }
+  .swiss-art .t3 {
+    fill: color-mix(in oklab, var(--art-1) 25%, var(--art-3));
+  }
+  .swiss-art .t4 {
+    fill: var(--art-3);
+  }
+
+  @media (forced-colors: active) {
+    .swiss-art :is(.a1, .a2, .a3, .a4, .t0, .t1, .t2, .t3, .t4) {
+      fill: CanvasText;
+    }
+    .swiss-art .bg {
+      fill: Canvas;
+    }
+    .swiss-art :is(.stroke-a1, .hair) {
+      stroke: CanvasText;
+    }
+  }
+}

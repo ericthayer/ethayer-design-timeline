@@ -1,0 +1,117 @@
+@layer components {
+  :root {
+    --wall-block: calc(100dvh - var(--header-h));
+    --wall-rows: 3;
+  }
+  @media (max-height: 799px) {
+    :root {
+      --wall-rows: 2;
+    }
+  }
+  @media (min-height: 1100px) {
+    :root {
+      --wall-rows: 4;
+    }
+  }
+
+  timeline-wall {
+    display: block;
+    container: wall / inline-size;
+    background: var(--ink);
+  }
+  timeline-wall:focus {
+    outline: none;
+  }
+
+  /* Vertical mode (≤ 1800 px): stepped columns of fluid square cells (FR-002) */
+  .wall__grid {
+    --cols: 2;
+    --gap: var(--wall-gap);
+    --cell: calc((100cqi - (var(--cols) - 1) * var(--gap)) / var(--cols));
+    display: grid;
+    grid-template-columns: repeat(var(--cols), var(--cell));
+    grid-auto-rows: var(--cell);
+    grid-auto-flow: row dense;
+    gap: var(--gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @container wall (min-width: 600px) {
+    .wall__grid {
+      --cols: 3;
+    }
+  }
+  @container wall (min-width: 900px) {
+    .wall__grid {
+      --cols: 4;
+    }
+  }
+  @container wall (min-width: 1200px) {
+    .wall__grid {
+      --cols: 5;
+    }
+  }
+  @container wall (min-width: 1500px) {
+    .wall__grid {
+      --cols: 6;
+    }
+  }
+
+  /* Horizontal mode on screens wider than 1800 px: rows by viewport height, scroll on x (FR-003).
+     A viewport query, because a container measurement shifts with the scrollbar gutter. */
+  @media (min-width: 1801px) {
+    html {
+      overflow: hidden;
+      scrollbar-gutter: auto;
+    }
+    .wall__grid {
+      --scrollbar-reserve: 10px;
+      --cell: calc(
+        (var(--wall-block) - var(--scrollbar-reserve) - (var(--wall-rows) - 1) * var(--gap)) /
+          var(--wall-rows)
+      );
+      block-size: var(--wall-block);
+      grid-template-columns: none;
+      grid-template-rows: repeat(var(--wall-rows), var(--cell));
+      grid-auto-columns: var(--cell);
+      grid-auto-flow: column dense;
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      scroll-padding-inline: var(--space-4);
+      scrollbar-width: thin;
+      scrollbar-color: var(--stone) var(--ink);
+    }
+  }
+
+  .wall__item {
+    position: relative;
+    min-inline-size: 0;
+    container-type: size;
+  }
+  .wall__item[data-size='wide'] {
+    grid-column: span 2;
+  }
+  .wall__item[data-size='tall'] {
+    grid-row: span 2;
+  }
+  .wall__item[data-size='feature'] {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  /* SC 2.4.11: focused cards scroll clear of the screen edge */
+  html {
+    scroll-padding-block: var(--space-4);
+  }
+
+  @supports not (container-type: inline-size) {
+    @media (min-width: 900px) {
+      .wall__grid {
+        --cols: 4;
+        --cell: calc((100vw - 3 * var(--gap)) / 4);
+      }
+    }
+  }
+}
