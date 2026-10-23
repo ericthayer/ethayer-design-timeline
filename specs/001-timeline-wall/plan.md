@@ -87,7 +87,23 @@ sm 1×1                tall 1×2              wide 2×1                        f
                       └───────────┘                                           └───────────────────────┘
 ```
 
-`title-bottom` swaps the title and art order on `tall` and `feature`. Anatomy comes from four `<template data-size>` elements in `index.html`. The card clones its tier's template and fills it with `textContent`.
+`title-bottom` swaps the title and art order on `tall` and `feature`.
+
+**Standard treatment** (all tiers): media fills the tile, and a label chip sits bottom-left.
+
+```
+┌───────────────────────┐
+│                       │   media: image (duotone → color on hover/focus) · video loop ·
+│     MEDIA (cover)     │          live iframe (scaled, inert) · placeholder wireframe
+│                       │
+│ ┌──────────────────┐  │
+│ │ Title            │  │   chip: paper bg, ink text (AA on every theme)
+│ │ Client · 2021    │  │
+│ └──────────────────┘  │
+└───────────────────────┘
+```
+
+Each card module builds its skeleton once as a module-level `<template>` (with `createElement`) and clones it per instance, filling it with `textContent`. Keeping templates inside the module, rather than in `index.html`, keeps components portable as ES module exports.
 
 ## 5. Wall layout (normative CSS sketch)
 

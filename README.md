@@ -2,7 +2,7 @@
 
 A career timeline for [Eric Thayer](https://ethayer.design): a fluid bento wall of project cards styled as Swiss posters. Each card opens a full-screen dialog with the project details. The wall scrolls vertically, and switches to horizontal scrolling on screens wider than 1800 px.
 
-**Status:** the spec is drafted and awaiting sign-off. There's no implementation yet.
+**Status:** spec approved (CP0). v1 is in progress toward the CP1 review.
 
 | Doc | Purpose |
 | --- | --- |

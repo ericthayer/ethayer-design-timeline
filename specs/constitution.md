@@ -23,13 +23,14 @@ These rules apply to every spec, plan, task, and commit in this repo. If a spec 
 3. Keep files at 300 lines or fewer. Pure logic (ordering, formatting, layout math, scheduling) goes in `src/core/` or `src/content/` and is unit tested without a DOM.
 4. Styles go in `@layer components`. Nothing inline: themes and sizes use `data-*` attributes and classes. Runtime values are custom properties set with `style.setProperty` (CSSOM, which CSP allows).
 
-## IV. Accessibility: WCAG 2.2 AA, no exceptions
+## IV. Accessibility: WCAG 2.2 AA
 
 1. Use semantic HTML first. ARIA only fills real gaps.
 2. CI must show zero axe-core violations on every route and state the e2e suite reaches.
 3. Every interaction works by keyboard. Focus is always visible (a double ring that passes 3:1 on any theme) and never hidden under the sticky UI (SC 2.4.11).
 4. Honor `prefers-reduced-motion`. Provide a **global motion pause** (SC 2.2.2) that stops video loops and live iframes.
 5. Text contrast is ≥ 4.5:1 (≥ 3:1 for large display text). Tests check it against the theme tokens.
+   - **Amendment (owner-approved 2026-10-23):** Swiss-treatment poster cards *aim* for AA, but Level A is acceptable for their visual styling (contrast of decorative and poster type). Everything else on the site, including the label, link, and focus behavior of those cards, stays AA.
 6. Font sizes have a `rem` floor so user font-size settings still apply (SC 1.4.4).
 
 ## V. Performance budgets (enforced in CI)

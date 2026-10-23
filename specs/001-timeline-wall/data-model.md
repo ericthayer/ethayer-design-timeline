@@ -13,11 +13,9 @@ export type EraId = (typeof ERAS)[number]['id'];     // §5
 
 export interface ImageMedia {
   readonly kind: 'image';
-  readonly src: string;                 // base path without extension: '/media/dmns/cover'
+  readonly src: string;                 // manifest key: 'dmns/cover' → /media/dmns/cover-{w}.{avif,webp}
   readonly alt: string;                 // required, describes the screenshot
-  readonly width: number;               // intrinsic, from the optimize-images manifest
-  readonly height: number;
-  readonly focal?: `${number}% ${number}%`;
+  readonly focal?: `${number}% ${number}%`;   // width, height, and widths come from media-manifest.json
   readonly treatment?: 'duotone' | 'none';   // default 'duotone' on cards
 }
 export interface VideoMedia {
@@ -37,13 +35,18 @@ export interface IframeMedia<V extends 'desktop' | 'mobile' = 'desktop' | 'mobil
 export interface ArtworkMedia {
   readonly kind: 'artwork';             // renders the project's motif and theme
 }
+export interface PlaceholderMedia {
+  readonly kind: 'placeholder';         // themed wireframe until a real asset exists
+  readonly variant: 'site' | 'mobile' | 'video' | 'design';
+}
 
 /** Allowed size × media combinations (§2). Invalid combinations fail typecheck. */
 export type CardMedia<S extends Size> =
-  S extends 'sm'   ? ArtworkMedia | ImageMedia | VideoMedia :
-  S extends 'tall' ? ArtworkMedia | ImageMedia | VideoMedia | IframeMedia<'mobile'> :
-                     ArtworkMedia | ImageMedia | VideoMedia | IframeMedia<'desktop'>;
+  S extends 'sm'   ? ArtworkMedia | PlaceholderMedia | ImageMedia | VideoMedia :
+  S extends 'tall' ? ArtworkMedia | PlaceholderMedia | ImageMedia | VideoMedia | IframeMedia<'mobile'> :
+                     ArtworkMedia | PlaceholderMedia | ImageMedia | VideoMedia | IframeMedia<'desktop'>;
 
+export type Treatment = 'swiss' | 'standard';
 export type DialogMedia = ImageMedia | VideoMedia | IframeMedia | VimeoMedia;
 export interface VimeoMedia { readonly kind: 'vimeo'; readonly id: string; readonly title: string; readonly poster: ImageMedia }
 
@@ -63,13 +66,14 @@ interface ProjectBase {
   readonly motif: MotifName;
   readonly seed?: number;               // artwork variation; defaults to a hash of the slug
   readonly layout: Layout;
+  readonly treatment: Treatment;        // ≈25 % 'swiss', spread evenly (FR-011b)
   readonly summary: string;             // ≤ 160 chars, used for the meta description and OG
   readonly body: { readonly context: string; readonly contribution: string; readonly outcome: string };
   readonly tracklist: readonly TrackItem[];   // stack and deliverables, ≤ 8
   readonly metrics?: readonly Metric[];
   readonly links?: readonly ProjectLink[];
   readonly gallery?: readonly DialogMedia[];
-  readonly hidden?: boolean;            // drafts that are excluded from render (Q9)
+  readonly draft?: boolean;             // placeholder copy pending owner review
 }
 
 /** Distributive discriminated union on `size`. */
@@ -85,12 +89,14 @@ export type WallItem =
 
 ## 2. Size × media matrix
 
-| Size | Span (c×r) | artwork | image | video | iframe | Anatomy shown |
+| Size | Span (c×r) | artwork / placeholder | image | video | iframe | Swiss anatomy shown |
 | --- | --- | --- | --- | --- | --- | --- |
 | `sm` | 1×1 | ✓ | ✓ | ✓ | ✗ | header, art, title |
 | `tall` | 1×2 | ✓ | ✓ | ✓ | ✓ `mobile` viewport | header, title, art (square), year + track list (≤ 6) |
 | `wide` | 2×1 | ✓ | ✓ | ✓ | ✓ `desktop` | left: header, title, year · right: art (square, full-bleed) |
 | `feature` | 2×2 | ✓ | ✓ | ✓ | ✓ `desktop` | full poster: header, title (display), art, year + track list (≤ 8) |
+
+Standard cards use the same matrix. Media fills the whole tile, with a label chip (title, then "Client · Year") in the bottom-left corner.
 
 Why: below about 300 px, an iframe or screenshot can't be read and costs the most per pixel, so `sm` gets the poster. A `tall` card at 1×2 is a phone's aspect ratio, so it's the only place a mobile-viewport iframe makes sense.
 
@@ -154,7 +160,7 @@ Artwork is decorative (`aria-hidden`), so art colors carry no contrast requireme
 | 16 | `tri-stack` | Stacked translucent triangles, color ramp | — | media production | B |
 | 17 | `orbit-rings` | Concentric arcs with offset stroke dashes | — | motion or time | B |
 
-Generator contract: `(ctx: { width: number; height: number; theme: ThemeColors; rng: () => number; outlier: boolean }) => SVGElement[]`, using a seeded PRNG (mulberry32), ≤ 400 nodes. Until batch B ships, those projects fall back to the closest batch-A motif.
+Generator contract: `(ctx: { rng: () => number; outlier: boolean }) => SVGElement[]` drawn in a 100×100 `viewBox`, with colors from CSS classes (`.a1`–`.a3`, `.fg`) mapped to theme custom properties. Uses a seeded PRNG (mulberry32), ≤ 400 nodes. **Batch B is deferred** (owner: Swiss on about 25 % of cards). Its rows stay here as the backlog.
 
 ## 5. Eras (chapter markers, ordered newest first)
 
@@ -169,41 +175,41 @@ Generator contract: `(ctx: { width: number; height: number; theme: ThemeColors; 
 | `post-production` | Post-production, San Diego | 2005 → 2010 (confirm) | full-time |
 | `education` (end-cap) | Platt College: B.S. Media Arts '05 · A.A.S. Graphic Design '03 | 2003 → 2005 | education |
 
-Ordering: eras by `start` descending, then projects within an era by `end` descending (present first), then by authored order.
+Ordering: eras by `start` descending, then projects in authored (curated) order within each era. The curated order keeps the Swiss cards spread evenly, which date sorting can't guarantee.
 
-## 6. Content inventory (seed for `projects.ts`)
+## 6. Content inventory (v1, as implemented)
 
-Status: ✅ asset exists · 📸 capture from a live URL · 🎬 owner supplies source · 🎨 artwork only (no asset needed) · ❓ blocked on an open question
+Media key: 🖼 image (asset from ethayer.design or GitHub) · 🎞 video (recorded clip) · 🌐 live iframe (poster from screenshot) · ▢ placeholder (`variant`) · ✳ Swiss artwork
 
-| Era | Slug | Title | Size | Card media | Motif / theme | Status |
-| --- | --- | --- | --- | --- | --- | --- |
-| cobank | `agentic-engineering-loop` | Agentic Engineering Loop | feature | artwork | eclipse / ink-vermilion | 🎨 metric 40 % (10 h → 6 h) |
-| cobank | `cobank-design-system` | Multi-Framework Design System | feature | artwork | petals / paper-mocha | 🎨 120+ consumers |
-| cobank | `figma-token-pipeline` | Figma → Token Pipeline | wide | artwork | tone-dots / ink-cyan | 🎨 |
-| cobank | `drift-detection` | Spec & Drift Detection | tall | artwork | drift-bars / paper-graphite | 🎨 metric 33 % (18 → 12) |
-| cobank | `accessible-components` | A11y Standards | sm | artwork | nested-squares / paper-ink | 🎨 metric 37 % (30 → 19) |
-| threecolts | `qr-landing` | QR Landing Page | wide | iframe (desktop) | horizon-lines / coral | ✅ poster on GitHub · frameable |
-| threecolts | `onsite-figma-template` | Figma Theme Template | sm | image | pinwheels / paper-cobalt | ✅ |
-| threecolts | `onsite-grid-framework` | CSS Grid Framework | tall | artwork | dot-grid-mark / mustard | 🎨 |
-| threecolts | `responsive-modernization` | 200+ Responsive Rebuilds | sm | artwork | scatter / navy-coral | 🎨 |
-| health-scholars | `hs-vue-library` | Vue Component Library | feature | image | tri-mosaic / paper-prism | ✅ (Storybook 403, so no iframe) |
-| health-scholars | `hs-brand-systems` | Brand & UI Systems | wide | artwork | overlap / paper-prism | 🎨 6 apps · 10 VR products |
-| health-scholars | `vr-design-system` | VR Design System | tall | video | impossible-hex / graphite-flag | 🎬 Unity capture |
-| health-scholars | `workbench` | Workbench Platform | sm | artwork | diagonal-lines / graphite | 🎨 needs a brief |
-| health-scholars | `design-sprints` | Design Sprints | sm | artwork | concentric-knot / paper-vermilion | 🎨 |
-| health-scholars | `map-course-launcher` | MAP Course Launcher | sm | image | pinwheels / navy-coral | ❓ Q9, 📸 |
-| independent | `dmns` | Denver Museum of Nature & Science | feature | iframe (desktop) | halftone-halves / navy | ✅ frameable, plus pattern-library link |
-| independent | `madramps` | MadRamps | wide | iframe (desktop) | diagonal-lines (chevron) / graphite | ✅ frameable |
-| independent | `merchants` | Merchants Office Furniture | wide | image | drift-bars / paper-cobalt | ✅ |
-| independent | `safetyhive` | SafetyHive 2.0 | wide | image | pinwheels / indigo-vermilion | ❓ Q9, 📸 Figma proto |
-| independent | `sublist` | SubList Prototype | tall | image | scatter / coral | ✅ (XD blocks framing) |
-| independent | `nyt-ui` | NYT UI Study | sm | image | horizon-lines / paper-ink | 📸 labeled "UI study" |
-| independent | `curiteva` | Curiteva | sm | image | tri-stack / plum | ✅ ❓ Q9 description |
-| independent | `kyamedia-frameworks` | Startup CSS Frameworks | wide | artwork | drift-bars / paper-graphite | 🎨 3 startups |
-| navigators | `navigators-platforms` | 40+ Responsive Platforms | feature | artwork | horizon-lines / indigo-vermilion | 🎨 donation flows |
-| navigators | `kentico-framework` | Kentico UI Framework | sm | artwork | dot-grid-mark / paper-cobalt | 🎨 |
-| dli | `dli-mobile-learning` | Mobile Learning UI | tall | artwork | nested-squares / graphite | 🎨 |
-| dli | `dli-training-media` | 100+ Training Media | sm | artwork | tri-stack / plum | 🎨 |
-| post-production | `motion-reel` | Motion Demo Reel | wide | video | orbit-rings / ink-vermilion | 🎬 source for an 8 s loop; dialog uses Vimeo `143960525` |
+| # | Era | Slug | Title | Size | Treatment | Card media | Motif / theme |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | cobank | `agentic-engineering-loop` | Agentic Engineering Loop | feature | **swiss** | ✳ | eclipse / ink-vermilion |
+| 2 | cobank | `cobank-design-system` | Multi-Framework Design System | feature | standard | ▢ design | petals / paper-mocha |
+| 3 | cobank | `figma-token-pipeline` | Figma → Token Pipeline | wide | standard | ▢ design | tone-dots / ink-cyan |
+| 4 | cobank | `drift-detection` | Spec & Drift Detection | tall | **swiss** | ✳ | drift-bars / paper-graphite |
+| 5 | cobank | `accessible-components` | A11y Standards | sm | standard | ▢ site | nested-squares / paper-ink |
+| 6 | threecolts | `qr-landing` | QR Landing Page | wide | standard | 🌐 qrlanding.netlify.app | horizon-lines / coral |
+| 7 | threecolts | `onsite-figma-template` | Figma Theme Template | sm | standard | 🖼 | petals / paper-cobalt |
+| 8 | threecolts | `onsite-grid-framework` | CSS Grid Framework | tall | **swiss** | ✳ | dot-grid-mark / mustard |
+| 9 | threecolts | `responsive-modernization` | 200+ Responsive Rebuilds | sm | standard | ▢ mobile | scatter / navy-coral |
+| 10 | health-scholars | `hs-vue-library` | Vue Component Library | feature | standard | 🖼 | tone-dots / paper-prism |
+| 11 | health-scholars | `hs-brand-systems` | Brand & UI Systems | wide | **swiss** | ✳ | petals / paper-prism |
+| 12 | health-scholars | `vr-design-system` | VR Design System | tall | standard | ▢ video | nested-squares / graphite-flag |
+| 13 | health-scholars | `workbench` | Workbench Platform | sm | standard | ▢ site | diagonal-lines / graphite |
+| 14 | health-scholars | `design-sprints` | Design Sprints | sm | **swiss** | ✳ | nested-squares / paper-vermilion |
+| 15 | health-scholars | `map-course-launcher` | MAP Course Launcher | sm | standard | ▢ design | scatter / navy-coral |
+| 16 | independent | `madramps` | MadRamps | wide | standard | 🌐 madramps.com | diagonal-lines / graphite |
+| 17 | independent | `nyt-ui` | NYT UI Study | sm | **swiss** | ✳ | horizon-lines / paper-ink |
+| 18 | independent | `merchants` | Merchants Office Furniture | wide | standard | 🎞 scroll capture | drift-bars / paper-cobalt |
+| 19 | independent | `curiteva` | Curiteva | sm | standard | 🖼 | tone-dots / plum |
+| 20 | independent | `safetyhive` | SafetyHive 2.0 | wide | standard | ▢ design | scatter / indigo-vermilion |
+| 21 | independent | `dmns` | Denver Museum of Nature & Science | feature | standard | 🌐 dmns.netlify.app | eclipse / navy |
+| 22 | independent | `sublist` | SubList Prototype | tall | standard | 🖼 | dot-grid-mark / coral |
+| 23 | independent | `kyamedia-frameworks` | Startup CSS Frameworks | wide | standard | ▢ site | drift-bars / paper-graphite |
+| 24 | navigators | `navigators-platforms` | 40+ Responsive Platforms | feature | **swiss** | ✳ | scatter / indigo-vermilion |
+| 25 | navigators | `kentico-framework` | Kentico UI Framework | sm | standard | ▢ site | dot-grid-mark / paper-cobalt |
+| 26 | dli | `dli-mobile-learning` | Mobile Learning UI | tall | standard | ▢ mobile | nested-squares / graphite |
+| 27 | dli | `dli-training-media` | 100+ Training Media | sm | standard | ▢ video | tone-dots / plum |
+| 28 | post-production | `motion-reel` | Motion Demo Reel | wide | standard | ▢ video (dialog: Vimeo `143960525`) | eclipse / ink-vermilion |
 
-Totals: 28 projects (5 feature, 8 wide, 5 tall, 10 sm), 7 era markers, the identity poster, and the end-cap. That's about 69 cells: roughly 23 columns in horizontal mode at 3 rows, or 17 rows in vertical mode at 4 columns. Three live-iframe cards (`qr-landing`, `dmns`, `madramps`) fit the scheduler budget of 3.
+Swiss: 7 of 28 (25 %). The longest run of standard cards is 6 (#18–#23). Live iframes: 3, which fits the scheduler budget. Every project keeps a `motif`, which the dialog uses when a card has no media.

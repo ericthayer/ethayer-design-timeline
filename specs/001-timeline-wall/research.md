@@ -8,7 +8,8 @@ Date: 2026-10-23. Every finding below was checked against a live source in this 
 | --- | --- |
 | Markup | `.img-grid > .grid-item > a > img`, 24 items, square 600×600 sources |
 | CSS | Not recoverable. The pen's styling lived in an external file (`s.cdpn.io/97621/functional-modifiers.css`), which now returns S3 `AccessDenied`. The pen's own CSS panel is empty, and Wayback was unreachable from here. |
-| **Assumption A1** | The layout is a CSS Grid of square cells where some items span 2×2 and gaps are back-filled (`grid-auto-flow: dense`). That's the standard pattern for this markup. **Owner to confirm or paste the original CSS (Q1).** |
+| **Assumption A1** | The layout is a CSS Grid of square cells where some items span 2×2 and gaps are back-filled (`grid-auto-flow: dense`). |
+| **Confirmed** (owner screenshot, 2026-10-23) | 6 equal square columns, a gap of about 8 px, 2×2 features in varied positions (columns 4–5, 1–2, 5–6), and 1×1 tiles back-filling around them. That's dense packing with full-bleed photos and no captions. The standard card treatment follows this, adding a label chip because each tile is a link that needs visible text. |
 
 ## R2. Visual reference: Swiss-style poster wall (attached image)
 

@@ -2,13 +2,16 @@
 
 | Field | Value |
 | --- | --- |
-| Status | **Draft, awaiting owner sign-off (CP0)** |
+| Status | **Approved (CP0, 2026-10-23)**: defaults accepted, with the owner clarifications in §11 |
 | Owner | Eric Thayer |
 | Companions | [research.md](./research.md) · [data-model.md](./data-model.md) · [plan.md](./plan.md) · [tasks.md](./tasks.md) · [constitution](../constitution.md) |
 
 ## 1. Summary
 
-A single-page, full-bleed wall of bento-grid cards. Each card is one project or chapter from Eric Thayer's career, 2003 to now, in reverse-chronological order. Each card is a Swiss International Style poster: a header label, index numerals, a display title, an art zone, and a track-list footer. The art zone shows **generative Swiss artwork**, a **screenshot**, a **short muted video loop**, or a **non-interactive live iframe**. Clicking a card opens a **full-screen dialog** with the project details. Below 1800 px the wall scrolls vertically. **Above 1800 px it scrolls horizontally.** Cards render in batches as the visitor scrolls ("infinite" scrolling) until the timeline reaches its end cap.
+A single-page, full-bleed wall of bento-grid cards. Each card is one project or chapter from Eric Thayer's career, 2003 to now, in reverse-chronological order. Cards come in two treatments:
+
+- **Standard** (about 75 % of cards): media-forward tiles like the reference gallery. The media fills the tile and a solid label chip carries the title, client, and year. The media is a **screenshot**, a **short muted video loop**, a **non-interactive live iframe**, or a designed **placeholder** when no asset exists yet.
+- **Swiss** (about 25 %, spread evenly through the timeline): International Style posters with a header label, index numerals, a display title, an art zone, and a track-list footer. The art zone shows **generative Swiss artwork** or any of the media above. Clicking a card opens a **full-screen dialog** with the project details. Below 1800 px the wall scrolls vertically. **Above 1800 px it scrolls horizontally.** Cards render in batches as the visitor scrolls ("infinite" scrolling) until the timeline reaches its end cap.
 
 ## 2. Goals and non-goals
 
@@ -39,7 +42,8 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 - **While** the dialog is open, **then** the wall is inert and doesn't scroll, and the layout doesn't shift.
 
 ### US3 (P1). See real work in the card
-- **Given** a card whose media is `image`, `video`, `iframe`, or `artwork`, **then** it renders that media in the art zone. Allowed combinations follow the size × media matrix (data-model §2).
+- **Given** a card whose media is `image`, `video`, `iframe`, `artwork`, or `placeholder`, **then** it renders that media in the art zone. Allowed combinations follow the size × media matrix (data-model §2).
+- **Given** a project with no usable asset or a broken link, **then** its card shows a placeholder wireframe in the project's theme, and the broken link is left out of the dialog.
 - **Given** a video or iframe card scrolled out of view, **then** it stops playing or unmounts (scheduler rules, FR-034).
 
 ### US4 (P1). Accessible and calm
@@ -68,7 +72,7 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 - **FR-001** The wall is one ordered list (`<ol>`) of grid items in reverse-chronological order, grouped by era (data-model §5).
 - **FR-002** Cells are square. Width ≤ 1800 px: column count steps by **container** width (2 / 3 / 4 / 5 / 6 at 0 / 600 / 900 / 1200 / 1500 px). Cell size is `(100cqi − gaps) / cols`, so cells stay fluid between steps.
 - **FR-003** Width > 1800 px (`@container wall (width > 1800px)`, with an `@media` fallback): the grid flows by column. Row count is 2 / 3 / 4 for viewport height < 800 / < 1100 / ≥ 1100 px. Cell size is `(wall block-size − gaps) / rows`. The wall scrolls on the x-axis, and `overscroll-behavior-x: contain` prevents back-swipe navigation.
-- **FR-004** Card spans: `sm` 1×1, `wide` 2×1, `tall` 1×2, `feature` 2×2. Packing uses `dense`. Visual displacement from DOM order is **≤ 2 positions** at every breakpoint for the shipped data (verified by e2e).
+- **FR-004** Card spans: `sm` 1×1, `wide` 2×1, `tall` 1×2, `feature` 2×2. Packing uses `dense`. The owner accepted the small visual reordering this causes (§11), so there's no displacement assertion.
 - **FR-005** In horizontal mode, a vertical wheel scroll (|ΔY| > |ΔX|, no Ctrl/Meta) scrolls the wall horizontally. `deltaMode` is normalized. Native horizontal trackpad gestures are untouched.
 - **FR-006** The wall gap is a token (default 4 px). The wall background is `ink`.
 - **FR-007** The header is a slim bar (≤ 64 px) with name, role, Resume, Contact, and the motion toggle. In horizontal mode the wall block-size is `100dvh − header`.
@@ -76,11 +80,13 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 
 ### Cards
 - **FR-010** Each card is an `<article>` labeled by its title heading (`h3`). One link (`<a href="/work/<slug>">`) inside the heading carries the accessible name. A pseudo-element stretches its hit area to the whole card.
-- **FR-011** The anatomy by size tier (plan §4) includes a header (client, 2 lines), index numerals (`yy_` / `yy`, with `→` for present), title, art zone, and footer (year plus track list). Tiers hide the parts that don't fit.
+- **FR-011** The Swiss anatomy by size tier (plan §4) includes a header (client, 2 lines), index numerals (`yy_` / `yy`, with `→` for present), title, art zone, and footer (year plus track list). Tiers hide the parts that don't fit.
+- **FR-011a** The standard anatomy is media filling the tile, plus a label chip in the bottom-left corner (`ink` on `paper`, AA) with the title and "Client · Year".
+- **FR-011b** Each project sets `treatment: 'swiss' | 'standard'`. Content tests enforce a Swiss share of 20–30 % and no run of more than 7 consecutive standard project cards, so roughly one card in four on screen is Swiss.
 - **FR-012** The index numerals are `aria-hidden`. A visually hidden span reads "2023 to present".
 - **FR-013** Title position follows `layout` (`title-top` or `title-bottom`).
 - **FR-014** Typography uses container units on the card (`container-type: size`) clamped with `rem` floors. The minimum rendered size is 12 px for meta text and 16 px for titles.
-- **FR-015** Themes come from `data-theme`. Text and background pairs meet AA (tested).
+- **FR-015** Themes come from `data-theme`. Text and background pairs meet AA (tested). Swiss poster type may fall back to Level A (constitution IV.5 amendment).
 - **FR-016** Hover and `:focus-visible`: a duotone image or video shifts to full color in ≤ 200 ms. Focus shows a double ring (`ink` 3 px plus `paper` 3 px) that passes 3:1 on every theme.
 - **FR-017** Ctrl- or Cmd-click and middle-click open `/work/<slug>` in a new tab (native link behavior is kept).
 - **FR-018** In `forced-colors` mode, cards keep visible borders, art uses system colors, and focus stays visible.
@@ -95,10 +101,11 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
   - mounting only after the card has been ≥ 50 % visible for 300 ms, and unmounting once it's more than one viewport away;
   - no live iframes below a 900 px container width, with `saveData`, or while motion is paused.
 - **FR-035** The allowed size × media combinations are enforced by the type system and by the content tests (data-model §2).
+- **FR-036** `placeholder`: a themed wireframe SVG (`site`, `mobile`, `video`, or `design` variant), seeded by slug, `aria-hidden`. It stands in for any missing screenshot, clip, or unreachable iframe.
 
 ### Swiss artwork
 - **FR-040** `<swiss-artwork motif theme seed>` renders a deterministic SVG (same inputs give the same output) with `aria-hidden="true"`, built with `createElementNS`. Each motif is capped at 400 nodes.
-- **FR-041** MVP ships 8 motifs, and 9 more follow after CP1 (data-model §4). Each motif supports an `outlier` (one deviating element) seeded by `seed`.
+- **FR-041** v1 ships 8 motifs (batch A). Batch B is deferred, since only about 25 % of cards are Swiss (data-model §4). Each motif supports an `outlier` (one deviating element) seeded by `seed`.
 - **FR-042** Every project has a `motif` even when its card shows other media. The dialog hero and the OG image use it.
 
 ### Dialog
@@ -176,22 +183,33 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 - **A2** Hosted on Netlify, as the portfolio is today.
 - **A3** The owner supplies, or approves capturing, screenshots and clips. NDA work is shown with artwork only.
 - **A4** Typeface: **Hanken Grotesk** (variable, OFL, self-hosted). It's the closest free match to the reference's grotesk. A licensed face (Neue Haas Unica, Graphik) can replace it through one token.
-- **A5** Ordering is by era (employer chapter, newest first), then by project end date, newest first.
+- **A5** Ordering is by era (employer chapter, newest first), then by curated order within the era (roughly newest first).
 
-## 9. Open questions (each has a default; implementation proceeds on the default if unanswered)
+## 9. Resolved questions (CP0, 2026-10-23)
 
-| # | Question | Default |
+| # | Question | Resolution |
 | --- | --- | --- |
-| Q1 | The CodePen CSS is gone (R1). Is the grid square cells with 2×2 features? | Yes (A1) |
-| Q2 | Freelance projects from 2018–2021 overlap Health Scholars. Should they go under the era "ethayer.design — Independent 2015—2021"? | Yes |
-| Q3 | CoBank and Threecolts internal work: artwork-only cards, no screenshots? | Yes |
-| Q4 | Hosting: a subdomain (`work.ethayer.design`) or a path on the main site? | Subdomain, separate Netlify site |
-| Q5 | Typeface: Hanken Grotesk (free) or a licensed grotesk? | Hanken Grotesk |
-| Q6 | Is the Health Scholars Storybook (403) still shareable? | Screenshot only |
-| Q7 | Duotone treatment on screenshots by default (color returns on hover)? | Yes, with a per-card opt-out |
-| Q8 | Is the wall background `ink` with a 4 px gap (gallery wall) or a gapless mosaic? | `ink` + 4 px |
-| Q9 | Client and date context for SafetyHive 2.0, MAP Course Launcher, and Curiteva? | Listed as "Freelance", year TBD, hidden until supplied |
+| Q1 | Is the grid square cells with 2×2 features? | **Yes.** The owner's screenshot of the pen shows 6 square columns, 2×2 features, and dense packing |
+| Q2 | Should the 2018–2021 freelance work go under the era "ethayer.design — Independent 2015—2021"? | Yes (default) |
+| Q3 | CoBank and Threecolts internal work: no screenshots? | Yes. Swiss artwork or placeholders |
+| Q4 | Hosting | Subdomain, separate Netlify site (default) |
+| Q5 | Typeface | Hanken Grotesk (default) |
+| Q6 | Health Scholars Storybook (403) | Screenshot only. Link left out (broken link rule) |
+| Q7 | Duotone on screenshots by default? | Yes (default) |
+| Q8 | Wall background | `ink` + 4 px gap (default) |
+| Q9 | SafetyHive 2.0, MAP Course Launcher, Curiteva context | **Shown with placeholder copy and media** (overrides the "hidden" default) |
 
 ## 10. Out of scope (tracked for later specs)
 
 Tag filtering and search, a case-study long-form page per project, a CMS, comments, analytics dashboards, and a print stylesheet.
+
+## 11. Owner clarifications (2026-10-23)
+
+| Clarification | Spec impact |
+| --- | --- |
+| Use placeholders for any missing media or broken links; v1 doesn't need to be exact | FR-036 placeholder media; broken links omitted; narratives marked as drafts |
+| Swiss treatment on about 25 % of cards, built for the projects with known content; placeholders and standard cards for the rest | FR-011a, FR-011b; two treatments in §1 |
+| WCAG A is acceptable for the Swiss-styled cards; aim for AA | Constitution IV.5 amendment; FR-015 |
+| Use the screenshot instead of the CodePen | Q1 resolved; research R1 updated |
+| Don't worry about iframe frameability, dense reordering, or the date discrepancies | R4 and R6 accepted as-is; FR-004 assertion dropped; check-frameable moved to post-launch |
+| Implement after updating the spec | Checkpoints collapse into one v1 review (CP1); see tasks.md |
