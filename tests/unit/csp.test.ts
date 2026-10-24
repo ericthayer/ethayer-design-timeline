@@ -7,7 +7,9 @@ const parse = (policy: string): Map<string, string[]> =>
     policy
       .split(';')
       .map((part) => part.trim().split(/\s+/))
-      .filter((tokens): tokens is [string, ...string[]] => tokens[0] !== undefined && tokens[0] !== '')
+      .filter(
+        (tokens): tokens is [string, ...string[]] => tokens[0] !== undefined && tokens[0] !== '',
+      )
       .map(([name, ...sources]) => [name, sources]),
   );
 

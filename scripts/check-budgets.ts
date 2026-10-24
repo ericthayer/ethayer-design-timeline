@@ -109,7 +109,10 @@ console.log(
 const leaks = [...publicGraph.js].filter((f) =>
   readFileSync(join(DIST, f), 'utf8').includes(FORBIDDEN_IN_PUBLIC),
 );
-report(leaks.length === 0, `Isolation: no "${FORBIDDEN_IN_PUBLIC}" in public JS ${leaks.join(' ')}`);
+report(
+  leaks.length === 0,
+  `Isolation: no "${FORBIDDEN_IN_PUBLIC}" in public JS ${leaks.join(' ')}`,
+);
 
 // CSP floor (FR-355): index.html carries the meta, admin.html must not.
 const decode = (s: string): string =>

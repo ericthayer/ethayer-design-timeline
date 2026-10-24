@@ -110,9 +110,10 @@ function adminBuild(): Plugin {
       outDir = resolve(config.root, config.build.outDir);
     },
     async closeBundle() {
-      const manifest = JSON.parse(
-        readFileSync(resolve(outDir, PUBLIC_MANIFEST), 'utf8'),
-      ) as Record<string, ManifestChunk>;
+      const manifest = JSON.parse(readFileSync(resolve(outDir, PUBLIC_MANIFEST), 'utf8')) as Record<
+        string,
+        ManifestChunk
+      >;
       const entry = manifest['index.html'];
       if (!entry) throw new Error('admin-build: the public manifest has no index.html entry');
       await build({
