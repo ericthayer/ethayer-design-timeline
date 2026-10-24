@@ -1,10 +1,9 @@
 // Content validation (FR-091, FR-011b, US8): every rule names the slug that breaks it.
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { readContext } from '../../scripts/content-fs.ts';
+import { readContext, readRawContent } from '../../scripts/content-fs.ts';
 import { MEDIA_MANIFEST } from '../../src/components/card-media/image.ts';
 import { ERAS } from '../../src/content/eras.ts';
-import { CONTENT_FILES, projectFile } from '../../src/content/paths.ts';
 import { PROJECTS } from '../../src/content/projects/index.ts';
 import { RESUME } from '../../src/content/resume.ts';
 import { SITE } from '../../src/content/site.ts';
@@ -100,21 +99,20 @@ describe('content', () => {
   });
 });
 
-// Spec 004 content-json (T306, FR-316): the shared validator agrees with the rules above.
-describe('validator on the legacy TS content', () => {
-  it('finds 0 errors and 0 warnings before any file moves', () => {
-    const raw: Record<string, unknown> = {
-      [CONTENT_FILES.eras]: ERAS,
-      [CONTENT_FILES.site]: SITE,
-      [CONTENT_FILES.resume]: RESUME,
-      [CONTENT_FILES.order]: Object.fromEntries(
-        ERAS.map((era) => [era.id, PROJECTS.filter((p) => p.era === era.id).map((p) => p.slug)]),
-      ),
-    };
-    for (const p of PROJECTS) raw[projectFile(p.slug)] = p;
-    const result = validateContent(raw, readContext('.'));
+// Spec 004 content-json (FR-303, FR-316): the shared validator on the real content files.
+describe('content files (shared validator)', () => {
+  const result = validateContent(readRawContent('.'), readContext('.'));
+
+  it('have 0 errors and 0 warnings', () => {
     expect(result.ok ? [] : result.errors).toEqual([]);
     expect(result.warnings).toEqual([]);
-    if (result.ok) expect(result.value.projects).toStrictEqual(PROJECTS);
+  });
+
+  it('load exactly what the validator returns (loader ≡ validator)', () => {
+    if (!result.ok) throw new Error('content is invalid');
+    expect(PROJECTS).toStrictEqual(result.value.projects);
+    expect(ERAS).toStrictEqual(result.value.eras);
+    expect(SITE).toStrictEqual(result.value.site);
+    expect(RESUME).toStrictEqual(result.value.resume);
   });
 });
