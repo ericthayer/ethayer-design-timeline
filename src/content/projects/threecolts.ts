@@ -85,7 +85,7 @@ export const threecolts = [
     treatment: 'swiss',
     layout: 'title-top',
     theme: 'mustard',
-    motif: 'dot-grid-mark',
+    motif: 'pinwheels',
     media: { kind: 'artwork' },
     summary:
       'A custom CSS and grid framework that automates layouts across live support, FAQs, and media widgets.',

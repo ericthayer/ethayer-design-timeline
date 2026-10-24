@@ -1,4 +1,4 @@
-import type { Era, Project, VimeoMedia } from '../../content/types.ts';
+import type { Era, Project } from '../../content/types.ts';
 import { el } from '../../core/dom.ts';
 import { indexNumerals, pad2, periodText, yearRange } from '../../core/format.ts';
 import { renderArtworkElement, seedOf } from '../card-media/card-media.ts';
@@ -6,6 +6,7 @@ import { renderDialogFrame } from '../card-media/iframe.ts';
 import { renderPicture } from '../card-media/image.ts';
 import { renderPlaceholder } from '../card-media/placeholder.ts';
 import { renderDialogVideo } from '../card-media/video.ts';
+import { buildGallery } from './dialog-gallery.ts';
 
 export interface DialogView {
   readonly project: Project;
@@ -56,27 +57,6 @@ export function buildBar(view: DialogView): HTMLElement {
       ' Close',
     ]),
   ]);
-}
-
-function vimeoFacade(media: VimeoMedia): HTMLElement {
-  const holder = el('div', { class: 'pd__vimeo' });
-  const play = el('button', { type: 'button', class: 'pd__play' }, [
-    el('span', { class: 'pd__play-icon', 'aria-hidden': 'true' }),
-    `Play “${media.title}” (loads Vimeo)`,
-  ]);
-  play.addEventListener('click', () => {
-    const frame = el('iframe', {
-      class: 'hero__iframe',
-      src: `https://player.vimeo.com/video/${media.id}?dnt=1&autoplay=1`,
-      title: media.title,
-      allow: 'autoplay; fullscreen; picture-in-picture',
-      allowfullscreen: true,
-    });
-    holder.replaceChildren(frame);
-    frame.focus();
-  });
-  holder.append(play);
-  return holder;
 }
 
 /** Hero media is interactive in the dialog (FR-052). */
@@ -222,9 +202,7 @@ export function buildBody(
           ),
         ]
       : []),
-    ...(project.gallery ?? []).flatMap((item) =>
-      item.kind === 'vimeo' ? [vimeoFacade(item)] : [],
-    ),
+    ...(project.gallery?.length ? [buildGallery(project.gallery)] : []),
     ...(project.draft
       ? [
           el('p', { class: 'pd__draft' }, [

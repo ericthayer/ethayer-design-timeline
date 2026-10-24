@@ -61,6 +61,19 @@ export type CardMedia<S extends Size> = S extends 'sm'
 export type AnyCardMedia = CardMedia<Size>;
 export type DialogMedia = ImageMedia | VideoMedia | IframeMedia | VimeoMedia;
 
+export type GallerySpan = 'sm' | 'wide' | 'tall' | 'feature';
+/** Focal point as CSS percentages, e.g. '30% 40%' (spec 003, FR-213). */
+export type Focal = `${number}% ${number}%`;
+
+/** One tile in the dialog's bento gallery (spec 003, FR-210). Iframes are excluded (FR-211). */
+export interface GalleryItem {
+  readonly media: ImageMedia | VideoMedia | VimeoMedia | PlaceholderMedia;
+  /** Visible caption, and the accessible name for decorative tiles. */
+  readonly label: string;
+  readonly span?: GallerySpan;
+  readonly focal?: Focal;
+}
+
 export interface TrackItem {
   readonly label: string;
   readonly value?: string;
@@ -122,7 +135,7 @@ interface ProjectBase {
   readonly tracklist: readonly TrackItem[];
   readonly metrics?: readonly Metric[];
   readonly links?: readonly ProjectLink[];
-  readonly gallery?: readonly DialogMedia[];
+  readonly gallery?: readonly GalleryItem[];
   /** Placeholder copy pending owner review. */
   readonly draft?: boolean;
 }

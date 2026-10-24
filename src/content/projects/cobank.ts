@@ -17,7 +17,7 @@ export const cobank = [
     treatment: 'swiss',
     layout: 'title-top',
     theme: 'ink-vermilion',
-    motif: 'eclipse',
+    motif: 'orbit-rings',
     media: { kind: 'artwork' },
     summary:
       'An MCP server and agent toolkit that turns Figma specs into token-wired React scaffolding, cutting feature development time by 40 %.',
@@ -70,6 +70,38 @@ export const cobank = [
       { label: 'W3C design tokens' },
     ],
     metrics: [{ value: '120+', label: 'developers and designers served' }],
+    gallery: [
+      {
+        media: { kind: 'placeholder', variant: 'design' },
+        label: 'Placeholder · Token editor',
+        span: 'feature',
+        focal: '30% 40%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'site' },
+        label: 'Placeholder · Docs site',
+        span: 'wide',
+        focal: '80% 20%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'mobile' },
+        label: 'Placeholder · Mobile component',
+        span: 'tall',
+        focal: '50% 30%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'video' },
+        label: 'Placeholder · Build walkthrough',
+        span: 'sm',
+        focal: '70% 60%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'design' },
+        label: 'Placeholder · Figma library',
+        span: 'sm',
+        focal: '15% 80%',
+      },
+    ],
   },
   {
     slug: 'figma-token-pipeline',
@@ -98,6 +130,32 @@ export const cobank = [
       { label: 'JSON tokens' },
       { label: 'MUI theme' },
       { label: 'Storybook' },
+    ],
+    gallery: [
+      {
+        media: { kind: 'placeholder', variant: 'video' },
+        label: 'Placeholder · Sync run',
+        span: 'wide',
+        focal: '60% 50%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'design' },
+        label: 'Placeholder · Token JSON',
+        span: 'sm',
+        focal: '20% 20%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'site' },
+        label: 'Placeholder · Output preview',
+        span: 'sm',
+        focal: '90% 90%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'mobile' },
+        label: 'Placeholder · Review diff',
+        span: 'tall',
+        focal: '40% 10%',
+      },
     ],
   },
   {

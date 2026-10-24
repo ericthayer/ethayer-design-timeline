@@ -1,4 +1,4 @@
-/** Batch A motifs (FR-041). Batch B is backlog (T076). */
+/** Batch A (FR-041) and Batch B (spec 003, FR-200) motifs. */
 export const MOTIFS = [
   'petals',
   'eclipse',
@@ -9,4 +9,12 @@ export const MOTIFS = [
   'diagonal-lines',
   'nested-squares',
   'horizon-lines',
+  'tri-mosaic',
+  'halftone-halves',
+  'overlap',
+  'pinwheels',
+  'impossible-hex',
+  'concentric-knot',
+  'tri-stack',
+  'orbit-rings',
 ] as const;

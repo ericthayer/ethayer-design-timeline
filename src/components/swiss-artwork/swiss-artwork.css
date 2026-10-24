@@ -33,6 +33,22 @@
     stroke-width: 0.3;
     opacity: 0.7;
   }
+  /* Batch B (spec 003): multiply overlap, see-through triangles, and dashed rings */
+  .swiss-art .blend {
+    mix-blend-mode: multiply;
+  }
+  .swiss-art .glass {
+    fill-opacity: 0.72;
+  }
+  .swiss-art .ring {
+    fill: none;
+    stroke: var(--art-1);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+  .swiss-art .ring-accent {
+    stroke: var(--art-3);
+  }
   /* Tonal ramp art-1 → art-3 for tone-dots */
   .swiss-art .t0 {
     fill: var(--art-1);
@@ -57,8 +73,11 @@
     .swiss-art .bg {
       fill: Canvas;
     }
-    .swiss-art :is(.stroke-a1, .hair) {
+    .swiss-art :is(.stroke-a1, .hair, .ring, .ring-accent) {
       stroke: CanvasText;
+    }
+    .swiss-art .blend {
+      mix-blend-mode: normal;
     }
   }
 }

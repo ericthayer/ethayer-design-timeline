@@ -1,0 +1,83 @@
+@layer components {
+  /* Bento gallery (spec 003, FR-212–FR-217): dense grid of four tile sizes, focal-point crops */
+  .pd__bento {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: clamp(6rem, 14vw, 11rem);
+    grid-auto-flow: dense;
+    gap: var(--space-3);
+    list-style: none;
+  }
+  .pd__tile {
+    position: relative;
+    min-inline-size: 0;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .pd__tile[data-span='wide'] {
+    grid-column: span 2;
+  }
+  .pd__tile[data-span='tall'] {
+    grid-row: span 2;
+  }
+  .pd__tile[data-span='feature'] {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .pd__tile-media {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .pd__tile-media img,
+  .pd__tile-media video {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: var(--focal, 50% 50%);
+  }
+  .pd__tile-media--ph {
+    padding: 0;
+  }
+  .pd__tile-media--ph .media__placeholder {
+    inline-size: 100%;
+    block-size: 100%;
+    transform: scale(1.5);
+    transform-origin: var(--focal, 50% 50%);
+  }
+  .pd__tile .pd__vimeo {
+    inline-size: 100%;
+    block-size: 100%;
+    aspect-ratio: auto;
+  }
+  .pd__tile .pd__play {
+    font-size: 0.875rem;
+  }
+  .pd__tile-label {
+    position: absolute;
+    inset-block-end: var(--space-2);
+    inset-inline-start: var(--space-2);
+    max-inline-size: calc(100% - var(--space-4));
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.5rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.8125rem;
+    font-weight: var(--weight-meta);
+    line-height: 1.25;
+  }
+
+  @media (max-width: 599px) {
+    .pd__bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .pd__tile[data-span='wide'],
+    .pd__tile[data-span='feature'] {
+      grid-column: 1 / -1;
+    }
+  }
+}

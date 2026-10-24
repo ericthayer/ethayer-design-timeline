@@ -18,11 +18,13 @@ describe('swiss artwork (FR-040)', () => {
     expect(a.getAttribute('aria-hidden')).toBe('true');
   });
 
-  it('varies with the seed', () => {
-    const differing = MOTIFS.filter(
-      (motif) => serialize(renderArtwork(motif, 1)) !== serialize(renderArtwork(motif, 2)),
-    );
-    expect(differing.length).toBeGreaterThanOrEqual(MOTIFS.length - 1);
+  it('varies with the seed (at least 3 distinct drawings across five seeds)', () => {
+    for (const motif of MOTIFS) {
+      const drawings = new Set(
+        [101, 2024, 90210, 777777, 31337].map((seed) => serialize(renderArtwork(motif, seed))),
+      );
+      expect(drawings.size, motif).toBeGreaterThanOrEqual(3);
+    }
   });
 });
 
