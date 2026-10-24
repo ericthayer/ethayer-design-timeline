@@ -1,7 +1,8 @@
 // Usage: node scripts/capture-clip.ts <slug> <https-url | path/to/full-page-image>
 // URL: records a scripted scroll of the live site. Image: pans down a full-page design export,
 // which is the faithful option when the live site no longer shows the original work.
-// Encodes an 8 s silent loop (FR-031): public/media/<slug>/clip.webm (VP9) and clip.mp4 (H.264).
+// Encodes an 8 s silent loop (FR-031): media-src/<slug>/clip.webm (VP9) and clip.mp4 (H.264).
+// Run `npm run media` afterwards: the build copies clips to public/media byte for byte (FR-326).
 // The card poster reuses <slug>/cover.
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readdirSync, rmSync, statSync } from 'node:fs';
@@ -45,7 +46,7 @@ function panImage(path: string): string[] {
 }
 
 const inputArgs = source.startsWith('https://') ? await recordLiveScroll(source) : panImage(source);
-const outDir = join('public/media', slug);
+const outDir = join('media-src', slug);
 mkdirSync(outDir, { recursive: true });
 
 const common = ['-y', ...inputArgs, '-an'];
