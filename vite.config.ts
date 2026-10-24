@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { build, type BuildEnvironmentOptions, type Connect, type Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { floorPolicy } from './scripts/csp.ts';
+import { prerender } from './scripts/vite-prerender.ts';
 
 const SHARED_BUILD = {
   target: 'es2023',
@@ -136,7 +137,8 @@ function adminBuild(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [cspFloor(), adminRewrite(), adminBuild()],
+  // cspFloor runs before prerender, so every prerendered page inherits the public meta CSP.
+  plugins: [cspFloor(), prerender(), adminRewrite(), adminBuild()],
   build: { ...SHARED_BUILD, manifest: PUBLIC_MANIFEST },
   test: {
     environment: 'happy-dom',

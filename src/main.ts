@@ -3,6 +3,7 @@ import './styles/fonts.css';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/header.css';
+import './styles/static.css';
 import { define as defineToggle } from './components/motion-toggle/motion-toggle.ts';
 import type { DialogView, ProjectDialog } from './components/project-dialog/project-dialog.ts';
 import { define as defineCard } from './components/project-card/project-card.ts';
@@ -12,6 +13,7 @@ import { define as defineArtwork } from './components/swiss-artwork/swiss-artwor
 import { define as defineWall, TimelineWall } from './components/timeline-wall/timeline-wall.ts';
 import { ERAS } from './content/eras.ts';
 import { PROJECTS } from './content/projects/index.ts';
+import { HOME_TITLE, projectTitle } from './content/site.ts';
 import { getScheduler } from './core/media-scheduler.ts';
 import { getMotion } from './core/motion.ts';
 import { buildWallItems, itemIndexOf, projectSequence } from './core/order.ts';
@@ -23,7 +25,6 @@ defineCard();
 defineToggle();
 defineWall();
 
-const BASE_TITLE = document.title;
 const items = buildWallItems(PROJECTS, ERAS);
 const sequence = projectSequence(items);
 const status = document.getElementById('wall-status');
@@ -113,7 +114,7 @@ async function openProject(slug: string): Promise<void> {
     next: sequence[index + 1],
   };
   scheduler.setGate('dialog', true);
-  document.title = `${project.title} — Eric Thayer`;
+  document.title = projectTitle(project.title);
   const firstOpen = !dialog.isOpen;
   openSlug = slug;
   if (firstOpen) {
@@ -145,7 +146,7 @@ async function closeProject(): Promise<void> {
     !motion.paused,
   );
   scheduler.setGate('dialog', false);
-  document.title = BASE_TITLE;
+  document.title = HOME_TITLE;
 }
 
 async function openResume(): Promise<void> {
@@ -164,7 +165,7 @@ async function closeResume(): Promise<void> {
   (resumeOpener?.isConnected ? resumeOpener : document.getElementById('site-name'))?.focus();
   resumeOpener = null;
   scheduler.setGate('dialog', false);
-  document.title = BASE_TITLE;
+  document.title = HOME_TITLE;
 }
 
 function step(direction: -1 | 1): void {

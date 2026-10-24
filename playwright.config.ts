@@ -15,6 +15,8 @@ export default defineConfig({
   webServer: {
     command: 'npm run build && npm run preview',
     url: 'http://localhost:4173',
+    // Social tags need an absolute origin; point them at the preview server (FR-102).
+    env: { SITE_URL: 'http://localhost:4173' },
     reuseExistingServer: !CI,
     timeout: 180_000,
   },

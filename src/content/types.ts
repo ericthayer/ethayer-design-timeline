@@ -217,6 +217,8 @@ export interface Site {
   readonly location: string;
   readonly summary: string;
   readonly span: Period;
+  /** Short highlight list for the home link-preview card (PR #5, og.ts). */
+  readonly highlights: readonly string[];
   readonly links: readonly SiteLink[];
   readonly education: readonly Education[];
 }

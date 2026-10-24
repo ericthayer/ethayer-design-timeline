@@ -93,6 +93,7 @@ export function validateSite(raw: unknown): Validated<Site> {
     const location = r.string('location');
     const summary = r.string('summary');
     const span = readPeriod(r, 'span');
+    const highlights = r.strings('highlights');
     const links = each(r.items('links'), sink, 'A link', readSiteLink);
     const education = each(r.items('education'), sink, 'An education entry', readEducation);
     r.done();
@@ -102,8 +103,13 @@ export function validateSite(raw: unknown): Validated<Site> {
       location !== undefined &&
       summary !== undefined
     ) {
-      if (span !== undefined && links !== undefined && education !== undefined) {
-        site = { name, role, location, summary, span, links, education };
+      if (
+        span !== undefined &&
+        highlights !== undefined &&
+        links !== undefined &&
+        education !== undefined
+      ) {
+        site = { name, role, location, summary, span, highlights, links, education };
       }
     }
   }

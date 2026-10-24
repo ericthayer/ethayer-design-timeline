@@ -1,0 +1,103 @@
+/* The 1200 × 630 link-preview poster (FR-106). Fixed pixel sizes: this is a screenshot canvas,
+   not a responsive surface. Colors and type come from the site tokens. */
+@layer components {
+  html,
+  body {
+    margin: 0;
+    background: #000;
+  }
+
+  .og {
+    display: grid;
+    grid-template-columns: 570px 630px;
+    grid-template-rows: 630px;
+    inline-size: 1200px;
+    block-size: 630px;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+  }
+
+  .og__type {
+    display: grid;
+    /* Both tracks are fixed, or an auto track grows to the longest word and hides overflow. */
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    row-gap: 24px;
+    min-inline-size: 0;
+    padding: 50px 48px 46px 56px;
+  }
+
+  .og__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.04;
+  }
+  .og__head p {
+    margin: 0;
+  }
+  .og__kicker {
+    max-inline-size: 14ch;
+    text-wrap: balance;
+  }
+  .og__index {
+    display: grid;
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .og__mid {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-block-size: 0;
+  }
+  .og[data-layout='title-bottom'] .og__mid {
+    justify-content: flex-end;
+  }
+  .og__title {
+    margin: 0;
+    color: var(--title);
+    font-weight: 700;
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+    overflow-wrap: normal;
+    hyphens: manual;
+  }
+
+  .og__foot {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 28px;
+    font-size: 23px;
+    font-weight: 600;
+    line-height: 1.28;
+  }
+  .og__foot p,
+  .og__tracks {
+    margin: 0;
+    padding: 0;
+  }
+  .og__year {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .og__tracks {
+    list-style: none;
+  }
+
+  .og__art {
+    inline-size: 630px;
+    block-size: 630px;
+  }
+  /* A screenshot is a still: the hero's entry animation must not catch triangles mid-flight. */
+  .og .og__art polygon {
+    animation: none;
+  }
+}

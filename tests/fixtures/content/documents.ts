@@ -23,6 +23,7 @@ export const baseSite = (): JsonObject => ({
   location: 'Denver, CO',
   summary: 'Demo summary.',
   span: { start: '2003-01', end: 'present' },
+  highlights: ['Design systems'],
   links: [
     { label: 'Résumé', href: '/resume' },
     { label: 'GitHub', href: 'https://github.com/demo/' },

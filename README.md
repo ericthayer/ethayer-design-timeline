@@ -15,6 +15,7 @@ npm run check      # typecheck + lint + unit tests
 npm run build      # production build in dist/
 npm run budgets    # gzip sizes vs constitution §V
 npm run e2e        # Playwright + axe (builds and serves dist/)
+npm run og         # regenerate the link-preview images in public/og/
 ```
 
 ## Add a project
@@ -24,7 +25,19 @@ npm run e2e        # Playwright + axe (builds and serves dist/)
 3. For screenshots: commit the raw image as `media-src/<slug>/cover.png` (or `.jpg`, `.jpeg`, `.webp`, `.avif`; at least 480 px wide, at most 10 MB) and reference it as `src: '<slug>/cover'`. `npm run media` (which `dev`, `build`, and `check` run first) writes the AVIF and WebP sizes to `public/media/<slug>/` and generates `src/content/media-manifest.json`. Both are build output and aren't committed.
 4. For a video loop: `npm run media:clip -- <slug> <https-url | full-page-image>` writes `media-src/<slug>/clip.{mp4,webm}`.
 5. For a live iframe, add its origin to `frame-src` in `netlify.toml`.
-6. Run `npm run check`. The content tests flag duplicate slugs, missing alt text, missing files, titles that are too long, a CSP gap, or a Swiss share outside 20–30 %.
+6. Run `npm run og` to render the project's link-preview poster, and commit the new PNG and `src/content/og-manifest.json`.
+7. Run `npm run check`. The content tests flag duplicate slugs, missing alt text, missing files, titles that are too long, a CSP gap, a Swiss share outside 20–30 %, or a link-preview image that is missing or out of date.
+
+## Prerender and link previews
+
+`vite build` turns the app shell into one page per route (`scripts/vite-prerender.ts`):
+
+- `work/<slug>.html` and `index.html` each get their own `<title>`, description, canonical URL, Open Graph, and Twitter tags, so pasted links preview correctly in Slack, iMessage, LinkedIn, and X.
+- The same pages carry static content inside `<noscript>`, so visitors without JavaScript get the project story (or the full project list on `/`). With JavaScript on, nothing changes on screen.
+- The build also writes `sitemap.xml` (drafts left out), `robots.txt`, and a `_redirects` file that makes Netlify serve each page at `/work/<slug>`.
+- Absolute URLs come from `SITE_URL`, else Netlify's `URL` (production) or `DEPLOY_PRIME_URL` (previews), else `https://ethayer-design.netlify.app`. A custom domain needs no code change.
+
+The preview images (`public/og/*.png`, 1200 × 630) are rendered locally by `npm run og` from `tools/og-card.html` and committed, because the Netlify build has no browser. `npm test` fails if a project, the palette, the font, or the artwork code changes without regenerated images. `npm run og -- <slug>` re-renders one card, but only while the template is unchanged. After a style or artwork change, run `npm run og` for the full set.
 
 ## Docs
 

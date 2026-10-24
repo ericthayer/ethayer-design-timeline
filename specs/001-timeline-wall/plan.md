@@ -39,6 +39,9 @@ Data flow is one-way: `projects.ts` → `order()` → `<timeline-wall>` renders 
 | ADR-5 | Dialog | **Native `<dialog>.showModal()`** + History API routes | Custom modal: reimplements focus trap, inert, and Esc. Hash routes: uglier share URLs and conflicts with skip links |
 | ADR-6 | Artwork | **Procedural SVG generators** (deterministic, themeable, about 1 KB each) | Hand-drawn SVG per project: doesn't scale to 28+ items and drifts from the system. Raster: weight and theming. Escape hatch: `ArtworkMedia` can add `svg: '/media/x/art.svg'` later for hero pieces |
 | ADR-7 | Content | ~~**Typed TS module** (`satisfies readonly Project[]`)~~ **Superseded** by [004 content-json](../004-admin-editing/spec-content-json.md): JSON files plus one hand-written validator (no dependency) | JSON + runtime schema validator: a runtime dependency and weaker editor feedback |
+| ADR-9 | Prerender | **A Vite plugin that post-processes `dist/`** (`closeBundle`): per-route head, static body in `<noscript>`, `work/<slug>.html`, sitemap, robots, `_redirects`. Pure page builders in `scripts/lib/` with unit tests | A separate Node script: relies on Node's TS stripping, which a Netlify build with an older Node 22 could lack. SSR of the wall plus hydration: a second render path for every card, and a risk to the design lock, for a page that already paints in 0.4 s warm / 1.0 s cold. Playwright snapshots of the live page: needs a browser in the Netlify build |
+| ADR-10 | Social images | **Posters rendered locally with Playwright and committed** (`public/og/`), guarded by an input-hash manifest | Rendering during the Netlify build: no browser or fonts on the build image. A hosted OG service: a runtime dependency and a third-party request per share |
+| ADR-11 | Prerendered URLs | **`work/<slug>.html` plus a forced `_redirects` rule per slug**, wildcard kept below as the unknown-slug fallback | `work/<slug>/index.html`: Netlify 301s `/work/<slug>` to `/work/<slug>/`, so every shared link takes a redirect and canonical forms disagree. Relying on extensionless `.html` lookup alone: works today (`/404` returns 200) but isn't guaranteed to win over the wildcard rewrite |
 | ADR-8 | Fluid sizing | **Container query units** (`cqi`/`cqb`) for cells and card type, with `rem` floors | `vw`-based: wrong inside the horizontal scroller and ignores the container |
 
 ## 3. File structure
@@ -62,7 +65,10 @@ src/
   content/                     types.ts · eras.ts · themes.ts · motifs.ts · site.ts · media-manifest.json · projects/*.ts
   styles/                      layers.css · tokens.css · base.css · fonts.css · header.css
 public/  fonts/ · media/<slug>/ · _headers (generated)
-scripts/ optimize-images · capture-clip · check-budgets (v1) · check-frameable · gen-csp · prerender · og-images (backlog)
+scripts/ optimize-images · capture-clip · check-budgets · vite-prerender (plugin) · og-images · lib/{html,pages,origin}.ts (pure builders)
+tools/   og-card.html · og-card.ts · og-card.css (page Playwright screenshots for the link-preview images)
+src/content/ og.ts (pure card data + input hashes) · og-manifest.json (generated)
+check-frameable · gen-csp (backlog)
 tests/   unit/ (vitest) · e2e/ (playwright + axe) · visual/ (baselines = design lock, after CP1)
 ```
 
