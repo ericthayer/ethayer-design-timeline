@@ -12,8 +12,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "dev": "npm run media && vite",
+    "build": "npm run media && tsc --noEmit && vite build",
     "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -22,9 +22,9 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "budgets": "node scripts/check-budgets.ts",
-    "media:images": "node scripts/optimize-images.ts",
+    "media": "node scripts/build-media.ts",
     "media:clip": "node scripts/capture-clip.ts",
-    "check": "npm run typecheck && npm run lint && npm run test"
+    "check": "npm run media && npm run typecheck && npm run lint && npm run test"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

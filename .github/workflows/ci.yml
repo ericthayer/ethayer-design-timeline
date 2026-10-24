@@ -15,6 +15,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Encoded media cache (004 media-pipeline FR-333). Entries are content-addressed, so a
+      # restore-keys partial hit is safe: unchanged sources hit, changed ones re-encode.
+      - uses: actions/cache@v4
+        with:
+          path: .cache/media
+          key: media-${{ runner.os }}-${{ hashFiles('media-src/**', 'scripts/build-media.ts', 'scripts/media-cache.ts', 'src/core/media-rules.ts', 'package-lock.json') }}
+          restore-keys: media-${{ runner.os }}-
       - run: npm run check
       - run: npm run build
       - run: npm run budgets

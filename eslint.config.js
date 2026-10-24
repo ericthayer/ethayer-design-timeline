@@ -25,4 +25,11 @@ export default defineConfig(
     },
   },
   { files: ['eslint.config.js'], extends: [tseslint.configs.disableTypeChecked] },
+  // Netlify local build plugins: plain Node ESM outside the TS project (004 media-pipeline T327).
+  {
+    files: ['netlify/plugins/**/*.js'],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: { globals: globals.node },
+    rules: { '@typescript-eslint/explicit-function-return-type': 'off' },
+  },
 );

@@ -1,11 +1,23 @@
 // Content validation (FR-091, FR-011b, US8): every rule names the slug that breaks it.
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { MEDIA_MANIFEST } from '../../src/components/card-media/image.ts';
 import { ERAS } from '../../src/content/eras.ts';
 import { PROJECTS } from '../../src/content/projects/index.ts';
 import type { ImageMedia, Project } from '../../src/content/types.ts';
+import { IMAGE_EXTENSIONS, SOURCE_ROOT, parseSourcePath } from '../../src/core/media-rules.ts';
 import { buildWallItems, projectSequence } from '../../src/core/order.ts';
+
+// Source extensions per media key, read straight from media-src/ (FR-339): no build needed.
+const SOURCES = new Map<string, string[]>();
+for (const entry of readdirSync(SOURCE_ROOT, { recursive: true, withFileTypes: true })) {
+  if (!entry.isFile()) continue;
+  const parsed = parseSourcePath(`${entry.parentPath}/${entry.name}`.replaceAll('\\', '/'));
+  if (parsed.ok) SOURCES.set(parsed.key, [...(SOURCES.get(parsed.key) ?? []), parsed.ext]);
+}
+const sourcesFor = (key: string): string[] => SOURCES.get(key) ?? [];
+const isImageExtension = (ext: string): boolean =>
+  (IMAGE_EXTENSIONS as readonly string[]).includes(ext);
 
 const images = (p: Project): ImageMedia[] => {
   const m = p.media;
@@ -44,28 +56,27 @@ describe('content', () => {
     }
   });
 
-  it('gives every image alt text and optimized files on disk', () => {
+  it('gives every image alt text and one source in media-src/ (FR-339)', () => {
     for (const p of PROJECTS) {
       for (const img of images(p)) {
         expect(img.alt.trim().length, p.slug).toBeGreaterThan(0);
         const entry = MEDIA_MANIFEST[img.src];
         expect(entry, `${p.slug}: ${img.src} missing from manifest`).toBeDefined();
-        for (const w of entry?.widths ?? []) {
-          for (const ext of ['avif', 'webp']) {
-            const file = `public/media/${img.src}-${String(w)}.${ext}`;
-            expect(existsSync(file), file).toBe(true);
-          }
-        }
+        const found = sourcesFor(img.src).filter((ext) => isImageExtension(ext));
+        expect(found, `${p.slug}: ${img.src} needs exactly one image in media-src/`).toHaveLength(
+          1,
+        );
       }
     }
   });
 
-  it('ships every video in both formats, 8 s or shorter', () => {
+  it('sources every video in both formats, 8 s or shorter (FR-339)', () => {
     for (const p of PROJECTS) {
       if (p.media.kind !== 'video') continue;
       expect(p.media.durationSec, p.slug).toBeLessThanOrEqual(8);
+      const found = sourcesFor(p.media.src);
       for (const ext of ['webm', 'mp4']) {
-        expect(existsSync(`public/media/${p.media.src}.${ext}`), p.slug).toBe(true);
+        expect(found, `${p.slug}: ${p.media.src}.${ext} missing from media-src/`).toContain(ext);
       }
     }
   });

@@ -4,3 +4,9 @@ test-results/
 playwright-report/
 .DS_Store
 *.log
+
+# Media pipeline build output (spec 004 media-pipeline, FR-330). Sources live in media-src/.
+public/media/
+src/content/media-manifest.json
+src/content/video-manifest.json
+.cache/

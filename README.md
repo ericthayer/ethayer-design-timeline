@@ -21,8 +21,8 @@ npm run e2e        # Playwright + axe (builds and serves dist/)
 
 1. Add an entry to the right era file in `src/content/projects/`. The `Project` type allows only valid size × media pairs, so wrong combinations fail typecheck.
 2. Choose the card media: `{ kind: 'placeholder', variant }` until you have an asset, then `image`, `video`, or `iframe`.
-3. For screenshots: put `<slug>.png` (or `.jpg` / `.webp`) in a folder and run `npm run media:images -- <folder>`. This writes AVIF and WebP files to `public/media/<slug>/` and updates `src/content/media-manifest.json`. Reference it as `src: '<slug>/cover'`.
-4. For a video loop: `npm run media:clip -- <slug> <https-url | full-page-image>`.
+3. For screenshots: commit the raw image as `media-src/<slug>/cover.png` (or `.jpg`, `.jpeg`, `.webp`, `.avif`; at least 480 px wide, at most 10 MB) and reference it as `src: '<slug>/cover'`. `npm run media` (which `dev`, `build`, and `check` run first) writes the AVIF and WebP sizes to `public/media/<slug>/` and generates `src/content/media-manifest.json`. Both are build output and aren't committed.
+4. For a video loop: `npm run media:clip -- <slug> <https-url | full-page-image>` writes `media-src/<slug>/clip.{mp4,webm}`.
 5. For a live iframe, add its origin to `frame-src` in `netlify.toml`.
 6. Run `npm run check`. The content tests flag duplicate slugs, missing alt text, missing files, titles that are too long, a CSP gap, or a Swiss share outside 20–30 %.
 

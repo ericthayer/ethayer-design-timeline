@@ -5,6 +5,10 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Restores and saves .cache/media so unchanged sources aren't re-encoded (004 media-pipeline FR-333).
+[[plugins]]
+  package = "./netlify/plugins/media-cache"
+
 # Deep links open the dialog client-side (FR-061). Prerendered pages replace this in T070.
 [[redirects]]
   from = "/work/*"
