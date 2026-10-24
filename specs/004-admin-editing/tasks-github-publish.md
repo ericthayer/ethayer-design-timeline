@@ -12,7 +12,7 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). Each task is done when 
   - Acceptance: a table test covers 401, 403 (remaining 0, retry-after, plain, protected branch), 404, 413, 422 (plain, not-fast-forward, rule violation), 429, 500. Verify: `npx vitest run tests/unit/github/errors`. Files: `errors.ts`, `errors.test.ts`
 - [x] **T364** `treeEntries()`, `expandDeletes()`, `toBase64()`; confirm `sha: null` deletion in the GitHub REST docs and note the result in the spec. → FR-365, FR-366
   - Acceptance: deletions emit `sha: null`; delete-dir expands by prefix and drops missing paths; base64 round-trips random bytes and a 10 MB buffer. Verify: `npx vitest run tests/unit/github/tree`. Files: `tree.ts`, `tree.test.ts`, `spec-github-publish.md`
-- [ ] **T365** `conflictingPaths()` from a compare response. → FR-369
+- [x] **T365** `conflictingPaths()` from a compare response. → FR-369
   - Acceptance: returns `paths-changed` (including a rename via `previous_filename` and a delete-dir prefix), `history-diverged`, `compare-truncated`, or none. Verify: `npx vitest run tests/unit/github/conflict`. Files: `conflict.ts`, `conflict.test.ts`
 - [ ] **T366** `commitMessage()` and `withTrailer()`. → FR-371
   - Acceptance: `content: update dmns via admin` + blank line + `Published-With: admin editor`; the trailer is never doubled. Verify: `npx vitest run tests/unit/github/message`. Files: `message.ts`, `message.test.ts`
