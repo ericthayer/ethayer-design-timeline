@@ -24,6 +24,7 @@
     "budgets": "node scripts/check-budgets.ts",
     "media:images": "node scripts/optimize-images.ts",
     "media:clip": "node scripts/capture-clip.ts",
+    "og": "node scripts/og-images.ts",
     "check": "npm run typecheck && npm run lint && npm run test"
   },
   "devDependencies": {

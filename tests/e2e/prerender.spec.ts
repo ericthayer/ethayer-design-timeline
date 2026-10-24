@@ -1,4 +1,5 @@
 // Prerendered pages and link previews (US9, FR-100–FR-105) against the built, served output.
+import { PROJECTS } from '../../src/content/projects/index.ts';
 import { HOME_TITLE } from '../../src/content/site.ts';
 import type { Page } from '@playwright/test';
 import { expect, expectNoAxeViolations, test } from './fixtures.ts';
@@ -76,6 +77,21 @@ test.describe('link previews', () => {
       'name="twitter:card" content="summary_large_image"',
     ]) {
       expect(body, needle).toContain(needle);
+    }
+  });
+
+  test('every og:image URL serves a 1200 × 630 PNG', async ({ request }) => {
+    for (const path of ['/', ...PROJECTS.map((project) => `/work/${project.slug}`)]) {
+      const html = await (await request.get(path)).text();
+      const url = /property="og:image" content="([^"]+)"/.exec(html)?.[1];
+      if (!url) throw new Error(`${path} has no og:image`);
+      const res = await request.get(url);
+      expect(res.status(), url).toBe(200);
+      expect(res.headers()['content-type'], url).toBe('image/png');
+      const bytes = await res.body();
+      expect(bytes.subarray(1, 4).toString(), url).toBe('PNG');
+      expect(bytes.readUInt32BE(16), url).toBe(1200);
+      expect(bytes.readUInt32BE(20), url).toBe(630);
     }
   });
 
