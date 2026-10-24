@@ -1,3 +1,4 @@
+import type { ERA_IDS } from './era-ids.ts';
 import type { MOTIFS } from './motifs.ts';
 import type { THEMES } from './themes.ts';
 
@@ -97,14 +98,7 @@ export interface Period {
   readonly end: YearMonth | 'present';
 }
 
-export type EraId =
-  | 'cobank'
-  | 'threecolts'
-  | 'health-scholars'
-  | 'independent'
-  | 'navigators'
-  | 'dli'
-  | 'post-production';
+export type EraId = (typeof ERA_IDS)[number];
 
 export interface Era {
   readonly id: EraId;
@@ -144,6 +138,9 @@ interface ProjectBase {
 export type Project = {
   [S in Size]: ProjectBase & { readonly size: S; readonly media: CardMedia<S> };
 }[Size];
+
+/** Curated project order within each era: `order.json` (spec 004 content-json, FR-301). */
+export type ProjectOrder = { readonly [E in EraId]?: readonly string[] };
 
 /** Derived render list consumed by <timeline-wall>. */
 export type WallItem =
@@ -196,4 +193,27 @@ export interface Resume {
     readonly software: readonly string[];
   };
   readonly projects: readonly ResumeProject[];
+}
+
+export interface SiteLink {
+  readonly label: string;
+  /** `/resume` opens <resume-dialog> (spec 002, FR-124). */
+  readonly href: '/resume' | `https://${string}` | `mailto:${string}`;
+}
+
+export interface Education {
+  readonly degree: string;
+  readonly school: string;
+  readonly year: string;
+}
+
+/** Identity, contact, and education for the hero, end-cap, and résumé (`site.json`, FR-300). */
+export interface Site {
+  readonly name: string;
+  readonly role: string;
+  readonly location: string;
+  readonly summary: string;
+  readonly span: Period;
+  readonly links: readonly SiteLink[];
+  readonly education: readonly Education[];
 }

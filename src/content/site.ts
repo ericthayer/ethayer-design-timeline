@@ -1,3 +1,5 @@
+import type { Site } from './types.ts';
+
 /** Identity, contact, and education content for the hero and end-cap. */
 export const SITE = {
   name: 'Eric Thayer',
@@ -18,4 +20,4 @@ export const SITE = {
     { degree: 'B.S. Media Arts', school: 'Platt College, San Diego', year: '2005' },
     { degree: 'A.A.S. Graphic Design', school: 'Platt College, San Diego', year: '2003' },
   ],
-} as const;
+} satisfies Site;
