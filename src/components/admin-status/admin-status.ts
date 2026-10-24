@@ -118,6 +118,48 @@ export function define(): void {
   defineOnce('admin-status', AdminStatus);
 }
 
+/** Open modal dialogs, outermost first. `:modal` where supported, else `dialog[open]`. */
+function openModals(): HTMLDialogElement[] {
+  try {
+    return [...document.querySelectorAll<HTMLDialogElement>('dialog:modal')];
+  } catch {
+    return [...document.querySelectorAll<HTMLDialogElement>('dialog[open]')];
+  }
+}
+
+/**
+ * A modal <dialog> makes everything outside it inert, the island included, so Sign out (and
+ * edit-layer's toolbar) couldn't be clicked in the project or résumé view (bug, 2026-10-24).
+ * Keep the island inside the open modal, and return it to `home` when the modal closes. Dialogs
+ * inside the island (the re-auth form) are skipped. Returns a stop function.
+ */
+export function followModals(island: HTMLElement, home: HTMLElement = document.body): () => void {
+  let queued = false;
+  const place = (): void => {
+    queued = false;
+    const target =
+      openModals()
+        .filter((dialog) => !island.contains(dialog))
+        .at(-1) ?? home;
+    if (island.parentElement !== target) target.append(island);
+  };
+  const observer = new MutationObserver(() => {
+    if (queued) return;
+    queued = true;
+    queueMicrotask(place);
+  });
+  observer.observe(document.body, {
+    subtree: true,
+    childList: true,
+    attributes: true,
+    attributeFilter: ['open'],
+  });
+  place();
+  return () => {
+    observer.disconnect();
+  };
+}
+
 /**
  * `<aside id="admin-island">` with the status and the empty toolbar slot edit-layer fills
  * (FR-354). Its height is published as `--admin-island-h` so the page reserves scroll padding

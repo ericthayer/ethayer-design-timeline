@@ -5,6 +5,7 @@ import {
   parseExpiry,
   precheck,
   verifyToken,
+  WRITE_PROBE,
   type AuthErrorKind,
   type FetchLike,
   type VerifyResult,
@@ -25,11 +26,15 @@ const reply = (r: Exclude<Reply, 'throw'>): Response =>
     headers: r.headers ?? {},
   });
 
-function github(user: Reply, repo: Reply): { fetch: FetchLike; calls: [string, RequestInit][] } {
+function github(
+  user: Reply,
+  repo: Reply,
+  blob: Reply = { status: 201, body: { sha: 'probe' } },
+): { fetch: FetchLike; calls: [string, RequestInit][] } {
   const calls: [string, RequestInit][] = [];
   const fetch: FetchLike = (input, init) => {
     calls.push([input, init]);
-    const r = input.endsWith('/user') ? user : repo;
+    const r = input.endsWith('/user') ? user : input.endsWith('/git/blobs') ? blob : repo;
     return r === 'throw'
       ? Promise.reject(new TypeError('Failed to fetch'))
       : Promise.resolve(reply(r));
@@ -57,11 +62,12 @@ describe('precheck (FR-346)', () => {
 });
 
 describe('verifyToken (FR-347)', () => {
-  it('sends both GETs to api.github.com with the token, version, and no credentials', async () => {
+  it('sends both GETs and the write check to api.github.com with the token, version, and no credentials', async () => {
     const { fetch, calls } = github(USER_OK, REPO_200);
     await verifyToken(TOKEN, { fetch });
     expect(calls.map(([url]) => url).sort()).toEqual([
       'https://api.github.com/repos/ericthayer/ethayer-design-timeline',
+      'https://api.github.com/repos/ericthayer/ethayer-design-timeline/git/blobs',
       'https://api.github.com/user',
     ]);
     for (const [, init] of calls) {
@@ -216,5 +222,41 @@ describe('messages (FR-348)', () => {
   it('names the wait for a rate limit', () => {
     expect(authMessage('rate-limited', new Date(NOW + 61_000), NOW)).toContain('2 minutes');
     expect(authMessage('rate-limited', null, NOW)).toBe(AUTH_MESSAGES['rate-limited']);
+  });
+});
+
+describe('write check (FR-347 amended, V2)', () => {
+  const probe = (blob: Reply): Promise<VerifyResult> =>
+    verifyToken(TOKEN, { fetch: github(USER_OK, REPO_200, blob).fetch, now: () => NOW });
+
+  it('refuses a read-only token even when the account can push', async () => {
+    expect(kindOf(await probe({ status: 403, body: { message: 'Resource not accessible' } }))).toBe(
+      'read-only',
+    );
+    expect(kindOf(await probe({ status: 404 }))).toBe('read-only');
+  });
+
+  it('maps a thrown request, a rate limit, and a 5xx', async () => {
+    expect(kindOf(await probe('throw'))).toBe('network');
+    expect(kindOf(await probe({ status: 403, headers: { 'x-ratelimit-remaining': '0' } }))).toBe(
+      'rate-limited',
+    );
+    expect(kindOf(await probe({ status: 500 }))).toBe('github-error');
+  });
+
+  it('POSTs the fixed probe blob only after the read checks pass', async () => {
+    const ok = github(USER_OK, REPO_200);
+    expect(kindOf(await verifyToken(TOKEN, { fetch: ok.fetch, now: () => NOW }))).toBe('ok');
+    const [url, init] = ok.calls.at(-1) ?? ['', {}];
+    expect(url).toBe('https://api.github.com/repos/ericthayer/ethayer-design-timeline/git/blobs');
+    expect(init.method).toBe('POST');
+    expect(JSON.parse(typeof init.body === 'string' ? init.body : '')).toEqual({
+      content: WRITE_PROBE,
+      encoding: 'utf-8',
+    });
+
+    const refused = github({ status: 401 }, { status: 401 });
+    await verifyToken(TOKEN, { fetch: refused.fetch, now: () => NOW });
+    expect(refused.calls.some(([u]) => u.endsWith('/git/blobs'))).toBe(false);
   });
 });

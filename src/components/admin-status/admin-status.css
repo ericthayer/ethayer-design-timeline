@@ -6,7 +6,8 @@
   html:has(#admin-island) {
     scroll-padding-block-end: calc(var(--admin-island-h, 4rem) + var(--space-4));
   }
-  body:has(> #admin-island) {
+  body:has(> #admin-island),
+  dialog:has(> #admin-island) {
     padding-block-end: var(--admin-island-h, 4rem);
   }
 

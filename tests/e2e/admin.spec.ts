@@ -69,6 +69,7 @@ test.describe('/admin sign-in (US-A1)', () => {
 
     expect(github.requests.map((r) => new URL(r.url()).pathname).sort()).toEqual([
       '/repos/ericthayer/ethayer-design-timeline',
+      '/repos/ericthayer/ethayer-design-timeline/git/blobs', // the write check
       '/user',
     ]);
     for (const request of github.requests) {
@@ -87,6 +88,11 @@ test.describe('/admin sign-in (US-A1)', () => {
     ['wrong-account', SCENARIOS.wrongAccount, /different GitHub account/],
     ['wrong-repo', SCENARIOS.wrongRepo, /can't see the ethayer-design-timeline repository/],
     ['read-only', SCENARIOS.readOnly, /Set Contents to Read and write/],
+    [
+      'read-only token on a push account',
+      SCENARIOS.readOnlyToken,
+      /Set Contents to Read and write/,
+    ],
     ['rate-limited', SCENARIOS.rateLimited, /Try again in 2 minutes/],
     ['network', SCENARIOS.network, /Couldn't reach GitHub/],
     ['github-error', SCENARIOS.githubError, /unexpected error/],
@@ -141,7 +147,9 @@ test.describe('/admin session (US-A2, US-A3, US-A5, US-A6)', () => {
     await page.goto('/admin/work/cobank-design-system');
     await signIn(page);
     await expect(island(page).getByRole('status')).toHaveText('Signed in as ericthayer');
-    await page.keyboard.press('Escape');
+    // The project dialog stays open: a modal makes the rest of the page inert, so the island
+    // has to follow it into the dialog for Sign out to work (bug, 2026-10-24).
+    await expect(page.getByRole('dialog')).toBeVisible();
     await island(page).getByRole('button', { name: 'Sign out' }).click();
     await expect(page).toHaveURL(/\/admin$/);
     await expect(page.getByRole('heading', { level: 1, name: 'Sign in to edit' })).toBeVisible();
