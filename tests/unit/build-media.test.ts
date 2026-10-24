@@ -1,6 +1,15 @@
 // @vitest-environment node
 // Integration: runMediaPipeline over synthetic sharp fixtures in a temp directory (spec 004 §7).
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import sharp from 'sharp';
@@ -25,6 +34,20 @@ const image = (width: number, height: number, format: 'png' | 'webp'): Promise<B
 
 const manifest = (name: string): unknown =>
   JSON.parse(readFileSync(join(dirs.manifestDir, name), 'utf8'));
+
+/** SHA-256 of every output file, keyed by its path below the output directory. */
+const snapshot = (): Record<string, string> => {
+  const files = readdirSync(dirs.outDir, { recursive: true, withFileTypes: true }).filter((d) =>
+    d.isFile(),
+  );
+  return Object.fromEntries(
+    files.map((d) => {
+      const file = join(d.parentPath, d.name);
+      const hash = createHash('sha256').update(readFileSync(file)).digest('hex');
+      return [file.slice(dirs.outDir.length + 1), hash];
+    }),
+  );
+};
 
 beforeEach(() => {
   root = mkdtempSync(join(tmpdir(), 'media-pipeline-'));
@@ -105,6 +128,45 @@ describe('runMediaPipeline', () => {
       ]),
     );
     expect(existsSync(dirs.outDir)).toBe(false);
+  });
+
+  it('re-uses the cache: a second run encodes nothing and writes identical bytes', async () => {
+    put('dmns/cover.png', await image(1600, 1000, 'png'));
+    put('sublist/cover.webp', await image(1440, 810, 'webp'));
+    const first = await runMediaPipeline(dirs);
+    expect(first).toMatchObject({ encoded: 2, cached: 0, errors: [] });
+    const before = snapshot();
+    const manifestBefore = readFileSync(join(dirs.manifestDir, 'media-manifest.json'), 'utf8');
+
+    const second = await runMediaPipeline(dirs);
+    expect(second).toMatchObject({ encoded: 0, cached: 2, errors: [] });
+    expect(snapshot()).toEqual(before);
+    expect(readFileSync(join(dirs.manifestDir, 'media-manifest.json'), 'utf8')).toBe(
+      manifestBefore,
+    );
+
+    const entry = readdirSync(dirs.cacheDir).find((key) =>
+      existsSync(join(dirs.cacheDir, key, '1440.avif')),
+    );
+    expect(entry).toBeDefined();
+    rmSync(join(dirs.cacheDir, entry ?? '', '480.webp'));
+    const third = await runMediaPipeline(dirs);
+    expect(third).toMatchObject({ encoded: 1, cached: 1, errors: [] });
+
+    rmSync(dirs.cacheDir, { recursive: true });
+    const cold = await runMediaPipeline(dirs);
+    expect(cold).toMatchObject({ encoded: 2, cached: 0, errors: [] });
+    expect(readFileSync(join(dirs.manifestDir, 'media-manifest.json'), 'utf8')).toBe(
+      manifestBefore,
+    );
+  });
+
+  it('prunes cache entries the run did not use', async () => {
+    put('dmns/cover.webp', await image(960, 600, 'webp'));
+    mkdirSync(join(dirs.cacheDir, 'unused'), { recursive: true });
+    await runMediaPipeline(dirs);
+    expect(readdirSync(dirs.cacheDir)).toHaveLength(1);
+    expect(existsSync(join(dirs.cacheDir, 'unused'))).toBe(false);
   });
 
   it('removes outputs the current run did not produce', async () => {

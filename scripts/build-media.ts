@@ -7,6 +7,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 import {
+  COVER_NAME,
   LIMITS,
   SOURCE_ROOT,
   buildManifest,
@@ -26,6 +27,7 @@ import {
   type OutputFormat,
   type SourceRef,
 } from '../src/core/media-rules.ts';
+import { cacheKey, lookup, prune, store, type CacheFile } from './media-cache.ts';
 
 export interface PipelineDirs {
   readonly srcDir: string;
@@ -68,12 +70,6 @@ export interface PreparedImage {
   readonly crop: CropBox;
   readonly reoriented: boolean;
   readonly widths: readonly number[];
-}
-
-/** One generated file, relative to the output directory: '<slug>/<name>-<w>.<fmt>'. */
-export interface OutputFile {
-  readonly rel: string;
-  readonly data: Buffer;
 }
 
 const message = (error: unknown): string =>
@@ -119,12 +115,16 @@ async function prepareImage(
   return { source, bytes, crop, reoriented, widths: selectWidths(crop.width) };
 }
 
+/** The '<w>.<fmt>' names one source produces: every selected width in both formats. */
+const outputNames = (image: PreparedImage): string[] =>
+  image.widths.flatMap((w) => FORMATS.map((format) => `${String(w)}.${format}`));
+
 /** Encodes one source at every selected width in both formats, or passes it through (FR-325). */
-export async function encodeImage(image: PreparedImage): Promise<OutputFile[]> {
+export async function encodeImage(image: PreparedImage): Promise<CacheFile[]> {
   const { source, bytes, crop, reoriented, widths } = image;
   const jobs = widths.flatMap((w) =>
-    FORMATS.map(async (format): Promise<OutputFile> => {
-      const rel = `${source.slug}/${source.name}-${w}.${format}`;
+    FORMATS.map(async (format): Promise<CacheFile> => {
+      const name = `${String(w)}.${format}`;
       const passthrough = shouldPassthrough({
         ext: source.ext,
         format,
@@ -133,12 +133,12 @@ export async function encodeImage(image: PreparedImage): Promise<OutputFile[]> {
         sourceWidth: crop.width,
         targetWidth: w,
       });
-      if (passthrough) return { rel, data: bytes };
+      if (passthrough) return { name, data: bytes };
       let pipeline = sharp(bytes, { autoOrient: true, limitInputPixels: LIMITS.maxImagePixels });
       if (crop.cropped) pipeline = pipeline.extract(crop);
       if (w !== crop.width) pipeline = pipeline.resize({ width: w });
       pipeline = format === 'avif' ? pipeline.avif(ENCODER.avif) : pipeline.webp(ENCODER.webp);
-      return { rel, data: await pipeline.toBuffer() };
+      return { name, data: await pipeline.toBuffer() };
     }),
   );
   return Promise.all(jobs);
@@ -214,16 +214,34 @@ export async function runMediaPipeline(dirs: PipelineDirs): Promise<PipelineRepo
 
   const copied = outputs.size;
   let encoded = 0;
+  let cached = 0;
+  const used = new Set<string>();
   for (const image of images) {
-    try {
-      for (const file of await encodeImage(image)) outputs.set(file.rel, file.data);
+    const { source } = image;
+    const key = cacheKey({
+      bytes: image.bytes,
+      cropRule: source.name === COVER_NAME ? 'cover-16:10' : 'keep',
+      encoder: ENCODER,
+      versions: sharp.versions,
+    });
+    used.add(key);
+    let files = await lookup(dirs.cacheDir, key, outputNames(image));
+    if (files) cached += 1;
+    else {
+      try {
+        files = await encodeImage(image);
+      } catch (error) {
+        errors.push(`${source.path}: could not decode (${message(error)})`);
+        continue;
+      }
+      await store(dirs.cacheDir, key, files);
       encoded += 1;
-    } catch (error) {
-      errors.push(`${image.source.path}: could not decode (${message(error)})`);
     }
+    for (const f of files) outputs.set(`${source.slug}/${source.name}-${f.name}`, f.data);
   }
   if (errors.length > 0) return fail(errors);
 
+  await prune(dirs.cacheDir, used);
   const removed = await syncOutputs(dirs.outDir, outputs);
   const entries: ImageManifestInput[] = images.map(({ source, crop, widths }) => ({
     key: source.key,
@@ -240,7 +258,7 @@ export async function runMediaPipeline(dirs: PipelineDirs): Promise<PipelineRepo
     join(dirs.manifestDir, 'video-manifest.json'),
     serializeManifest(buildVideoManifest(videos.keys)),
   );
-  return { images: images.length, encoded, cached: 0, copied, removed, errors: [] };
+  return { images: images.length, encoded, cached, copied, removed, errors: [] };
 }
 
 const root = fileURLToPath(new URL('..', import.meta.url));
