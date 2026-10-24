@@ -20,13 +20,13 @@ npm run og         # regenerate the link-preview images in public/og/
 
 ## Add a project
 
-1. Add an entry to the right era file in `src/content/projects/`. The `Project` type allows only valid size × media pairs, so wrong combinations fail typecheck.
+1. Add `src/content/data/projects/<slug>.json` (the file name is the slug) and list the slug in its era in `src/content/data/order.json`, which sets the order on the wall. The shared validator (`src/content/validate/`) allows only valid size × media pairs and checks every rule below. Soon you'll be able to do this from `/admin` instead (spec 004).
 2. Choose the card media: `{ kind: 'placeholder', variant }` until you have an asset, then `image`, `video`, or `iframe`.
 3. For screenshots: commit the raw image as `media-src/<slug>/cover.png` (or `.jpg`, `.jpeg`, `.webp`, `.avif`; at least 480 px wide, at most 10 MB) and reference it as `src: '<slug>/cover'`. `npm run media` (which `dev`, `build`, and `check` run first) writes the AVIF and WebP sizes to `public/media/<slug>/` and generates `src/content/media-manifest.json`. Both are build output and aren't committed.
 4. For a video loop: `npm run media:clip -- <slug> <https-url | full-page-image>` writes `media-src/<slug>/clip.{mp4,webm}`.
-5. For a live iframe, add its origin to `frame-src` in `netlify.toml`.
+5. For a live iframe, add its origin to `FRAME_SRC` in `scripts/csp.ts` and to `frame-src` in `netlify.toml`. A unit test fails if the two disagree.
 6. Run `npm run og` to render the project's link-preview poster, and commit the new PNG and `src/content/og-manifest.json`.
-7. Run `npm run check`. The content tests flag duplicate slugs, missing alt text, missing files, titles that are too long, a CSP gap, a Swiss share outside 20–30 %, or a link-preview image that is missing or out of date.
+7. Run `npm run check` (and `npm run content:check` for just the content rules, which the build also runs, so invalid content fails the deploy). The checks flag duplicate slugs, missing alt text, missing files, titles that are too long, a CSP gap, a Swiss share outside 20–30 %, or a link-preview image that is missing or out of date.
 
 ## Prerender and link previews
 

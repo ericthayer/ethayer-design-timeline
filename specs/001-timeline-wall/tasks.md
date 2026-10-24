@@ -75,7 +75,7 @@ T070 and T071 were started ahead of CP1 at the owner's request (2026-10-24). The
 - [x] **T071** OG poster images: `tools/og-card`, `npm run og`, committed `public/og/*.png`, freshness manifest and tests. → FR-136
 - [ ] **T072** [P] Lighthouse CI; Firefox and WebKit e2e; visual baselines.
 - [ ] **T073** Manual screen reader pass (VoiceOver, NVDA). → NFR-02
-- [ ] **T074** Netlify site + subdomain (Q4) + README on adding projects (SC-4).
+- [ ] **T074** Netlify site + subdomain (Q4) + README on adding projects (SC-4). *Status 2026-10-24: the site is live at ethayer-design.netlify.app and the README covers adding a project with JSON content and `media-src/`. Still open: a custom subdomain.*
 - [ ] **T075** (P3) Era rail. → US7
-- [ ] **T076** Batch B motifs. → FR-041
-- [ ] **T077** Real media to replace placeholders (owner assets: VR capture, motion-reel source, NDA-cleared shots); `scripts/check-frameable.ts`; generated CSP. → FR-092
+- [x] **T076** Batch B motifs. → FR-041. Done in [spec 003](../003-batch-b-and-gallery/spec.md) (T201–T202, PR #4).
+- [ ] **T077** Real media to replace placeholders (owner assets: VR capture, motion-reel source, NDA-cleared shots); `scripts/check-frameable.ts`; generated CSP. → FR-092. *Status 2026-10-24: media now goes in `media-src/<slug>/` (spec 004 media-pipeline), and the CSP has one source in `scripts/csp.ts` (spec 004 admin-auth). Still open: the owner's assets, `check-frameable.ts`, and generating `frame-src` from content.*
