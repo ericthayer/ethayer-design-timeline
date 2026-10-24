@@ -29,13 +29,24 @@ const isStored = (value: unknown): value is StoredSession =>
   'expiresAt' in value &&
   (value.expiresAt === null || typeof value.expiresAt === 'string');
 
+/** Whether writes will persist, checked before any token is involved. */
+function probe(storage: () => Storage): boolean {
+  try {
+    storage().setItem(`${STORAGE_KEY}:probe`, '1');
+    storage().removeItem(`${STORAGE_KEY}:probe`);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * `sessionStorage` with an in-memory fallback. Every access is guarded, as in core/motion.ts.
  * Never localStorage, cookies, IndexedDB, or a URL.
  */
 export function createTokenStore(storage: () => Storage = () => sessionStorage): TokenStore {
   let memory: StoredSession | null = null;
-  let persistent = true;
+  let persistent = probe(storage);
 
   return {
     get persistent(): boolean {
