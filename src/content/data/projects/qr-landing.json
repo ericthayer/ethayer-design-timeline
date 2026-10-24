@@ -1,0 +1,58 @@
+{
+  "slug": "qr-landing",
+  "title": "QR Landing Page",
+  "client": "Onsite Support",
+  "era": "threecolts",
+  "engagement": "contract",
+  "role": "Lead UI/UX Designer & Front-End Developer",
+  "period": {
+    "start": "2023-06",
+    "end": "2023-12"
+  },
+  "theme": "coral",
+  "motif": "horizon-lines",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "A QR-driven landing page that routes Amazon sellers into onboarding and live support.",
+  "body": {
+    "context": "Sellers scanning printed QR codes landed on pages built for desktop.",
+    "contribution": "Designed and built a responsive landing page tuned for the scan-to-support flow.",
+    "outcome": "Shipped on Netlify and reused as a template for later campaign pages."
+  },
+  "tracklist": [
+    {
+      "label": "HTML/CSS"
+    },
+    {
+      "label": "JavaScript"
+    },
+    {
+      "label": "Netlify"
+    }
+  ],
+  "links": [
+    {
+      "label": "Live site",
+      "href": "https://qrlanding.netlify.app/",
+      "kind": "live"
+    },
+    {
+      "label": "Repository",
+      "href": "https://github.com/ericthayer/qr-landing",
+      "kind": "repo"
+    }
+  ],
+  "draft": true,
+  "size": "wide",
+  "media": {
+    "kind": "iframe",
+    "src": "https://qrlanding.netlify.app/",
+    "title": "QR Landing Page live site",
+    "viewport": "desktop",
+    "poster": {
+      "kind": "image",
+      "src": "qr-landing/cover",
+      "alt": "Onsite Support QR landing page"
+    }
+  }
+}

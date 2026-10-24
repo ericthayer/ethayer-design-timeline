@@ -1,0 +1,64 @@
+{
+  "slug": "kentico-framework",
+  "title": "Kentico UI Framework",
+  "client": "The Navigators",
+  "era": "navigators",
+  "engagement": "full-time",
+  "role": "UI Designer & Front-End Developer",
+  "period": {
+    "start": "2011-01",
+    "end": "2015-07"
+  },
+  "theme": "paper-cobalt",
+  "motif": "dot-grid-mark",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "A reusable Bootstrap-based framework and UI template system for Kentico CMS.",
+  "body": {
+    "context": "Every CMS site started from an empty theme.",
+    "contribution": "Built a reusable Bootstrap-based framework and UI template system for Kentico CMS.",
+    "outcome": "Shorter delivery cycles for new sites."
+  },
+  "tracklist": [
+    {
+      "label": "Bootstrap"
+    },
+    {
+      "label": "Kentico CMS"
+    }
+  ],
+  "gallery": [
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "site"
+      },
+      "label": "Placeholder · Template library",
+      "span": "wide",
+      "focal": "10% 30%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "mobile"
+      },
+      "label": "Placeholder · Responsive pass",
+      "span": "sm",
+      "focal": "60% 70%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "design"
+      },
+      "label": "Placeholder · Grid system",
+      "span": "sm",
+      "focal": "40% 40%"
+    }
+  ],
+  "size": "sm",
+  "media": {
+    "kind": "placeholder",
+    "variant": "site"
+  }
+}

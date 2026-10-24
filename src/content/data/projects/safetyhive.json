@@ -1,0 +1,43 @@
+{
+  "slug": "safetyhive",
+  "title": "SafetyHive 2.0",
+  "client": "SafetyHive",
+  "era": "independent",
+  "engagement": "freelance",
+  "role": "Prototyping",
+  "period": {
+    "start": "2019-01",
+    "end": "2019-12"
+  },
+  "theme": "indigo-vermilion",
+  "motif": "scatter",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "An interactive Figma prototype for SafetyHive 2.0.",
+  "body": {
+    "context": "Details coming soon.",
+    "contribution": "Built the SafetyHive 2.0 prototype in Figma.",
+    "outcome": "Details coming soon."
+  },
+  "tracklist": [
+    {
+      "label": "Figma"
+    },
+    {
+      "label": "Prototype"
+    }
+  ],
+  "links": [
+    {
+      "label": "Figma prototype",
+      "href": "https://www.figma.com/proto/XNvvUJkZIYH6Tz0vQAH7a3/SafetyHive-2.0",
+      "kind": "prototype"
+    }
+  ],
+  "draft": true,
+  "size": "wide",
+  "media": {
+    "kind": "placeholder",
+    "variant": "design"
+  }
+}

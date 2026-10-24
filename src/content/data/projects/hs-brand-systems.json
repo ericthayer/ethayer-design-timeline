@@ -1,0 +1,45 @@
+{
+  "slug": "hs-brand-systems",
+  "title": "Brand & UI Systems",
+  "client": "Health Scholars",
+  "era": "health-scholars",
+  "engagement": "full-time",
+  "role": "UI/UX Designer & Front-End Developer",
+  "period": {
+    "start": "2017-12",
+    "end": "2023-07"
+  },
+  "theme": "paper-prism",
+  "motif": "overlap",
+  "layout": "title-top",
+  "treatment": "swiss",
+  "summary": "Core brand and UI design systems for 6 web applications and 10 VR simulation products, including the Workbench developer platform.",
+  "body": {
+    "context": "Web and VR products had grown separately with no shared visual language.",
+    "contribution": "Established the core brand and UI design systems spanning web and VR.",
+    "outcome": "6 web applications and 10 VR simulation products on one system."
+  },
+  "tracklist": [
+    {
+      "label": "Web apps",
+      "value": "6"
+    },
+    {
+      "label": "VR products",
+      "value": "10"
+    },
+    {
+      "label": "Brand system"
+    }
+  ],
+  "metrics": [
+    {
+      "value": "16",
+      "label": "web and VR products on one system"
+    }
+  ],
+  "size": "wide",
+  "media": {
+    "kind": "artwork"
+  }
+}

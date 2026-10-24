@@ -1,0 +1,79 @@
+{
+  "slug": "figma-token-pipeline",
+  "title": "Figma → Token Pipeline",
+  "client": "CoBank",
+  "era": "cobank",
+  "engagement": "full-time",
+  "role": "Senior UX Engineer / Systems Lead",
+  "period": {
+    "start": "2023-12",
+    "end": "present"
+  },
+  "theme": "ink-cyan",
+  "motif": "tone-dots",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "A token pipeline that syncs Figma variables to JSON tokens, Material UI themes, and Storybook in one pass.",
+  "body": {
+    "context": "Design decisions in Figma drifted from the values shipped in code.",
+    "contribution": "Built a pipeline that syncs Figma variables directly to JSON-based tokens, Material UI styles, and the Storybook component library.",
+    "outcome": "One source of truth for color, type, and spacing from design file to production."
+  },
+  "tracklist": [
+    {
+      "label": "Figma variables"
+    },
+    {
+      "label": "JSON tokens"
+    },
+    {
+      "label": "MUI theme"
+    },
+    {
+      "label": "Storybook"
+    }
+  ],
+  "gallery": [
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "video"
+      },
+      "label": "Placeholder · Sync run",
+      "span": "wide",
+      "focal": "60% 50%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "design"
+      },
+      "label": "Placeholder · Token JSON",
+      "span": "sm",
+      "focal": "20% 20%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "site"
+      },
+      "label": "Placeholder · Output preview",
+      "span": "sm",
+      "focal": "90% 90%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "mobile"
+      },
+      "label": "Placeholder · Review diff",
+      "span": "tall",
+      "focal": "40% 10%"
+    }
+  ],
+  "size": "wide",
+  "media": {
+    "kind": "placeholder",
+    "variant": "design"
+  }
+}

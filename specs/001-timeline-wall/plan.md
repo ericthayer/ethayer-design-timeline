@@ -38,7 +38,7 @@ Data flow is one-way: `projects.ts` → `order()` → `<timeline-wall>` renders 
 | ADR-4 | Packing | **CSS Grid `dense` + era markers as rhythm tiles**, displacement ≤ 2 tested | JS packer: layout JS on every resize, CLS before hydration, more code for about 30 items |
 | ADR-5 | Dialog | **Native `<dialog>.showModal()`** + History API routes | Custom modal: reimplements focus trap, inert, and Esc. Hash routes: uglier share URLs and conflicts with skip links |
 | ADR-6 | Artwork | **Procedural SVG generators** (deterministic, themeable, about 1 KB each) | Hand-drawn SVG per project: doesn't scale to 28+ items and drifts from the system. Raster: weight and theming. Escape hatch: `ArtworkMedia` can add `svg: '/media/x/art.svg'` later for hero pieces |
-| ADR-7 | Content | **Typed TS module** (`satisfies readonly Project[]`) | JSON + runtime schema validator: a runtime dependency and weaker editor feedback |
+| ADR-7 | Content | ~~**Typed TS module** (`satisfies readonly Project[]`)~~ **Superseded** by [004 content-json](../004-admin-editing/spec-content-json.md): JSON files plus one hand-written validator (no dependency) | JSON + runtime schema validator: a runtime dependency and weaker editor feedback |
 | ADR-8 | Fluid sizing | **Container query units** (`cqi`/`cqb`) for cells and card type, with `rem` floors | `vw`-based: wrong inside the horizontal scroller and ignores the container |
 
 ## 3. File structure

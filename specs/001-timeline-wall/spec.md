@@ -20,7 +20,7 @@ A single-page, full-bleed wall of bento-grid cards. Each card is one project or 
 - G1. Present 15+ years of design and front-end work as a browsable artifact that itself shows design-systems skill.
 - G2. Give each project a distinct, consistent visual identity, even ones without shareable screenshots (NDA work).
 - G3. Meet the constitution's a11y and performance bars at launch.
-- G4. Adding a project means editing one typed file and dropping media in a folder.
+- G4. Adding a project means editing one typed file and dropping media in a folder. **Amended by [004 content-json](../004-admin-editing/spec-content-json.md):** the file is `src/content/data/projects/<slug>.json` plus its slug in `order.json`, checked by the shared validator.
 
 **Non-goals (v1)**
 - CMS or backend; analytics beyond Netlify's server-side stats; search or filtering; i18n.
@@ -83,7 +83,7 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 - **FR-010** Each card is an `<article>` labeled by its title heading (`h3`). One link (`<a href="/work/<slug>">`) inside the heading carries the accessible name. A pseudo-element stretches its hit area to the whole card.
 - **FR-011** The Swiss anatomy by size tier (plan §4) includes a header (client, 2 lines), index numerals (`yy_` / `yy`, with `→` for present), title, art zone, and footer (year plus track list). Tiers hide the parts that don't fit.
 - **FR-011a** The standard anatomy is media filling the tile, plus a label chip in the bottom-left corner (`ink` on `paper`, AA) with the title and "Client · Year".
-- **FR-011b** Each project sets `treatment: 'swiss' | 'standard'`. Content tests enforce a Swiss share of 20–30 % and no run of more than 7 consecutive standard project cards, so roughly one card in four on screen is Swiss.
+- **FR-011b** Each project sets `treatment: 'swiss' | 'standard'`. Content tests enforce a Swiss share of 20–30 % and no run of more than 7 consecutive standard project cards, so roughly one card in four on screen is Swiss. **Amended by [004 content-json](../004-admin-editing/spec-content-json.md) FR-312:** both are now *warnings* in the shared validator (`swiss-share`, `standard-run`), printed by the build but never blocking it.
 - **FR-012** The index numerals are `aria-hidden`. A visually hidden span reads "2023 to present".
 - **FR-013** Title position follows `layout` (`title-top` or `title-bottom`).
 - **FR-014** Typography uses container units on the card (`container-type: size`) clamped with `rem` floors. The minimum rendered size is 12 px for meta text and 16 px for titles.
@@ -137,8 +137,8 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 - **FR-083** A skip link goes to the wall, plus a "Skip to end of timeline" link.
 
 ### Content
-- **FR-090** All content lives in `src/content/projects.ts` and is typed with `satisfies readonly Project[]`. Media lives in `public/media/<slug>/`. *(Media location superseded by [004 media-pipeline FR-338](../004-admin-editing/spec-media-pipeline.md): raw sources are committed under `media-src/<slug>/`, and `public/media/<slug>/` is generated build output.)*
-- **FR-091** Validation tests: unique slugs; alt text on every image and poster; media files exist; title length (`sm` ≤ 24 chars, others ≤ 40); valid era references; `period.start ≤ period.end`; theme contrast; iframe hosts on the allowlist.
+- **FR-090** All content lives in `src/content/projects.ts` and is typed with `satisfies readonly Project[]`. Media lives in `public/media/<slug>/`. *(Content location superseded by [004 content-json](../004-admin-editing/spec-content-json.md): JSON under `src/content/data/`. Media location superseded by [004 media-pipeline FR-338](../004-admin-editing/spec-media-pipeline.md): raw sources are committed under `media-src/<slug>/`, and `public/media/<slug>/` is generated build output.)*
+- **FR-091** Validation tests: unique slugs; alt text on every image and poster; media files exist; title length (`sm` ≤ 24 chars, others ≤ 40); valid era references; `period.start ≤ period.end`; theme contrast; iframe hosts on the allowlist. **Amended by [004 content-json](../004-admin-editing/spec-content-json.md) FR-313:** these rules live in the shared validator (`src/content/validate/`), which tests, the build (`npm run content:check`), and the editor all run.
 - **FR-092** The CSP `frame-src` and `media-src` are generated from content at build time.
 
 ## 5. Non-functional requirements

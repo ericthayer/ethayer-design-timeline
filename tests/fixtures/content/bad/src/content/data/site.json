@@ -1,0 +1,17 @@
+{
+  "name": "Demo Person",
+  "role": "Engineer",
+  "location": "Denver, CO",
+  "summary": "Demo summary.",
+  "span": {
+    "start": "2003-01",
+    "end": "present"
+  },
+  "links": [
+    {
+      "label": "Résumé",
+      "href": "/resume"
+    }
+  ],
+  "education": []
+}

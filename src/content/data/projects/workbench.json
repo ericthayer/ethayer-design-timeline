@@ -1,0 +1,33 @@
+{
+  "slug": "workbench",
+  "title": "Workbench Platform",
+  "client": "Health Scholars",
+  "era": "health-scholars",
+  "engagement": "full-time",
+  "role": "UI/UX Designer & Front-End Developer",
+  "period": {
+    "start": "2017-12",
+    "end": "2023-07"
+  },
+  "theme": "graphite",
+  "motif": "diagonal-lines",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "UI system for the Workbench developer platform.",
+  "body": {
+    "context": "Details coming soon.",
+    "contribution": "Brand and UI design system for the Workbench developer platform.",
+    "outcome": "Details coming soon."
+  },
+  "tracklist": [
+    {
+      "label": "Developer platform"
+    }
+  ],
+  "draft": true,
+  "size": "sm",
+  "media": {
+    "kind": "placeholder",
+    "variant": "site"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "slug": "cobank-design-system",
+  "title": "Multi-Framework Design System",
+  "client": "CoBank",
+  "era": "cobank",
+  "engagement": "full-time",
+  "role": "Senior UX Engineer / Systems Lead",
+  "period": {
+    "start": "2023-12",
+    "end": "present"
+  },
+  "theme": "paper-mocha",
+  "motif": "petals",
+  "layout": "title-bottom",
+  "treatment": "standard",
+  "summary": "Design system strategy and a React/MUI component architecture serving 120+ developers and designers across enterprise products.",
+  "body": {
+    "context": "Enterprise product teams were building on several frameworks with no shared component foundation.",
+    "contribution": "Direct the multi-framework design system strategy and build and maintain the React/MUI component architecture, with documentation in Storybook.",
+    "outcome": "The architecture serves 120+ cross-functional developers and designers."
+  },
+  "tracklist": [
+    {
+      "label": "Consumers",
+      "value": "120+"
+    },
+    {
+      "label": "React · MUI"
+    },
+    {
+      "label": "Storybook"
+    },
+    {
+      "label": "W3C design tokens"
+    }
+  ],
+  "metrics": [
+    {
+      "value": "120+",
+      "label": "developers and designers served"
+    }
+  ],
+  "gallery": [
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "design"
+      },
+      "label": "Placeholder · Token editor",
+      "span": "feature",
+      "focal": "30% 40%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "site"
+      },
+      "label": "Placeholder · Docs site",
+      "span": "wide",
+      "focal": "80% 20%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "mobile"
+      },
+      "label": "Placeholder · Mobile component",
+      "span": "tall",
+      "focal": "50% 30%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "video"
+      },
+      "label": "Placeholder · Build walkthrough",
+      "span": "sm",
+      "focal": "70% 60%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "design"
+      },
+      "label": "Placeholder · Figma library",
+      "span": "sm",
+      "focal": "15% 80%"
+    }
+  ],
+  "size": "feature",
+  "media": {
+    "kind": "placeholder",
+    "variant": "design"
+  }
+}

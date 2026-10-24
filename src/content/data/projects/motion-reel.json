@@ -1,0 +1,54 @@
+{
+  "slug": "motion-reel",
+  "title": "Motion Demo Reel",
+  "client": "Post-production",
+  "era": "post-production",
+  "engagement": "full-time",
+  "role": "Post-production artist",
+  "period": {
+    "start": "2005-06",
+    "end": "2010-06"
+  },
+  "theme": "ink-vermilion",
+  "motif": "eclipse",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Motion graphics and post-production work from San Diego.",
+  "body": {
+    "context": "Where it started: post-production in San Diego after art school.",
+    "contribution": "Motion graphics, compositing, and editing.",
+    "outcome": "The reel is below."
+  },
+  "tracklist": [
+    {
+      "label": "Motion graphics"
+    },
+    {
+      "label": "Compositing"
+    }
+  ],
+  "links": [
+    {
+      "label": "Watch on Vimeo",
+      "href": "https://vimeo.com/143960525",
+      "kind": "video"
+    }
+  ],
+  "gallery": [
+    {
+      "media": {
+        "kind": "vimeo",
+        "id": "143960525",
+        "title": "Motion demo reel"
+      },
+      "label": "Motion demo reel",
+      "span": "feature"
+    }
+  ],
+  "draft": true,
+  "size": "wide",
+  "media": {
+    "kind": "placeholder",
+    "variant": "video"
+  }
+}

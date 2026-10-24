@@ -13,7 +13,8 @@
   },
   "scripts": {
     "dev": "npm run media && vite",
-    "build": "npm run media && tsc --noEmit && vite build",
+    "build": "npm run media && tsc --noEmit && npm run content:check && vite build",
+    "content:check": "node scripts/check-content.ts",
     "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
