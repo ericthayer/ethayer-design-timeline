@@ -68,7 +68,7 @@ The owner approved the five module specs ("sounds good, continue") with these an
 | D2 | Branch protection or ruleset on `main` | None today | github-publish (direct ref update is allowed) |
 | D3 | Netlify site name | `ethayer-design-timeline` (deploy log fallback: `https://app.netlify.com/sites/ethayer-design-timeline/deploys`) | github-publish |
 | D4 | Manifest `source` field | Yes | media-pipeline FR-328, edit-layer FR-392 (exact deletes) |
-| D5 | Original cover images | Pending. The owner is checking whether full-size exports exist. **Migration proceeds with the largest committed WebP** (media-pipeline default), and originals can replace sources later | media-pipeline |
+| D5 | Original cover images | The owner has the originals and will add them to `media-src/<slug>/` later (2026-10-24). **Migration proceeds with the largest committed WebP** (media-pipeline default), and originals can replace sources later | media-pipeline |
 | D6 | Only login `ericthayer` may sign in; slugs are immutable after the first publish | Yes, both | admin-auth, content-json |
 | D7 | Admin CSS gets its own budget line | Yes, ≤ 5 KB gzip | admin-auth (check-budgets) |
 

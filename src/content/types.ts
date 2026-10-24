@@ -155,11 +155,14 @@ export type WallItem =
 
 /** Optional intro video at the top of the résumé (spec 002, FR-121). Captions are required. */
 export interface ResumeIntro {
-  /** Base path, e.g. 'resume/intro' → /media/resume/intro.{webm,mp4}. */
+  /** Media key, e.g. 'resume/intro': sources in media-src/resume/, served at /media/resume/intro.{webm,mp4}. */
   readonly src: string;
   readonly poster: ImageMedia;
-  /** WebVTT captions (WCAG 1.2.2), e.g. '/media/resume/intro.vtt'. */
-  readonly captions: `/media/${string}.vtt`;
+  /**
+   * WebVTT captions (WCAG 1.2.2), e.g. '/captions/resume-intro.vtt', from public/captions/.
+   * Not under /media/: the media pipeline owns that folder and removes files it didn't produce.
+   */
+  readonly captions: `/captions/${string}.vtt`;
   readonly title: string;
   readonly durationSec: number;
 }

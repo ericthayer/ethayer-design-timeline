@@ -110,7 +110,7 @@ export function validateSite(raw: unknown): Validated<Site> {
   return finish(site, sink.issues);
 }
 
-const CAPTIONS = /^\/media\/.+\.vtt$/;
+const CAPTIONS = /^\/captions\/[a-z0-9-]+\.vtt$/;
 const isCaptions = (s: string): s is ResumeIntro['captions'] => CAPTIONS.test(s);
 
 function readIntro(r: Reader, ctx: ValidationContext): ResumeIntro | undefined {
@@ -121,7 +121,7 @@ function readIntro(r: Reader, ctx: ValidationContext): ResumeIntro | undefined {
   const poster = readPoster(r, ctx);
   const captions = r.string('captions');
   if (captions !== undefined && !isCaptions(captions)) {
-    r.error('url', 'captions', `"${captions}" must look like /media/<name>.vtt`);
+    r.error('url', 'captions', `"${captions}" must look like /captions/<name>.vtt`);
   }
   const title = r.text('title', 'Intro title');
   const durationSec = r.number('durationSec');
