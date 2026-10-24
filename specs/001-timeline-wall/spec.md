@@ -137,7 +137,7 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 - **FR-083** A skip link goes to the wall, plus a "Skip to end of timeline" link.
 
 ### Content
-- **FR-090** All content lives in `src/content/projects.ts` and is typed with `satisfies readonly Project[]`. Media lives in `public/media/<slug>/`.
+- **FR-090** All content lives in `src/content/projects.ts` and is typed with `satisfies readonly Project[]`. Media lives in `public/media/<slug>/`. *(Media location superseded by [004 media-pipeline FR-338](../004-admin-editing/spec-media-pipeline.md): raw sources are committed under `media-src/<slug>/`, and `public/media/<slug>/` is generated build output.)*
 - **FR-091** Validation tests: unique slugs; alt text on every image and poster; media files exist; title length (`sm` ≤ 24 chars, others ≤ 40); valid era references; `period.start ≤ period.end`; theme contrast; iframe hosts on the allowlist.
 - **FR-092** The CSP `frame-src` and `media-src` are generated from content at build time.
 
