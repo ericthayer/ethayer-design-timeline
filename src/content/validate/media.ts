@@ -57,7 +57,7 @@ function readImageBody(r: Reader, ctx: ValidationContext): ImageMedia | undefine
 }
 
 /** A video or iframe poster: always an image with alt text (FR-091). */
-function readPoster(r: Reader, ctx: ValidationContext): ImageMedia | undefined {
+export function readPoster(r: Reader, ctx: ValidationContext): ImageMedia | undefined {
   const p = r.object('poster');
   if (p === undefined) return undefined;
   const kind = p.oneOf('kind', ['image'] as const);

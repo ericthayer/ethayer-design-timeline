@@ -8,6 +8,13 @@ import {
   parseJson,
   pointer,
 } from '../../src/content/validate/issue.ts';
+import {
+  validateEras,
+  validateOrder,
+  validateResume,
+  validateSite,
+} from '../../src/content/validate/documents.ts';
+import type { Issue, Validated } from '../../src/content/validate/issue.ts';
 import { validateProject } from '../../src/content/validate/project.ts';
 import { Reader, Sink, readPeriod } from '../../src/content/validate/read.ts';
 import {
@@ -18,6 +25,15 @@ import {
   type ProjectRule,
   baseProject,
 } from '../fixtures/content/projects.ts';
+import {
+  ERA_FIXTURES,
+  ORDER_KEY_FIXTURE,
+  PERIOD_FIXTURE,
+  URL_FIXTURE,
+  baseEras,
+  baseResume,
+  baseSite,
+} from '../fixtures/content/documents.ts';
 
 const FILE = 'src/content/data/projects/demo.json';
 
@@ -146,6 +162,72 @@ describe('validateProject (FR-313 per-file rules)', () => {
     const wide = validateProject(baseProject('demo', { size: 'wide', media }), file, CTX);
     expect(wide.ok ? [] : wide.errors.map((i) => [i.rule, i.path])).toEqual([
       ['size-media', '/media/viewport'],
+    ]);
+  });
+});
+
+const errorsOf = <T>(result: Validated<T>): readonly Issue[] => (result.ok ? [] : result.errors);
+const rulesAt = <T>(result: Validated<T>): string[][] =>
+  errorsOf(result).map((i) => [i.rule, i.file, i.path]);
+
+describe('document rules (FR-300, FR-313)', () => {
+  it('accepts valid documents and keeps eras a non-empty tuple', () => {
+    const eras = validateEras(baseEras());
+    expect(eras.ok).toBe(true);
+    if (eras.ok) expect(eras.value[0].id).toBe('cobank');
+    expect(validateSite(baseSite())).toStrictEqual({ ok: true, value: baseSite(), warnings: [] });
+    expect(validateResume(baseResume(), CTX)).toStrictEqual({
+      ok: true,
+      value: baseResume(),
+      warnings: [],
+    });
+    expect(validateOrder({ cobank: ['demo'] }).ok).toBe(true);
+  });
+
+  it.each(Object.entries(ERA_FIXTURES))('era-ref: %s', (_, fixture) => {
+    expect(rulesAt(validateEras(fixture.eras))).toEqual([
+      ['era-ref', 'src/content/data/eras.json', fixture.path],
+    ]);
+  });
+
+  it('rejects an empty eras list', () => {
+    expect(rulesAt(validateEras([]))).toEqual([['shape', 'src/content/data/eras.json', '']]);
+  });
+
+  it('period: checks the site span', () => {
+    expect(rulesAt(validateSite(PERIOD_FIXTURE.site))).toEqual([
+      ['period', 'src/content/data/site.json', PERIOD_FIXTURE.path],
+    ]);
+  });
+
+  it('url: site links are /resume, https://, or mailto:', () => {
+    expect(rulesAt(validateSite(URL_FIXTURE.site))).toEqual([
+      ['url', 'src/content/data/site.json', URL_FIXTURE.path],
+    ]);
+  });
+
+  it('url: résumé hrefs and intro captions', () => {
+    const resume = baseResume();
+    const bad = {
+      ...resume,
+      intro: {
+        src: 'demo/clip',
+        poster: { kind: 'image', src: 'demo/cover', alt: 'Poster' },
+        captions: '/captions/intro.srt',
+        title: 'Intro',
+        durationSec: 60,
+      },
+      projects: [{ title: 'Demo', detail: 'UI', year: '2021', href: 'ftp://demo' }],
+    };
+    expect(rulesAt(validateResume(bad, CTX))).toEqual([
+      ['url', 'src/content/data/resume.json', '/intro/captions'],
+      ['url', 'src/content/data/resume.json', '/projects/0/href'],
+    ]);
+  });
+
+  it('order: keys must be era ids', () => {
+    expect(rulesAt(validateOrder(ORDER_KEY_FIXTURE.order))).toEqual([
+      ['order', 'src/content/data/order.json', ORDER_KEY_FIXTURE.path],
     ]);
   });
 });

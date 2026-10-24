@@ -73,6 +73,11 @@ export class Reader {
     this.sink.report(rule, key === null ? this.path : this.at(key), message);
   }
 
+  /** Every key of the object, in file order. */
+  keys(): readonly string[] {
+    return Object.keys(this.raw);
+  }
+
   /** The raw value of `key`, marking it as known. Absent keys are `undefined`. */
   value(key: string): unknown {
     this.seen.add(key);
