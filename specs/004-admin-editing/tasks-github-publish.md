@@ -24,7 +24,7 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). Each task is done when 
   - Acceptance: a moved head with disjoint paths gives `rebased: true`; overlap gives `conflict`; one 422 race retries without re-uploading blobs; two races give `conflict: race`. Verify: `npx vitest run tests/unit/github/publish`. Files: `publish.ts`, `publish-conflict.test.ts`
 - [x] **T370** `deployStateFrom()` and `watchDeploy()`; record which endpoint and context Netlify uses (TO VERIFY). → FR-375
   - Acceptance: with a fake clock it yields queued → building → live, stops on failed, ends `unknown: timeout` at 5 min and `no-access` on 403, and stops on abort. Verify: `npx vitest run tests/unit/github/deploy`. Files: `deploy-state.ts`, `deploy.ts`, `deploy.test.ts`
-- [ ] **T371** `index.ts` exports, lint overrides (`no-console`, `no-restricted-imports`), and the public-bundle check. → FR-360, FR-376, FR-377, FR-378
+- [x] **T371** `index.ts` exports, lint overrides (`no-console`, `no-restricted-imports`), and the public-bundle check. → FR-360, FR-376, FR-377, FR-378
   - Acceptance: only the FR-360 names are exported; importing the module from `src/components/` fails lint; the public entry chunk has no `api.github.com`; the module is ≤ 5 KB gzip. Verify: `npm run check && npm run build && npm run budgets`. Files: `index.ts`, `eslint.config.js`, `scripts/check-budgets.ts`
 - [ ] **T372** Security tests: allowlist enforced inside `publish()` and `readFile()`, no console output, and serialized errors contain no file content or headers. → FR-363, FR-376
   - Acceptance: every hostile path is refused at the public API; a console spy records nothing across the whole suite. Verify: `npx vitest run tests/unit/github`. Files: `security.test.ts`

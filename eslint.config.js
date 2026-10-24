@@ -26,8 +26,32 @@ export default defineConfig(
   },
   {
     // Spec 004 admin-auth FR-356: nothing on the token's path may log.
-    files: ['src/admin/**', 'src/core/auth/**', 'src/components/admin-*/**'],
+    // github-publish FR-376 likewise.
+    files: ['src/admin/**', 'src/core/auth/**', 'src/core/github/**', 'src/components/admin-*/**'],
     rules: { 'no-console': 'error' },
+  },
+  {
+    // github-publish FR-377: only admin code may import src/core/github/.
+    files: ['src/**/*.ts'],
+    ignores: [
+      'src/admin/**',
+      'src/core/github/**',
+      'src/core/editor/**',
+      'src/components/admin-*/**',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/github', '**/github/*'],
+              message: 'src/core/github/ is admin-only (spec 004 github-publish FR-377).',
+            },
+          ],
+        },
+      ],
+    },
   },
   {
     // The editor imports the frame-src list from here (spec 004 edit-layer X2).
