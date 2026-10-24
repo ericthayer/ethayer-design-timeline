@@ -72,7 +72,7 @@ interface GalleryItem {
 - **FR-217** Gallery tiles follow focus rules (FR-016): a visible focus ring on any focusable child (video controls and the Vimeo button).
 
 ### Content
-- **FR-220** Five projects get placeholder galleries with 3–5 tiles each, mixing spans and focal points: `cobank-design-system`, `figma-token-pipeline`, `hs-vue-library`, `kentico-framework`, and `dli-mobile-learning`. Every placeholder caption starts with "Placeholder ·" so no one mistakes it for a real screenshot.
+- **FR-220** Five projects get placeholder galleries with 3–5 tiles each, mixing spans and focal points: `cobank-design-system`, `figma-token-pipeline`, `hs-vue-library`, `kentico-framework`, and `dli-mobile-learning`. Every placeholder caption starts with "Placeholder ·" so no one mistakes it for a real screenshot. **Amended by [004 content-json](../004-admin-editing/spec-content-json.md) FR-318:** the "exactly these five slugs" test snapshot is dropped, because the owner now adds galleries. The caption rule stays, as the validator's `placeholder-caption` error.
 - **FR-221** The one existing gallery entry (`motion-reel`, Vimeo) is migrated to the new shape and keeps its span.
 
 ## 4. Non-functional
