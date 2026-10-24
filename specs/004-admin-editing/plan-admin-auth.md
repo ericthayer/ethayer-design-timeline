@@ -52,6 +52,19 @@ Flow: load `/admin/work/x` → `entry.ts` → `provider.restore()` (or the sign-
 
 Sources: GitHub REST docs (CORS, the repositories endpoint, rate limits, fine-grained PAT permissions), Netlify docs (headers, redirects, request chain), and CSP Level 3 §4.
 
+### T341 results (2026-10-24)
+
+| # | Result |
+| --- | --- |
+| V1 | **Confirmed** live: the preflight to `https://api.github.com/user` answers `access-control-allow-origin: *` and allows `Authorization` and `X-GitHub-Api-Version` ([REST CORS docs](https://docs.github.com/en/rest/using-the-rest-api/using-cors-and-jsonp-to-make-cross-origin-requests)) |
+| V2 | **TO VERIFY** by the owner with a real read-only token (T352). The docs don't say whether `permissions` reflects the token or the account role. If refuted, open question 3 decides the fix |
+| V3 | **Refuted** live: `github-authentication-token-expiration` isn't in `access-control-expose-headers` (which does list `Retry-After` and `X-RateLimit-*`). `expiresAt` is `null` in browsers, and the status shows the static 30-day reminder |
+| V4 | **TO VERIFY** by the owner with a real token (T352). The users docs don't list a fine-grained permission for `GET /user` |
+| V5 | **Confirmed** ([changelog 2025-08-26](https://github.blog/changelog/2025-08-26-template-urls-for-fine-grained-pats-and-updated-permissions-ui)). Unused until open question 1 is answered, so the link carries no parameters |
+| V6 | **Partly confirmed**: 200 rewrites per [Netlify redirects](https://docs.netlify.com/manage/routing/redirects/rewrites-proxies/). The [headers docs](https://docs.netlify.com/manage/routing/headers/) don't say whether rules match the request or the rewritten path, so `X-Robots-Tag` is set on `/admin`, `/admin/*`, and `/admin.html`. Owner confirms with `curl -sI` (T352) |
+| V7 | Checked in the T343 build. The dynamic import brings the index CSS at boot, but the sign-in page renders before boot, so the plugin also links the index entry's CSS into `admin.html` at build (the fallback), and dev loads the style modules first |
+| V8 | **Confirmed**: [CSP3 §8.1](https://www.w3.org/TR/CSP3/#multiple-policies) enforces every policy in the list. A `<meta>` policy can't carry `frame-ancestors` |
+
 ## 5. Risks and mitigations
 
 | Risk | Mitigation |

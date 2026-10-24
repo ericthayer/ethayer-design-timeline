@@ -49,10 +49,10 @@ No new dependencies. Vanilla TS custom elements, Vite multi-page build (`index.h
 - **FR-344** `/admin`, `/admin/*`, and `/admin.html` are sent with `X-Robots-Tag: noindex, nofollow`. `/admin` isn't linked from the public site, robots.txt, or any sitemap (a robots.txt `Disallow` would hide the noindex and advertise the path).
 
 ### Sign-in
-- **FR-345** `<admin-sign-in>` is a `<form>` with a heading, ordered steps, a link to `https://github.com/settings/personal-access-tokens/new` (new tab, labeled), a visible `<label>` "GitHub token" on `<input type="password" autocomplete="off" spellcheck="false">`, a "Show token" toggle, a Verify submit button, and a status line. Steps: name "Timeline admin", **expiration 30 days (recommended)**, resource owner `ericthayer`, "Only select repositories" → `ethayer-design-timeline`, Repository permissions → **Contents: Read and write** (Metadata: Read-only is added automatically).
+- **FR-345** `<admin-sign-in>` is a `<form>` with a heading, ordered steps, a link to `https://github.com/settings/personal-access-tokens/new` (new tab, labeled), a visible `<label>` "GitHub token" on `<input type="password" autocomplete="off" spellcheck="false">`, a "Show token" toggle, a Verify submit button, and a status line. Steps: name "Timeline admin", **expiration 30 days (recommended)**, resource owner `ericthayer`, "Only select repositories" → `ethayer-design-timeline`, Repository permissions → **Contents: Read and write** and **Commit statuses: Read-only** (D1; Metadata: Read-only is added automatically). Verification doesn't check Commit statuses, so a token without it still signs in.
 - **FR-346** Pre-check before any request: trim. Empty → `empty`. Not starting with `github_pat_` → `not-fine-grained` (classic `ghp_` tokens are refused).
-- **FR-347** Verify sends `GET /user` and `GET /repos/ericthayer/ethayer-design-timeline` in parallel. Precedence: network error → `network`. Either response 429, or 403 with `x-ratelimit-remaining: 0` → `rate-limited` (reset from `x-ratelimit-reset` or `retry-after`). `/user` 401 → `expired` if a stored `expiresAt` has passed, else `bad-token`. `/repos` 404 or 403, or `full_name` not matching (case-insensitive) → `wrong-repo`. `/repos` 200 with `permissions.push !== true` → `read-only`. Any other non-2xx → `github-error`. Otherwise `ok`, with `login` and `expiresAt` parsed from `github-authentication-token-expiration` when readable, else `null` (verify V2, V3).
-- **FR-348** Each error kind has one message that names the fix, for example `read-only`: "This token can read the repository but not change it. Set Contents to Read and write." `bad-token` says "mistyped, revoked, or expired", because GitHub's 401 doesn't say which.
+- **FR-347** Verify sends `GET /user` and `GET /repos/ericthayer/ethayer-design-timeline` in parallel. Precedence: network error → `network`. Either response 429, or 403 with `x-ratelimit-remaining: 0` → `rate-limited` (reset from `x-ratelimit-reset` or `retry-after`). `/user` 401 → `expired` if a stored `expiresAt` has passed, else `bad-token`. `/user` 2xx with a `login` other than `ericthayer` (case-insensitive, D6) → `wrong-account`, and nothing is stored. `/repos` 404 or 403, or `full_name` not matching (case-insensitive) → `wrong-repo`. `/repos` 200 with `permissions.push !== true` → `read-only`. Any other non-2xx → `github-error`. Otherwise `ok`, with `login` and `expiresAt` parsed from `github-authentication-token-expiration` when readable, else `null` (verify V2, V3).
+- **FR-348** Each error kind has one message that names the fix, for example `read-only`: "This token can read the repository but not change it. Set Contents to Read and write." `bad-token` says "mistyped, revoked, or expired", because GitHub's 401 doesn't say which. `wrong-account` says the token belongs to another GitHub account and only `ericthayer` can edit this site.
 
 ### Session and storage
 - **FR-349** Storage: `sessionStorage['timeline:admin-session']` = `{"v":1,"token","login","expiresAt"}`. Every access is wrapped in try/catch (as `core/motion.ts`). If storage throws, the token lives in memory for the tab, and the panel notes "You'll need to paste the token again after a reload." Never `localStorage`, cookies, IndexedDB, or a URL.
@@ -64,7 +64,7 @@ No new dependencies. Vanilla TS custom elements, Vite multi-page build (`index.h
 - **FR-355** CSP. The `/*` header becomes the **ceiling**: today's policy plus `https://api.github.com` in `connect-src` and `blob:` in `img-src` (upload previews). The build injects a `<meta http-equiv="Content-Security-Policy">` **floor** into `index.html` only: today's policy without `frame-ancestors` (which meta can't carry, and the header keeps). Browsers enforce both policies, so public pages keep `connect-src 'self'` and `img-src 'self'`. `scripts/csp.ts` is the single source, and a unit test checks `netlify.toml` against it.
 - **FR-356** Token hygiene: no `console.*` in `src/admin/**`, `src/core/auth/**`, or the admin components (ESLint error). The token never appears in URLs, history state, error messages, event details, or the DOM after success (the field is cleared). Only `verify.ts` and `authorizedFetch` send it, and only to `https://api.github.com`.
 - **FR-357** Accessibility: the page-mode panel uses `<h1>`, the re-auth dialog a labeled `<h2>` in a native `<dialog>`. Errors set `aria-invalid` and join the field's `aria-describedby`, and focus returns to the field. Progress and outcomes are announced in a `role="status"` region. Verify stays focusable while busy (`aria-disabled`, repeat submits ignored). The toggle uses `aria-pressed`. After sign-in, focus moves to `<main>`. The island reserves `scroll-padding-block-end` so focus is never hidden under it (SC 2.4.11). Targets are ≥ 24 px (SC 2.5.8).
-- **FR-358** Budgets: a new **Admin JS** line (chunks reachable from `admin.html` minus the public set) ≤ 40 KB gzip, with admin-auth's own share targeted at ≤ 6 KB. Public lines measure the public graph only. Public initial JS grows by ≤ 0.3 KB gzip against `6240560` (the router base check). Admin CSS is reported and not gated (open question 2).
+- **FR-358** Budgets: a new **Admin JS** line (chunks reachable from `admin.html` minus the public set) ≤ 40 KB gzip, with admin-auth's own share targeted at ≤ 6 KB. Public lines measure the public graph only. Public initial JS grows by ≤ 0.3 KB gzip against `6240560` (the router base check). An **Admin CSS** line (CSS reachable from `admin.html` minus the public set) is gated at ≤ 5 KB gzip (D7).
 - **FR-359** `AuthProvider` seam: `entry.ts` talks to an `AuthProvider` (`restore`, `signIn`, `signOut`), not to tokens. v1 ships `patProvider`. A future OAuth provider (§9) replaces it without changing `AdminSession` or its consumers.
 
 ## 4. Project structure
@@ -94,7 +94,7 @@ export interface AdminSession {
   authorizedFetch(path: `/${string}`, init?: RequestInit): Promise<Response>;
 }
 export type AuthErrorKind = 'empty' | 'not-fine-grained' | 'bad-token' | 'expired'
-  | 'wrong-repo' | 'read-only' | 'rate-limited' | 'network' | 'github-error';
+  | 'wrong-account' | 'wrong-repo' | 'read-only' | 'rate-limited' | 'network' | 'github-error';
 declare global {
   interface DocumentEventMap {
     'admin:signed-in': CustomEvent<AdminSession>;
@@ -119,7 +119,7 @@ declare global {
 
 1. Every US-A acceptance check passes in e2e, with zero axe violations on `/admin` states. 2. `npm run budgets` shows Admin JS ≤ 40 KB, and public lines and initial JS within FR-358. 3. Deploy-preview headers match FR-344 and FR-355. 4. A read-only token and a token for the wrong repo are refused with their messages.
 
-**Open questions for the owner**
+**Open questions for the owner** (2, 4, and 6 are answered by D7, D6, and D1 in the capability map)
 1. If GitHub supports prefilled token-creation URLs (V5), may the link prefill name, repo, expiry, and Contents permission?
 2. Should admin-only CSS get its own gated line (≤ 5 KB gzip), or stay report-only?
 3. If V2 shows that `permissions.push` reflects your account role instead of the token, may sign-in confirm write access with a harmless probe (`POST /git/blobs`, an unreferenced blob)?
@@ -130,3 +130,12 @@ declare global {
 ## 9. Future: OAuth ("Sign in with GitHub")
 
 A later `oauthProvider` implements `AuthProvider`: a GitHub App user-to-server flow with PKCE and `state`, with the code exchanged by a Netlify Function (`/.netlify/functions/github-oauth`, client secret in a Netlify env var). This needs `connect-src 'self'` only, which the ceiling already allows. Short-lived user tokens (8 h, with refresh through the Function) are kept as in FR-349. `AdminSession`, its events, and every consumer stay unchanged. This would get its own spec. Not in v1.
+
+## Implementation notes
+
+- T341: V3 is refuted (plan §4 results), so `expiresAt` is `null` in browsers, `expired` is never produced, and the status shows the static 30-day reminder. The header parser stays for the day GitHub exposes it.
+- T341: V2 and V4 need a real token and are TO VERIFY by the owner in T352. If V2 is refuted, a read-only token passes verification until open question 3 is decided.
+- FR-340, FR-343, FR-358 (T343): in one Rolldown build, any module both entries share (`core/dom.ts`, the preload helper) is split into new **public** chunks (measured +648 B public initial JS, three entry scripts). So `admin.html` is built as its own graph by a Vite plugin right after the public build (manifest `dist/.vite/admin-manifest.json`), and `entry.ts` boots the **built** public entry by URL (`<link rel="modulepreload" data-public-entry>`, which the plugin adds with the entry's CSS) instead of `import('../main.ts')`. Public output stays byte-identical. Consequence for `edit-layer`: public modules it imports are copies, not the running app's instances, so it talks to the app through the DOM and events.
+- FR-347 precedence with D6: network → rate-limited → `/user` 401 → `wrong-account` → `wrong-repo` → `read-only` → `github-error` → `ok`.
+- FR-351: `@` is allowed inside a `/`-rooted path (for example `photo@2x.png`), since it can't change the origin there. Absolute, `//`, `/\`, and userinfo inputs are rejected by the origin and credential check.
+- FR-351: `Accept` defaults to `application/vnd.github+json` only when the caller didn't set one, so `github-publish` can request a raw media type.

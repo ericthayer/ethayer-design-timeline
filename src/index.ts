@@ -35,3 +35,13 @@ export { Router, isResumePath, parseSlug } from './core/router.ts';
 export { cascade } from './core/cascade.ts';
 export { RESUME } from './content/resume.ts';
 export type * from './content/types.ts';
+// Admin-only (spec 004 admin-auth). This barrel isn't in the public page graph (FR-341).
+export {
+  AdminSignIn,
+  define as defineAdminSignIn,
+} from './components/admin-sign-in/admin-sign-in.ts';
+export {
+  AdminStatus,
+  buildIsland,
+  define as defineAdminStatus,
+} from './components/admin-status/admin-status.ts';

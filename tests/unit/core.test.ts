@@ -4,7 +4,13 @@ import { PROJECTS } from '../../src/content/projects/index.ts';
 import { hashSeed, indexNumerals, pad2, periodText, yearRange } from '../../src/core/format.ts';
 import { buildWallItems, itemIndexOf, projectSequence } from '../../src/core/order.ts';
 import { cascade, toPoints } from '../../src/core/cascade.ts';
-import { isResumePath, parseSlug } from '../../src/core/router.ts';
+import {
+  isResumePath,
+  parseSlug,
+  Router,
+  routerBase,
+  type RouterHandlers,
+} from '../../src/core/router.ts';
 import { nextIndex, type Box } from '../../src/core/spatial-nav.ts';
 import { normalizeWheelDelta, shouldRemap, wallOwnsWheel } from '../../src/core/wheel.ts';
 
@@ -68,6 +74,71 @@ describe('router', () => {
     expect(isResumePath('/resume/')).toBe(true);
     expect(isResumePath('/resumes')).toBe(false);
     expect(parseSlug('/resume')).toBeNull();
+  });
+});
+
+describe('router /admin base (spec 004 FR-342)', () => {
+  const calls: string[] = [];
+  const handlers: RouterHandlers = {
+    onOpen: (slug) => calls.push(`open:${slug}`),
+    onResume: () => calls.push('resume'),
+    onClose: () => calls.push('close'),
+  };
+  const at = (path: string): void => {
+    history.replaceState(null, '', path);
+    calls.length = 0;
+  };
+
+  it('is /admin only for /admin and /admin/*', () => {
+    expect(routerBase('/admin')).toBe('/admin');
+    expect(routerBase('/admin/')).toBe('/admin');
+    expect(routerBase('/admin/work/dmns')).toBe('/admin');
+    expect(routerBase('/administrator')).toBe('');
+    expect(routerBase('/work/admin')).toBe('');
+    expect(routerBase('/')).toBe('');
+  });
+
+  it('syncs admin deep links, including /admin/resume', () => {
+    const router = new Router(handlers, '/admin');
+    at('/admin/work/dmns');
+    router.sync();
+    expect(calls).toEqual(['open:dmns']);
+    at('/admin/resume');
+    router.sync();
+    expect(calls).toEqual(['resume']);
+    at('/admin/');
+    router.sync();
+    expect(calls).toEqual(['close']);
+  });
+
+  it('keeps the base on open, replace, close, and reset', () => {
+    const router = new Router(handlers, '/admin');
+    at('/admin');
+    router.open('dmns');
+    expect(location.pathname).toBe('/admin/work/dmns');
+    router.replace('cobank');
+    expect(location.pathname).toBe('/admin/work/cobank');
+    router.openResume();
+    expect(location.pathname).toBe('/admin/resume');
+    at('/admin/work/cobank');
+    router.close();
+    expect(location.pathname).toBe('/admin');
+    at('/admin/work/nope');
+    router.reset();
+    expect(location.pathname).toBe('/admin');
+  });
+
+  it('leaves public paths unchanged', () => {
+    const router = new Router(handlers, '');
+    at('/');
+    router.open('dmns');
+    expect(location.pathname).toBe('/work/dmns');
+    at('/work/dmns');
+    router.close();
+    expect(location.pathname).toBe('/');
+    at('/admin/work/dmns');
+    router.sync();
+    expect(calls).toEqual(['close']);
   });
 });
 
