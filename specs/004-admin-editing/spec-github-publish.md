@@ -148,3 +148,8 @@ All acceptance criteria are covered by unit tests. `npm run check` passes. A pub
 3. **Branch protection.** Are there branch protection rules or rulesets on `main` today? Any rule that requires a PR blocks this module.
 4. **Limits.** Are 10 MB per file and 50 changes enough? Raw video clips may be larger.
 5. **Smoke repo.** Can the owner create a scratch repo (for example `ericthayer/admin-sandbox`) for the CP4d live test?
+
+## Implementation notes
+- FR-372: a 403 whose message mentions a rate limit but has no limit headers (a secondary limit), and a bare 429, map to `rate-limited` at now + 60 s, GitHub's documented minimum wait.
+- FR-372: `mapHttpError` returns `GitHubError | TooLarge`, since `too-large` isn't a `GitHubError`. A 413 carries `path: null` and the per-file cap as `limitBytes`. `readHead` reports a 413 as `unknown` (413).
+- FR-370: the race test matches "not a fast forward" and "Reference cannot be updated" (TO VERIFY at CP4d). Both are safe to retry, because the retry re-reads the head and re-checks for conflicts.
