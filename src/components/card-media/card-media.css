@@ -1,0 +1,115 @@
+@layer components {
+  .media {
+    position: relative;
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .media__picture,
+  .media__picture img,
+  .media__video,
+  .media__poster,
+  .media__poster img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+  .media__picture img,
+  .media__poster img,
+  .media__video {
+    object-fit: cover;
+    object-position: var(--focal, 50% 0%);
+  }
+
+  /* Duotone (Q7): luminosity of the media, hue of the theme. Color returns on hover/focus. */
+  .media[data-treatment='duotone']::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--duo);
+    mix-blend-mode: color;
+    pointer-events: none;
+    transition: opacity var(--dur-2) var(--ease-out);
+  }
+  .card:hover .media::after,
+  .card:has(.card__link:focus-visible) .media::after {
+    opacity: 0;
+  }
+
+  /* Live iframe preview (FR-032) */
+  .media__frame {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .media__iframe {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    max-inline-size: none; /* the reset caps iframes at 100 %; this one is a virtual viewport */
+    border: 0;
+    transform: scale(var(--frame-scale, 0.25));
+    transform-origin: 0 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--dur-3) var(--ease-out);
+  }
+  .media__frame[data-vw='390'] .media__iframe {
+    inline-size: 390px;
+    block-size: 844px;
+  }
+  .media__frame:not([data-vw='390']) .media__iframe {
+    inline-size: 1440px;
+    block-size: 900px;
+  }
+  .media__frame[data-loaded] .media__iframe {
+    opacity: 1;
+  }
+
+  /* Placeholder wireframe (FR-036) */
+  .media__placeholder {
+    inline-size: 100%;
+    block-size: 100%;
+    padding: 12%;
+  }
+  .media__placeholder .ph-frame {
+    fill: none;
+    stroke: var(--fg);
+    stroke-width: 1.2;
+    opacity: 0.55;
+  }
+  .media__placeholder .ph-line {
+    stroke: var(--fg);
+    stroke-width: 1;
+    opacity: 0.4;
+  }
+  .media__placeholder .ph-fill {
+    fill: var(--fg);
+    opacity: 0.16;
+  }
+  .media__placeholder .ph-accent {
+    fill: var(--art-1);
+  }
+  .media__placeholder .ph-accent-2 {
+    fill: var(--art-2);
+  }
+  .media__placeholder .ph-knock {
+    fill: var(--bg);
+  }
+
+  @media (forced-colors: active) {
+    .media[data-treatment='duotone']::after {
+      display: none;
+    }
+    .media__placeholder :is(.ph-frame, .ph-line) {
+      stroke: CanvasText;
+    }
+    .media__placeholder :is(.ph-fill, .ph-accent, .ph-accent-2) {
+      fill: CanvasText;
+    }
+  }
+}

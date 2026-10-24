@@ -1,0 +1,204 @@
+@layer tokens {
+  :root {
+    /* Swatches (data-model §3) */
+    --paper: #f2efe9;
+    --ink: #121212;
+    --graphite: #3a3a3c;
+    --stone: #8e8e93;
+    --mocha: #9c8172;
+    --coral: #ef6a5a;
+    --vermilion: #e2432f;
+    --vermilion-deep: #b8301f;
+    --mustard: #f6ae2d;
+    --lemon: #f7d83b;
+    --cyan: #2ea8e0;
+    --cobalt: #1e63ae;
+    --navy: #1b2431;
+    --emerald: #1e8f5a;
+    --plum: #5e1a36;
+    --blush: #f3b6bf;
+    --indigo: #1c1a3b;
+
+    /* Type */
+    --font-sans: 'Hanken Grotesk', 'Hanken Grotesk Fallback', system-ui, sans-serif;
+    --weight-meta: 600;
+    --weight-display: 700;
+    --tracking-display: -0.025em;
+
+    /* Layout */
+    --wall-gap: 4px;
+    --header-h: 3.5rem;
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+
+    /* Motion (plan §8) */
+    --dur-1: 120ms;
+    --dur-2: 200ms;
+    --dur-3: 320ms;
+    --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+    /* Focus: double ring passes 3:1 on every theme (FR-016) */
+    --focus-inner: var(--ink);
+    --focus-outer: var(--paper);
+
+    /* Default theme */
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --title: var(--fg);
+    --art-1: var(--ink);
+    --art-2: var(--stone);
+    --art-3: var(--vermilion);
+    --art-4: var(--art-1);
+    --duo: var(--stone);
+  }
+
+  html[data-motion='reduced'] {
+    --dur-1: 0.01ms;
+    --dur-2: 0.01ms;
+    --dur-3: 0.01ms;
+  }
+
+  [data-theme='paper-mocha'] {
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --art-1: var(--mocha);
+    --art-2: #c9b8ad;
+    --art-3: var(--ink);
+    --duo: var(--mocha);
+  }
+  [data-theme='ink-vermilion'] {
+    --bg: var(--ink);
+    --fg: var(--paper);
+    --art-1: var(--vermilion);
+    --art-2: var(--paper);
+    --art-3: #5a5a5c;
+    --duo: var(--vermilion);
+  }
+  [data-theme='paper-graphite'] {
+    --bg: var(--paper);
+    --fg: var(--graphite);
+    --art-1: var(--graphite);
+    --art-2: var(--mustard);
+    --art-3: var(--cobalt);
+    --art-4: var(--coral);
+    --duo: var(--graphite);
+  }
+  [data-theme='coral'] {
+    --bg: var(--coral);
+    --fg: var(--ink);
+    --art-1: var(--paper);
+    --art-2: var(--ink);
+    --art-3: #f6a196;
+    --duo: var(--coral);
+  }
+  [data-theme='paper-prism'] {
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --art-1: var(--lemon);
+    --art-2: var(--cyan);
+    --art-3: var(--blush);
+    --art-4: var(--emerald);
+    --duo: var(--cyan);
+  }
+  [data-theme='ink-cyan'] {
+    --bg: var(--ink);
+    --fg: var(--paper);
+    --art-1: var(--cyan);
+    --art-2: var(--cobalt);
+    --art-3: var(--navy);
+    --duo: var(--cyan);
+  }
+  [data-theme='mustard'] {
+    --bg: var(--mustard);
+    --fg: var(--ink);
+    --art-1: var(--paper);
+    --art-2: var(--ink);
+    --art-3: #f9cb77;
+    --duo: var(--mustard);
+  }
+  [data-theme='graphite'] {
+    --bg: var(--graphite);
+    --fg: var(--paper);
+    --art-1: var(--stone);
+    --art-2: var(--paper);
+    --art-3: var(--mocha);
+    --duo: var(--stone);
+  }
+  [data-theme='paper-cobalt'] {
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --art-1: var(--cobalt);
+    --art-2: var(--cyan);
+    --art-3: var(--ink);
+    --duo: var(--cobalt);
+  }
+  [data-theme='navy'] {
+    --bg: var(--navy);
+    --fg: var(--paper);
+    --art-1: var(--paper);
+    --art-2: #6c7a91;
+    --art-3: var(--cyan);
+    --duo: var(--cobalt);
+  }
+  [data-theme='navy-coral'] {
+    --bg: var(--navy);
+    --fg: var(--paper);
+    --art-1: var(--coral);
+    --art-2: var(--stone);
+    --art-3: var(--paper);
+    --duo: var(--coral);
+  }
+  [data-theme='graphite-flag'] {
+    --bg: var(--graphite);
+    --fg: var(--paper);
+    --art-1: var(--coral);
+    --art-2: var(--cobalt);
+    --art-3: var(--paper);
+    --duo: var(--cobalt);
+  }
+  [data-theme='paper-vermilion'] {
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --title: var(--vermilion-deep);
+    --art-1: var(--coral);
+    --art-2: var(--vermilion);
+    --art-3: var(--ink);
+    --duo: var(--coral);
+  }
+  [data-theme='plum'] {
+    --bg: var(--plum);
+    --fg: var(--paper);
+    --art-1: var(--mustard);
+    --art-2: var(--vermilion);
+    --art-3: var(--coral);
+    --duo: var(--mustard);
+  }
+  [data-theme='paper-ink'] {
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --art-1: var(--ink);
+    --art-2: #bdb8ae;
+    --art-3: var(--vermilion);
+    --duo: var(--ink);
+  }
+  [data-theme='indigo-vermilion'] {
+    --bg: var(--indigo);
+    --fg: var(--paper);
+    --art-1: var(--vermilion);
+    --art-2: var(--coral);
+    --art-3: var(--paper);
+    --duo: var(--vermilion);
+  }
+
+  /* --title follows --fg unless a theme overrides it. Re-declared per theme scope. */
+  [data-theme]:not([data-theme='paper-vermilion']) {
+    --title: var(--fg);
+  }
+  [data-theme]:not([data-theme='paper-graphite'], [data-theme='paper-prism']) {
+    --art-4: var(--art-1);
+  }
+}
