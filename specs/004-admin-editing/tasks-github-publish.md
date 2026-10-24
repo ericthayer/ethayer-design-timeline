@@ -14,7 +14,7 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). Each task is done when 
   - Acceptance: deletions emit `sha: null`; delete-dir expands by prefix and drops missing paths; base64 round-trips random bytes and a 10 MB buffer. Verify: `npx vitest run tests/unit/github/tree`. Files: `tree.ts`, `tree.test.ts`, `spec-github-publish.md`
 - [x] **T365** `conflictingPaths()` from a compare response. → FR-369
   - Acceptance: returns `paths-changed` (including a rename via `previous_filename` and a delete-dir prefix), `history-diverged`, `compare-truncated`, or none. Verify: `npx vitest run tests/unit/github/conflict`. Files: `conflict.ts`, `conflict.test.ts`
-- [ ] **T366** `commitMessage()` and `withTrailer()`. → FR-371
+- [x] **T366** `commitMessage()` and `withTrailer()`. → FR-371
   - Acceptance: `content: update dmns via admin` + blank line + `Published-With: admin editor`; the trailer is never doubled. Verify: `npx vitest run tests/unit/github/message`. Files: `message.ts`, `message.test.ts`
 - [ ] **T367** `fake-github.ts`, `client.ts` request helper, `readHead()`, `readFile()`. → FR-373, FR-374
   - Acceptance: reads decode UTF-8 (including "é"); a 404 maps to `not-found`; a shape mismatch maps to `unknown`; a rejected fetch maps to `network`. Verify: `npx vitest run tests/unit/github/client`. Files: `client.ts`, `client.test.ts`, `fake-github.ts`
