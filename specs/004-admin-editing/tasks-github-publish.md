@@ -18,7 +18,7 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). Each task is done when 
   - Acceptance: `content: update dmns via admin` + blank line + `Published-With: admin editor`; the trailer is never doubled. Verify: `npx vitest run tests/unit/github/message`. Files: `message.ts`, `message.test.ts`
 - [x] **T367** `fake-github.ts`, `client.ts` request helper, `readHead()`, `readFile()`. → FR-373, FR-374
   - Acceptance: reads decode UTF-8 (including "é"); a 404 maps to `not-found`; a shape mismatch maps to `unknown`; a rejected fetch maps to `network`. Verify: `npx vitest run tests/unit/github/client`. Files: `client.ts`, `client.test.ts`, `fake-github.ts`
-- [ ] **T368** `publish()` happy path, `unchanged`, and pre-request rejection. → FR-365, FR-367, FR-368
+- [x] **T368** `publish()` happy path, `unchanged`, and pre-request rejection. → FR-365, FR-367, FR-368
   - Acceptance: the call order and bodies match the spec (`base_tree`, `parents`, `force: false`); invalid input makes zero calls. Verify: `npx vitest run tests/unit/github/publish`. Files: `publish.ts`, `publish.test.ts`
 - [ ] **T369** Rebase, conflict, and race retry with blob reuse. → FR-369, FR-370
   - Acceptance: a moved head with disjoint paths gives `rebased: true`; overlap gives `conflict`; one 422 race retries without re-uploading blobs; two races give `conflict: race`. Verify: `npx vitest run tests/unit/github/publish`. Files: `publish.ts`, `publish-conflict.test.ts`

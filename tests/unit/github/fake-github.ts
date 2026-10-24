@@ -132,3 +132,48 @@ export const blobStep: Step = (call) => {
       : '';
   return { status: 201, body: { sha: fakeSha(content), url: 'https://api.github.com/x' } };
 };
+
+// ---- A happy-path publish script: `main` at H0 (tree T0), new tree T2, new commit C2 ----
+
+export const H0 = '0'.repeat(40);
+export const H1 = '1'.repeat(40);
+export const T0 = 'e'.repeat(40);
+export const T1 = 'f'.repeat(40);
+export const T2 = '2'.repeat(40);
+export const C2 = 'c'.repeat(40);
+
+export const commitBody = (sha: string, tree: string): Reply['body'] => ({
+  sha,
+  html_url: `https://github.com/ericthayer/ethayer-design-timeline/commit/${sha}`,
+  tree: { sha: tree },
+  parents: [],
+});
+
+/** A base tree listing for `main`: one project, its media folder, and order.json. */
+export const BASE_TREE = [
+  { path: 'media-src', type: 'tree' },
+  { path: 'media-src/dmns', type: 'tree' },
+  { path: 'media-src/dmns/cover.webp', type: 'blob' },
+  { path: 'media-src/dmns/shot-1.jpg', type: 'blob' },
+  { path: 'src/content/data/order.json', type: 'blob' },
+  { path: 'src/content/data/projects/dmns.json', type: 'blob' },
+  { path: 'src/content/data/projects/old.json', type: 'blob' },
+];
+
+/** `main` at `head` with tree `tree`. */
+export const headAt = (head: string, tree: string): Script => ({
+  'GET /git/ref/heads/main': { body: { object: { sha: head } } },
+  [`GET /git/commits/${head}`]: { body: commitBody(head, tree) },
+  [`GET /git/trees/${tree}?recursive=1`]: {
+    body: { sha: tree, truncated: false, tree: BASE_TREE },
+  },
+});
+
+export const publishScript = (overrides: Script = {}): Script => ({
+  ...headAt(H0, T0),
+  'POST /git/blobs': blobStep,
+  'POST /git/trees': { status: 201, body: { sha: T2, truncated: false, tree: [] } },
+  'POST /git/commits': { status: 201, body: commitBody(C2, T2) },
+  'PATCH /git/refs/heads/main': { body: { object: { sha: C2 } } },
+  ...overrides,
+});
