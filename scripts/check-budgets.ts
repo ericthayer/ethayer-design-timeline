@@ -1,9 +1,10 @@
 // Gzip-measures the production build against constitution §V and spec 004 admin-auth FR-341 and
-// FR-358. Public lines walk index.html's graph only; admin lines walk admin.html's graph minus the
-// public set. Exits 1 on any breach or isolation failure.
+// FR-358 (and github-publish FR-377, FR-378). Public lines walk index.html's graph only; admin
+// lines walk admin.html's graph minus the public set. Exits 1 on any breach or isolation failure.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
+import { build } from 'vite';
 import { floorPolicy } from './csp.ts';
 
 const DIST = 'dist';
@@ -15,12 +16,14 @@ const BUDGETS = {
   fonts: 60 * KB,
   adminJs: 40 * KB,
   adminCss: 5 * KB,
+  githubModule: 5 * KB,
 } as const;
 /** Public initial JS in gzip bytes at 6240560, before admin-auth. FR-358 allows +0.3 KB. */
 const BASELINE_INITIAL_JS = 19_507;
 const MAX_INITIAL_DELTA = 0.3 * KB;
-/** Only admin code may name GitHub's API (FR-341). */
-const FORBIDDEN_IN_PUBLIC = 'api.github.com';
+/** Only admin code may name GitHub's API (FR-341) or its ref endpoint (github-publish FR-377). */
+const FORBIDDEN_IN_PUBLIC = ['api.github.com', 'git/refs'] as const;
+const GITHUB_MODULE = 'src/core/github/index.ts';
 
 interface ManifestChunk {
   readonly file: string;
@@ -66,6 +69,29 @@ function walk(dir: string): string[] {
 }
 
 const gz = (file: string): number => gzipSync(readFileSync(join(DIST, file))).length;
+
+/** github-publish FR-378: the module alone, minified, with admin-auth (budgeted already) external. */
+async function moduleGzip(entry: string): Promise<number> {
+  const result = await build({
+    configFile: false,
+    logLevel: 'silent',
+    build: {
+      write: false,
+      minify: true,
+      target: 'es2023',
+      // Not lib mode: Vite keeps whitespace in lib ES output, which would overstate the size.
+      rolldownOptions: {
+        input: entry,
+        preserveEntrySignatures: 'strict',
+        external: [/\/core\/auth\//],
+      },
+    },
+  });
+  const outputs = Array.isArray(result) ? result : 'output' in result ? [result] : [];
+  return outputs
+    .flatMap((o) => o.output)
+    .reduce((total, c) => total + (c.type === 'chunk' ? gzipSync(c.code).length : 0), 0);
+}
 const sum = (files: Iterable<string>, measure: (f: string) => number): number =>
   [...files].reduce((total, f) => total + measure(f), 0);
 const minus = (set: Set<string>, other: Set<string>): string[] =>
@@ -85,6 +111,7 @@ const rows = [
   ['Fonts (raw woff2)', sum(fonts, (f) => statSync(join(DIST, f)).size), BUDGETS.fonts],
   ['Admin JS (gzip)', sum(minus(adminGraph.js, publicGraph.js), gz), BUDGETS.adminJs],
   ['Admin CSS (gzip)', sum(minus(adminGraph.css, publicGraph.css), gz), BUDGETS.adminCss],
+  ['GitHub module (gz)', await moduleGzip(GITHUB_MODULE), BUDGETS.githubModule],
 ] as const;
 
 const report = (ok: boolean, message: string): void => {
@@ -105,14 +132,13 @@ console.log(
   `${delta <= MAX_INITIAL_DELTA ? 'INFO' : 'WARN'}  Initial JS vs 6240560 ${delta >= 0 ? '+' : ''}${delta} B (FR-358 allows +${MAX_INITIAL_DELTA.toFixed(0)} B)`,
 );
 
-// Isolation gate (FR-341): no public chunk may name GitHub's API.
-const leaks = [...publicGraph.js].filter((f) =>
-  readFileSync(join(DIST, f), 'utf8').includes(FORBIDDEN_IN_PUBLIC),
-);
-report(
-  leaks.length === 0,
-  `Isolation: no "${FORBIDDEN_IN_PUBLIC}" in public JS ${leaks.join(' ')}`,
-);
+// Isolation gate (FR-341, github-publish FR-377): no public chunk may name GitHub's API.
+for (const needle of FORBIDDEN_IN_PUBLIC) {
+  const leaks = [...publicGraph.js].filter((f) =>
+    readFileSync(join(DIST, f), 'utf8').includes(needle),
+  );
+  report(leaks.length === 0, `Isolation: no "${needle}" in public JS ${leaks.join(' ')}`);
+}
 
 // CSP floor (FR-355): index.html carries the meta, admin.html must not.
 const decode = (s: string): string =>
