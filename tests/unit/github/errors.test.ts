@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  asGitHubError,
-  isNotFastForward,
-  mapHttpError,
-} from '../../../src/core/github/errors.ts';
+import { asGitHubError, isNotFastForward, mapHttpError } from '../../../src/core/github/errors.ts';
 import notFastForward from './fixtures/error-not-fast-forward.json';
 import permission from './fixtures/error-permission.json';
 import protectedBranch from './fixtures/error-protected.json';
@@ -17,10 +13,28 @@ const RESET = { 'x-ratelimit-remaining': '0', 'x-ratelimit-reset': '1800000600' 
 describe('mapHttpError (FR-372)', () => {
   it.each([
     ['401', 401, h(), { message: 'Bad credentials' }, { kind: 'unauthorized' }],
-    ['403 remaining 0', 403, h(RESET), rateLimit, { kind: 'rate-limited', resetAt: 1_800_000_600_000 }],
+    [
+      '403 remaining 0',
+      403,
+      h(RESET),
+      rateLimit,
+      { kind: 'rate-limited', resetAt: 1_800_000_600_000 },
+    ],
     ['429 remaining 0', 429, h(RESET), null, { kind: 'rate-limited', resetAt: 1_800_000_600_000 }],
-    ['403 retry-after', 403, h({ 'retry-after': '30' }), {}, { kind: 'rate-limited', resetAt: NOW + 30_000 }],
-    ['429 retry-after', 429, h({ 'retry-after': '5' }), {}, { kind: 'rate-limited', resetAt: NOW + 5_000 }],
+    [
+      '403 retry-after',
+      403,
+      h({ 'retry-after': '30' }),
+      {},
+      { kind: 'rate-limited', resetAt: NOW + 30_000 },
+    ],
+    [
+      '429 retry-after',
+      429,
+      h({ 'retry-after': '5' }),
+      {},
+      { kind: 'rate-limited', resetAt: NOW + 5_000 },
+    ],
     ['429 bare', 429, h(), {}, { kind: 'rate-limited', resetAt: NOW + 60_000 }],
     [
       '403 secondary limit message',

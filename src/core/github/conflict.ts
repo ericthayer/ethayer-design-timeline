@@ -18,7 +18,8 @@ export function conflictingPaths(
   compare: WireCompare,
   changes: readonly FileChange[],
 ): ConflictCheck {
-  if (compare.status !== 'ahead') return { kind: 'conflict', reason: 'history-diverged', paths: [] };
+  if (compare.status !== 'ahead')
+    return { kind: 'conflict', reason: 'history-diverged', paths: [] };
   if (compare.files.length >= COMPARE_FILE_CAP) {
     return { kind: 'conflict', reason: 'compare-truncated', paths: [] };
   }

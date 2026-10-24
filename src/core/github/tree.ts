@@ -18,12 +18,12 @@ export interface Upload {
 export function treeEntries(uploads: readonly Upload[], deletions: readonly string[]): TreeEntry[] {
   const byPath = (a: { path: string }, b: { path: string }): number =>
     a.path < b.path ? -1 : a.path > b.path ? 1 : 0;
-  const puts = [...uploads].sort(byPath).map(
-    ({ path, sha }): TreeEntry => ({ path, mode: '100644', type: 'blob', sha }),
-  );
-  const dels = [...deletions].sort().map(
-    (path): TreeEntry => ({ path, mode: '100644', type: 'blob', sha: null }),
-  );
+  const puts = [...uploads]
+    .sort(byPath)
+    .map(({ path, sha }): TreeEntry => ({ path, mode: '100644', type: 'blob', sha }));
+  const dels = [...deletions]
+    .sort()
+    .map((path): TreeEntry => ({ path, mode: '100644', type: 'blob', sha: null }));
   return [...puts, ...dels];
 }
 
