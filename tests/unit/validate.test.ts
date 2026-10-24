@@ -14,7 +14,13 @@ import {
   validateResume,
   validateSite,
 } from '../../src/content/validate/documents.ts';
-import type { Issue, Validated } from '../../src/content/validate/issue.ts';
+import {
+  type Issue,
+  RULE_IDS,
+  type Validated,
+  severityOf,
+} from '../../src/content/validate/issue.ts';
+import { validateContent } from '../../src/content/validate/index.ts';
 import { validateProject } from '../../src/content/validate/project.ts';
 import { Reader, Sink, readPeriod } from '../../src/content/validate/read.ts';
 import {
@@ -25,6 +31,7 @@ import {
   type ProjectRule,
   baseProject,
 } from '../fixtures/content/projects.ts';
+import { RULE_FIXTURES, baseBundle } from '../fixtures/content/bundle.ts';
 import {
   ERA_FIXTURES,
   ORDER_KEY_FIXTURE,
@@ -229,5 +236,55 @@ describe('document rules (FR-300, FR-313)', () => {
     expect(rulesAt(validateOrder(ORDER_KEY_FIXTURE.order))).toEqual([
       ['order', 'src/content/data/order.json', ORDER_KEY_FIXTURE.path],
     ]);
+  });
+});
+
+describe('validateContent (FR-305, FR-312, FR-313)', () => {
+  it('accepts the base bundle with no issues, projects in order.json order', () => {
+    const result = validateContent(baseBundle(), CTX);
+    expect(result.ok).toBe(true);
+    expect(result.warnings).toEqual([]);
+    if (result.ok) {
+      expect(result.value.projects.map((p) => p.slug)).toEqual(['demo', 'swiss-one', 'p2', 'p3']);
+    }
+  });
+
+  it.each(RULE_IDS.map((rule) => [rule, RULE_FIXTURES[rule]] as const))(
+    '%s: one fixture per rule',
+    (rule, fixture) => {
+      const result = validateContent(fixture.raw(), CTX);
+      const severity = severityOf(rule);
+      const issues = severity === 'error' ? errorsOf(result) : result.warnings;
+      expect(issues).toContainEqual(
+        expect.objectContaining({
+          rule,
+          severity,
+          file: fixture.file,
+          path: fixture.path,
+          slug: fixture.slug,
+        }),
+      );
+      // Warnings never set ok: false (FR-312).
+      expect(result.ok).toBe(severity === 'warning');
+    },
+  );
+
+  it('reports a listed slug under the wrong era, and a file missing from order.json', () => {
+    const raw = {
+      ...baseBundle(),
+      [CONTENT_FILES.order]: { cobank: ['demo', 'swiss-one', 'p2'], independent: ['p3'] },
+    };
+    const extra = { ...raw, [projectFile('p4')]: baseProject('p4') };
+    expect(rulesAt(validateContent(extra, CTX))).toEqual([
+      ['order', CONTENT_FILES.order, '/independent/0'],
+      ['order', CONTENT_FILES.order, '/cobank'],
+    ]);
+  });
+
+  it('reports a missing document', () => {
+    const raw = Object.fromEntries(
+      Object.entries(baseBundle()).filter(([file]) => file !== CONTENT_FILES.resume),
+    );
+    expect(rulesAt(validateContent(raw, CTX))).toEqual([['shape', CONTENT_FILES.resume, '']]);
   });
 });
