@@ -6,7 +6,7 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). Each task is done when 
   - Acceptance: the three files exist and follow the map. Owner approval is the spec review gate (plan §5) before T361. Verify: review. Files: `spec-`, `plan-`, `tasks-github-publish.md`
 - [x] **T361** Types and recorded-shape fixtures (ref, commit, blob, tree, recursive tree, compare, combined status, error bodies). → FR-361, FR-362, FR-373
   - Acceptance: unions compile under strict and the guards accept every fixture and reject a mutated one. Verify: `npx vitest run tests/unit/github/types`. Files: `types.ts`, `types.test.ts`, `fixtures/*.json`
-- [ ] **T362** Path allowlist, path rules, limits, and `checkChanges()`. → FR-363, FR-364
+- [x] **T362** Path allowlist, path rules, limits, and `checkChanges()`. → FR-363, FR-364
   - Acceptance: hostile paths (`../`, `.github/`, `/abs`, `a\b`, `.env`, a duplicate, a wrong extension) return `invalid`; an 11 MB binary returns `too-large`; 51 changes return `invalid`. Verify: `npx vitest run tests/unit/github/paths`. Files: `paths.ts`, `paths.test.ts`
 - [ ] **T363** `mapHttpError()` and rate-limit parsing. → FR-372
   - Acceptance: a table test covers 401, 403 (remaining 0, retry-after, plain, protected branch), 404, 413, 422 (plain, not-fast-forward, rule violation), 429, 500. Verify: `npx vitest run tests/unit/github/errors`. Files: `errors.ts`, `errors.test.ts`
