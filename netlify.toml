@@ -16,10 +16,12 @@
   to = "/index.html"
   status = 200
 
+# CSP ceiling from scripts/csp.ts (spec 004 FR-355). dist/index.html adds a <meta> floor that
+# keeps public pages at connect-src 'self' and img-src 'self'; only /admin reaches GitHub.
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://qrlanding.netlify.app https://dmns.netlify.app https://madramps.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; media-src 'self'; font-src 'self'; connect-src 'self' https://api.github.com; frame-src https://qrlanding.netlify.app https://dmns.netlify.app https://madramps.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     X-Content-Type-Options = "nosniff"
