@@ -1,0 +1,126 @@
+/* Static content for people without JavaScript (FR-103). It lives in <noscript>, so it never
+   renders alongside the wall. Tokens only: no new colors. */
+@layer components {
+  .static {
+    display: grid;
+    gap: var(--space-8);
+    max-inline-size: 48rem;
+    margin-inline: auto;
+    padding: var(--space-8) var(--space-4) calc(var(--space-8) * 2);
+    font-size: 1.0625rem;
+  }
+
+  .static h1 {
+    color: var(--title);
+    font-size: clamp(2.25rem, 9vw, 4.5rem);
+    font-weight: var(--weight-display);
+    line-height: 0.95;
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+  }
+  .static > article,
+  .static section {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .static > article {
+    gap: var(--space-6);
+  }
+  .static h2 {
+    font-size: 1.5rem;
+    font-weight: var(--weight-display);
+    line-height: 1.1;
+  }
+  .static h3 {
+    font-size: 1.125rem;
+    font-weight: var(--weight-display);
+    line-height: 1.2;
+  }
+
+  .static__intro,
+  .static__head {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    border-block-start: 6px solid var(--art-1);
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .static__kicker {
+    font-weight: var(--weight-display);
+  }
+  .static__summary {
+    max-inline-size: 60ch;
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .static__note {
+    color: var(--stone);
+    font-size: 0.9375rem;
+  }
+  .static__meta {
+    color: var(--stone);
+    font-size: 0.9375rem;
+    font-weight: var(--weight-meta);
+  }
+  .static__draft {
+    padding: var(--space-3) var(--space-4);
+    border-inline-start: 3px solid var(--coral);
+    color: var(--stone);
+    font-size: 0.9375rem;
+  }
+
+  .static__cover {
+    inline-size: 100%;
+    block-size: auto;
+  }
+  .static__facts {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .static__facts div {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+  .static__facts dt {
+    font-weight: var(--weight-display);
+  }
+  .static__story {
+    display: grid;
+    gap: var(--space-3);
+    max-inline-size: 60ch;
+  }
+  .static__story h2:not(:first-child) {
+    margin-block-start: var(--space-3);
+  }
+
+  .static ul,
+  .static ol {
+    list-style: none;
+  }
+  .static__list {
+    display: grid;
+  }
+  .static__list li {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-3);
+    border-block-end: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  }
+  .static__era {
+    margin-block-start: var(--space-4);
+  }
+  .static__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    font-weight: var(--weight-meta);
+  }
+  .static a {
+    display: inline-block;
+    min-block-size: 24px;
+    padding-block: 0.15rem;
+  }
+}
