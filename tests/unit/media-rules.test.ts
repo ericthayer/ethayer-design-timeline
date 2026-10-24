@@ -1,10 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
   LIMITS,
+  buildManifest,
+  buildVideoManifest,
   checkSource,
+  cropBox,
   findDuplicateKeys,
   mediaKeyFromPath,
+  pairVideos,
   parseSourcePath,
+  selectWidths,
+  serializeManifest,
+  shouldPassthrough,
+  type ImageManifestInput,
   type SourceRef,
 } from '../../src/core/media-rules.ts';
 
@@ -139,5 +147,126 @@ describe('checkSource (FR-322)', () => {
   it('rejects a clip over 1.5 MB', () => {
     const result = checkSource(mp4, { bytes: LIMITS.maxVideoBytes + 1 });
     expect(result.ok).toBe(false);
+  });
+});
+
+describe('selectWidths (FR-323)', () => {
+  it.each([
+    [5120, [480, 960, 1440]],
+    [1440, [480, 960, 1440]],
+    [1400, [480, 960]],
+    [480, [480]],
+    [479, []],
+  ])('%i px → %j, never upscaling', (width, expected) => {
+    expect(selectWidths(width)).toEqual(expected);
+  });
+
+  it('pairs with checkSource so a 479 px source is an error, not an empty set', () => {
+    const png = source('media-src/a/cover.png');
+    expect(checkSource(png, { bytes: 1, width: 479, height: 300 }).ok).toBe(false);
+  });
+});
+
+describe('cropBox (FR-324)', () => {
+  it('crops a tall cover from the top to 16:10', () => {
+    expect(cropBox('cover', 1440, 4000)).toEqual({
+      left: 0,
+      top: 0,
+      width: 1440,
+      height: 900,
+      cropped: true,
+    });
+  });
+
+  it('keeps a tall gallery image portrait', () => {
+    expect(cropBox('detail', 1000, 2000)).toMatchObject({ height: 2000, cropped: false });
+  });
+
+  it('leaves wide and exact 16:10 covers unchanged', () => {
+    expect(cropBox('cover', 1440, 810)).toMatchObject({ height: 810, cropped: false });
+    expect(cropBox('cover', 2774, 1734)).toMatchObject({ height: 1734, cropped: false });
+  });
+});
+
+describe('shouldPassthrough (FR-325)', () => {
+  const base = {
+    ext: 'webp',
+    format: 'webp',
+    cropped: false,
+    reoriented: false,
+    sourceWidth: 1440,
+    targetWidth: 1440,
+  } as const;
+
+  it('copies a same-format, same-width, uncropped source', () => {
+    expect(shouldPassthrough(base)).toBe(true);
+    expect(shouldPassthrough({ ...base, ext: 'avif', format: 'avif' })).toBe(true);
+  });
+
+  it('re-encodes otherwise', () => {
+    expect(shouldPassthrough({ ...base, format: 'avif' })).toBe(false);
+    expect(shouldPassthrough({ ...base, targetWidth: 960 })).toBe(false);
+    expect(shouldPassthrough({ ...base, cropped: true })).toBe(false);
+    expect(shouldPassthrough({ ...base, reoriented: true })).toBe(false);
+    expect(shouldPassthrough({ ...base, ext: 'png' })).toBe(false);
+  });
+});
+
+describe('pairVideos (FR-322, FR-329)', () => {
+  it('accepts a complete pair and names the missing format', () => {
+    const result = pairVideos([
+      source('media-src/merchants/clip.webm'),
+      source('media-src/merchants/clip.mp4'),
+      source('media-src/dmns/loop.mp4'),
+      source('media-src/dmns/cover.webp'),
+    ]);
+    expect(result.keys).toEqual(['merchants/clip']);
+    expect(result.errors).toEqual([
+      'media-src/dmns/loop.mp4: missing loop.webm (clips need both mp4 and webm)',
+    ]);
+  });
+});
+
+describe('manifests (FR-328, FR-329, FR-334)', () => {
+  const entries: ImageManifestInput[] = [
+    { key: 'sublist/cover', width: 1440, height: 810, widths: [960, 480, 1440], source: 'a.webp' },
+    { key: 'Zed/cover', width: 960, height: 600, widths: [480, 960], source: 'cover.png' },
+    { key: 'dmns/cover', width: 1440, height: 810, widths: [480, 960, 1440], source: 'cover.webp' },
+    { key: 'dmns-x/cover', width: 480, height: 300, widths: [480], source: 'cover.jpg' },
+  ];
+
+  it('sorts keys by code unit and widths ascending', () => {
+    const manifest = buildManifest(entries);
+    expect(Object.keys(manifest)).toEqual([
+      'Zed/cover',
+      'dmns-x/cover',
+      'dmns/cover',
+      'sublist/cover',
+    ]);
+    expect(manifest['sublist/cover']?.widths).toEqual([480, 960, 1440]);
+    expect(manifest['dmns/cover']).toEqual({
+      width: 1440,
+      height: 810,
+      widths: [480, 960, 1440],
+      source: 'cover.webp',
+    });
+  });
+
+  it('serializes identically for shuffled input, with a trailing newline', () => {
+    const a = serializeManifest(buildManifest(entries));
+    const b = serializeManifest(buildManifest([...entries].reverse()));
+    expect(a).toBe(b);
+    expect(a.endsWith('}\n')).toBe(true);
+    expect(a).toContain('\n  "dmns/cover": {\n    "width": 1440,');
+  });
+
+  it('builds the video manifest', () => {
+    expect(serializeManifest(buildVideoManifest(['z/clip', 'merchants/clip']))).toBe(
+      `${JSON.stringify(
+        { 'merchants/clip': { formats: ['mp4', 'webm'] }, 'z/clip': { formats: ['mp4', 'webm'] } },
+        null,
+        2,
+      )}\n`,
+    );
   });
 });
