@@ -10,7 +10,7 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). Each task is done when 
   - Acceptance: hostile paths (`../`, `.github/`, `/abs`, `a\b`, `.env`, a duplicate, a wrong extension) return `invalid`; an 11 MB binary returns `too-large`; 51 changes return `invalid`. Verify: `npx vitest run tests/unit/github/paths`. Files: `paths.ts`, `paths.test.ts`
 - [x] **T363** `mapHttpError()` and rate-limit parsing. → FR-372
   - Acceptance: a table test covers 401, 403 (remaining 0, retry-after, plain, protected branch), 404, 413, 422 (plain, not-fast-forward, rule violation), 429, 500. Verify: `npx vitest run tests/unit/github/errors`. Files: `errors.ts`, `errors.test.ts`
-- [ ] **T364** `treeEntries()`, `expandDeletes()`, `toBase64()`; confirm `sha: null` deletion in the GitHub REST docs and note the result in the spec. → FR-365, FR-366
+- [x] **T364** `treeEntries()`, `expandDeletes()`, `toBase64()`; confirm `sha: null` deletion in the GitHub REST docs and note the result in the spec. → FR-365, FR-366
   - Acceptance: deletions emit `sha: null`; delete-dir expands by prefix and drops missing paths; base64 round-trips random bytes and a 10 MB buffer. Verify: `npx vitest run tests/unit/github/tree`. Files: `tree.ts`, `tree.test.ts`, `spec-github-publish.md`
 - [ ] **T365** `conflictingPaths()` from a compare response. → FR-369
   - Acceptance: returns `paths-changed` (including a rename via `previous_filename` and a delete-dir prefix), `history-diverged`, `compare-truncated`, or none. Verify: `npx vitest run tests/unit/github/conflict`. Files: `conflict.ts`, `conflict.test.ts`
