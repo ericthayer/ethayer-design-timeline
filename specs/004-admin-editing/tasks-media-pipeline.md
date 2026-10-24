@@ -1,0 +1,45 @@
+# Tasks 004 · media-pipeline
+
+Legend as in [001 tasks](../001-timeline-wall/tasks.md). Spec: [spec-media-pipeline](./spec-media-pipeline.md) · Plan: [plan-media-pipeline](./plan-media-pipeline.md). Each task is done when its Verify passes **and** `npm run check` passes. Cite the `T###` in the commit.
+
+- [ ] **T320** `media-rules.ts` part 1: `parseSourcePath`, `mediaKeyFromPath`, duplicate-key detection, `LIMITS`, and `checkSource` (type, 10 MB, 480 px, 50 MP), as discriminated-union results. No `node:*` imports. → FR-320, FR-321, FR-322, FR-336
+  - Acceptance: every case in spec §7's path and limit list has a test. Errors read `<path>: <reason>`.
+  - Verify: `npx vitest run tests/unit/media-rules.test.ts`. `grep -n "node:" src/core/media-rules.ts` finds nothing.
+  - Files: `src/core/media-rules.ts`, `tests/unit/media-rules.test.ts`
+- [ ] **T321** `media-rules.ts` part 2: `selectWidths`, `cropBox` (cover-only 16:10 top crop), `shouldPassthrough`, video pairing, `buildManifest`, and `serializeManifest` (code-unit sort, ascending widths, 2-space JSON + newline). → FR-323, FR-324, FR-325, FR-328, FR-329, FR-334
+  - Acceptance: 1400 → `[480, 960]` and 479 → error, with no upscaling path. Serialization is identical for shuffled inputs.
+  - Verify: `npx vitest run tests/unit/media-rules.test.ts`
+  - Files: `src/core/media-rules.ts`, `tests/unit/media-rules.test.ts`
+- [ ] **T322** `git mv scripts/optimize-images.ts scripts/build-media.ts`, then rewrite it as `runMediaPipeline(dirs)` plus a CLI: walk, validate everything first, encode or copy, pass videos through, write manifests atomically, remove stale `public/media` files, and print collected errors with exit 1. → FR-326, FR-327, FR-330
+  - Acceptance: a run over a temp `media-src` with one corrupt PNG writes nothing and names the file.
+  - Verify: `npx vitest run tests/unit/build-media.test.ts` (synthetic `sharp({ create })` fixtures, node environment)
+  - Files: `scripts/build-media.ts`, `tests/unit/build-media.test.ts`
+- [ ] **T323** `scripts/media-cache.ts`: SHA-256 key over bytes, name rule, options, `PIPELINE_VERSION`, and `sharp.versions`; lookup with `meta.json` re-validation, store, and prune unused entries. Wire it into `runMediaPipeline`. → FR-332, FR-334
+  - Acceptance: a second run reports `encoded: 0` with identical output hashes. Deleting one cached file re-encodes only that source.
+  - Verify: `npx vitest run tests/unit/build-media.test.ts`
+  - Files: `scripts/media-cache.ts`, `scripts/build-media.ts`, `tests/unit/build-media.test.ts`
+- [ ] **T324** Scripts: `media`, `dev`, `build`, and `check` per spec §4 (remove `media:images`), and `capture-clip.ts` writes to `media-src/<slug>/`. `netlify.toml` `command` stays `npm run build`. Lands in the same PR as T325. → FR-331, FR-335
+  - Acceptance: `build` = `npm run media && tsc --noEmit && npm run content:check && vite build` (with `content:check` once `content-json` lands).
+  - Verify: `npm run build` locally, and the log shows the media report before `vite build`.
+  - Files: `package.json`, `scripts/capture-clip.ts`
+- [ ] **T325** Migration: `git mv` each largest WebP to `media-src/<slug>/cover.webp` and the clips to `media-src/merchants/`. `git rm` the other `public/media` files and `git rm --cached` the manifest. Add `public/media/`, both manifests, and `.cache/` to `.gitignore`. Add a "superseded by FR-338" note to 001 FR-090. → FR-330, FR-338
+  - Acceptance: after `npm run media`, manifest keys and `widths` equal the pre-migration file (diff in the PR). `public/media/*/cover-1440.webp` is byte-identical (passthrough).
+  - Verify: `git show HEAD~1:src/content/media-manifest.json` compared with the new file (keys and `widths` only), `shasum` on the passthrough files, and `npm run e2e`.
+  - Files: `media-src/**` (moved), `public/media/**` (removed), `src/content/media-manifest.json` (untracked), `.gitignore`, `specs/001-timeline-wall/spec.md`
+- [ ] **T326** Replace the on-disk image and video checks in `content.test.ts` with FR-339's source checks (using `mediaKeyFromPath` over `media-src/`). Leave the alt-text and manifest-reference rules to `content-json`. → FR-339
+  - Acceptance: deleting `media-src/dmns/cover.webp` fails the test with `dmns/cover`. The test needs no build.
+  - Verify: `npx vitest run tests/unit/content.test.ts`
+  - Files: `tests/unit/content.test.ts`
+- [ ] **T327** Netlify local plugin `netlify/plugins/media-cache/` (`manifest.yml` + `index.js`): restore `.cache/media` in `onPreBuild` and save it in `onPostBuild`, with try/catch and a warning. Add `[[plugins]]` to `netlify.toml` and node globals to the ESLint config. First check the API against Netlify's docs and record the doc URL in a code comment. → FR-333
+  - Acceptance: the second deploy log shows a cache restore and `encoded: 0`. A forced plugin error still deploys.
+  - Verify: two deploy previews on the PR branch; read the logs.
+  - Files: `netlify/plugins/media-cache/manifest.yml`, `netlify/plugins/media-cache/index.js`, `netlify.toml`, `eslint.config.js`
+- [ ] **T328** CI: `actions/cache@v4` for `.cache/media`, keyed per FR-333, before `npm run check`. Confirm sharp's Linux binary installs from the lockfile, and fix the lockfile if not. → FR-333
+  - Acceptance: CI green on `ubuntu-latest`. A rerun shows a cache hit and `encoded: 0`.
+  - Verify: two CI runs on the PR; read the logs.
+  - Files: `.github/workflows/ci.yml`, `package-lock.json` (only if the fix is needed)
+- [ ] **T329** Deploy-preview evidence: cold and warm build timings, plus a hand-dropped `media-src/<slug>/<name>.png` referenced in content renders on the preview. Record the results in the PR. → SC-M1, SC-M2, SC-M4
+  - Acceptance: SC-M1 ≤ 60 s and SC-M2 ≤ 5 s added. The image is served in AVIF and WebP.
+  - Verify: Netlify deploy logs and the network panel on the preview.
+  - Files: none beyond a throwaway test commit, reverted before merge
+- [ ] **CP4b** Owner reviews the media-pipeline deploy preview, the migration manifest diff, and the timings, and answers MQ1–MQ4. Media upload in `edit-layer` waits for this.

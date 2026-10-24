@@ -34,7 +34,7 @@ Each module then gets its own spec → plan → tasks under this folder (`spec-<
 | --- | --- |
 | II.2 zero runtime deps | The admin is vanilla TS custom elements. `fetch` to the GitHub REST API needs no SDK |
 | II.4 lazy heavy code | The admin is a dynamic `import()` taken only on `/admin`. The public bundle grows by a route check only |
-| VII CSP and privacy (NFR-06) | Public pages keep today's CSP, and public visitors make no third-party requests. `connect-src https://api.github.com` applies to `/admin` only |
+| VII CSP and privacy (NFR-06) | Public pages keep today's effective CSP, and public visitors make no third-party requests. Mechanism (spec-admin-auth FR-355): the `/*` header is a ceiling that adds `api.github.com` and `blob:`, and a `<meta>` CSP floor on `index.html` keeps public pages at `connect-src 'self'`. Browsers enforce both, so only `/admin` (`admin.html`) can reach GitHub |
 | II.3 no `innerHTML` | The editor uses `textContent`, `contenteditable` with plain-text reads, and form controls |
 | IV a11y | The toolbar and editors are keyboard operable, with labeled fields and visible focus. axe runs on `/admin` too |
 | V budgets | The initial public JS stays under 25 KB, and the public budgets don't change. The admin chunk has its own line: ≤ 40 KB gzip (owner, 2026-10-24) |

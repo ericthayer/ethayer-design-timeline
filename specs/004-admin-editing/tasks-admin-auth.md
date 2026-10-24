@@ -1,0 +1,42 @@
+# Tasks 004 · admin-auth
+
+From [spec-admin-auth.md](./spec-admin-auth.md) and [plan-admin-auth.md](./plan-admin-auth.md). Legend as in [001 tasks](../001-timeline-wall/tasks.md). Each task is done when `npm run check` passes, and its commit cites the `T###` ID.
+
+- [x] **T340** Spec, plan, and tasks written from the approved capability map. → FR-340–FR-359
+- [ ] **T341** Verify facts V1–V8 against GitHub, Netlify, and CSP docs. V2 and V3 need curl with a real fine-grained token (owner runs it, the token is never pasted into a log). → V1–V8
+  - Acceptance: each V row is marked confirmed or refuted with a source link. A refuted fact gets a spec edit **before** any code.
+  - Verify: the owner reads the updated table. Files: `plan-admin-auth.md`, `spec-admin-auth.md`
+- [ ] **T342** CSP ceiling and public meta floor from one source. → FR-355
+  - Acceptance: the `/*` header is today's policy plus `https://api.github.com` and `blob:`. The built `dist/index.html` carries the meta floor (today's policy without `frame-ancestors`). Dev has no meta. The unit test checks `netlify.toml` against `scripts/csp.ts`.
+  - Verify: `npm run check`, `npm run build`, and the existing `npm run e2e` all pass under the floor. Files: `scripts/csp.ts`, `vite.config.ts`, `netlify.toml`, `tests/unit/csp.test.ts`
+- [ ] **T343** `admin.html` entry, rewrites, and noindex, with a stub `entry.ts`. → FR-340, FR-344
+  - Acceptance: `/admin` and `/admin/work/x` serve `admin.html` in dev, preview, and Netlify. Robots meta and `X-Robots-Tag` are set. The body-drift test passes.
+  - Verify: `npm run build && npm run preview`, then open `/admin/work/dmns`. Files: `admin.html`, `vite.config.ts`, `netlify.toml`, `src/admin/entry.ts`, `tests/unit/admin-html.test.ts`
+- [ ] **T344** Budgets by manifest graph, with an Admin JS line and an isolation gate. → FR-341, FR-358
+  - Acceptance: the public lines count only the `index.html` graph. Admin JS ≤ 40 KB. The script fails on `api.github.com` in public JS or a missing meta floor. It prints the initial JS delta against `6240560`.
+  - Verify: `npm run build && npm run budgets`, then plant a test string and see it FAIL. Files: `scripts/check-budgets.ts`, `vite.config.ts`
+- [ ] **T345** Router `/admin` base. → FR-342, US-A6
+  - Acceptance: every public router test passes unchanged. With the base, open, replace, close, and reset keep `/admin`, and `/admin/resume` opens the résumé. Public initial JS grows ≤ 0.3 KB gzip.
+  - Verify: `npm test`, `npm run budgets`. Files: `src/core/router.ts`, `tests/unit/core.test.ts`
+- [ ] **T346** Token pre-check, verification, and messages, with fetch injected. → FR-346, FR-347, FR-348
+  - Acceptance: one unit case per FR-347 row, plus precedence, the expiry header present or absent, and `expired` versus `bad-token`. Each kind has a message.
+  - Verify: `npm test`. Files: `src/core/auth/config.ts`, `src/core/auth/verify.ts`, `src/core/auth/messages.ts`, `tests/unit/auth-verify.test.ts`
+- [ ] **T347** Token store, `AdminSession`, `authorizedFetch`, events, and the `AuthProvider` seam. → FR-349–FR-353, FR-356, FR-359
+  - Acceptance: storage that throws falls back to memory. The origin guard rejects absolute, `//`, and `@` paths. A caller can't override `Authorization`. A 401 clears the store, fires `admin:signed-out`, and later calls reject. `no-console` is an error on the auth paths.
+  - Verify: `npm run check`. Files: `src/core/auth/token-store.ts`, `src/core/auth/session.ts`, `src/core/auth/provider.ts`, `tests/unit/auth-session.test.ts`, `eslint.config.js`
+- [ ] **T348** `<admin-sign-in>` (page and dialog modes). → FR-345, FR-357
+  - Acceptance: the exact FR-345 steps, a labeled field, a Show toggle, busy and error states per FR-357. No `innerHTML`. Styles in `@layer components`.
+  - Verify: `npm run check`, then a keyboard-only pass in dev. Files: `src/components/admin-sign-in/admin-sign-in.ts`, `admin-sign-in.css`, `src/index.ts`
+- [ ] **T349** `<admin-status>`, the island, and the re-auth dialog. → FR-352, FR-353, FR-354, FR-357
+  - Acceptance: "Signed in as {login}" and expiry text. Sign out works. The toolbar slot is present. It still works after being re-parented. Scroll padding is reserved.
+  - Verify: `npm run check`. Files: `src/components/admin-status/admin-status.ts`, `admin-status.css`, `src/index.ts`
+- [ ] **T350** Gated boot in `entry.ts`: restore, verify, mount, then `import('../main.ts')`. → FR-343, FR-350, US-A1–US-A3, US-A5
+  - Acceptance: the public app never boots without a verified session. Focus moves to `<main>` after sign-in. A deep link opens after sign-in.
+  - Verify: dev with a real token (owner). Files: `src/admin/entry.ts`
+- [ ] **T351** E2E and axe, with GitHub mocked. → US-A1–US-A6, FR-341, FR-356, FR-357
+  - Acceptance: the spec §6 e2e list passes, with zero axe violations on the four `/admin` states.
+  - Verify: `npm run e2e`. Files: `tests/e2e/admin.spec.ts`, `tests/e2e/public-isolation.spec.ts`, `tests/e2e/github-mock.ts`
+- [ ] **T352** Deploy-preview check (owner). → FR-341, FR-344, FR-355
+  - Acceptance: `curl -sI` shows the ceiling CSP and `X-Robots-Tag` on `/admin`. A real token signs in, and a read-only token is refused. The public network panel shows no GitHub request.
+  - Verify: results noted in the PR. Files: none
+- [ ] **CP4c** Owner reviews sign-in, sign-out, the error messages, and the headers on the deploy preview, and approves before `github-publish` (T360+) starts.
