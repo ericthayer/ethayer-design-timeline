@@ -57,6 +57,12 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 - **Given** an unknown slug, **then** the wall renders, a polite status says "Project not found", and the URL is replaced with `/`.
 - **Inside** the dialog, Previous and Next (buttons, and ← → keys) step through the timeline and update the URL without stacking history entries.
 
+### US9 (P2). Share a link and get a preview
+- **Given** a `/work/<slug>` URL pasted into a chat or social app (Slack, iMessage, LinkedIn, X), **then** the preview shows the project title, its summary, and a 1200×630 poster image. The home URL previews the identity poster.
+- **Given** a client that doesn't run JavaScript, **then** the HTML of every route already carries its own title, description, canonical URL, Open Graph tags, and Twitter tags.
+- **Given** JavaScript is off, **then** `/` shows the intro, a static list of every project grouped by era, and education, and `/work/<slug>` shows that project's full story, links, and Previous / Next / All projects links.
+- **Given** a project marked `draft`, **then** its page is `noindex` and left out of the sitemap, but its link still previews.
+
 ### US6 (P2). Progressive "infinite" loading
 - **When** the visitor nears the end of the rendered cards, **then** the next batch renders before they reach it, and a polite live region announces "Loaded N more projects (YYYY–YYYY)".
 - **When** the last batch renders, **then** an end-cap tile (education plus resume and contact) closes the timeline.
@@ -121,8 +127,8 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 
 ### Routing
 - **FR-060** Routes: `/` (wall) and `/work/:slug` (wall plus dialog), on the History API. Opening a dialog pushes a history entry, Prev/Next replace it, and closing goes back if the app pushed the entry (otherwise it replaces with `/`).
-- **FR-061** Netlify rewrites `/work/*` to `/index.html` (200). After launch, prerendered pages replace the rewrite (T070).
-- **FR-062** `document.title` and the canonical link update per route.
+- **FR-061** Netlify serves each prerendered page through a forced rewrite (`/work/<slug>` → `/work/<slug>.html`, status 200, FR-100). The `/work/*` → `/index.html` (200) wildcard stays below those rules as the unknown-slug fallback, so US5 still holds.
+- **FR-062** In the app, `document.title` updates per route and returns to the home title (`HOME_TITLE`) when the dialog closes. Canonical and social tags come from the prerendered HTML (FR-101), not from client-side updates.
 
 ### Loading
 - **FR-070** The first batch is the identity poster plus 12 items. Later batches of 12 render when a sentinel comes within one viewport of the scroll edge. The observer root is the wall itself in horizontal mode and the viewport in vertical mode.
@@ -136,6 +142,15 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 - **FR-082** `scroll-padding` keeps focused cards clear of the sticky header and the screen edge.
 - **FR-083** A skip link goes to the wall, plus a "Skip to end of timeline" link.
 
+### Prerender and link previews
+- **FR-100** `vite build` also emits: `work/<slug>.html` for every project (the built app shell with that route's head and static body), a rewritten `index.html` for `/`, `sitemap.xml` (non-draft routes only), `robots.txt`, and a `_redirects` file with one forced rewrite per project. Pages are single files rather than `work/<slug>/index.html`, because Netlify answers folder-style pages with a 301 to a trailing slash (checked against ethayer.design on 2026-10-24).
+- **FR-101** Each route's `<head>` carries: `<title>`, `meta description` (the project `summary`), `link rel=canonical`, `og:type` (`website`), `og:site_name`, `og:title`, `og:description`, `og:url`, `og:image` (absolute URL), `og:image:type`, `og:image:width`, `og:image:height`, `og:image:alt`, and Twitter `summary_large_image` tags (`twitter:card`, `title`, `description`, `image`, `image:alt`). Titles read `<Project> — Eric Thayer` for projects (the same text the dialog sets) and `HOME_TITLE` for `/`.
+- **FR-102** The site origin comes from `SITE_URL`; otherwise Netlify's `URL` on production builds and `DEPLOY_PRIME_URL` on previews; otherwise `https://ethayer-design.netlify.app`. It always uses `https` (except `localhost`) and has no trailing slash, so a custom domain (Q4) needs no code change.
+- **FR-103** Static content sits in a `<noscript>` block inside `<main>`. People with JavaScript get no extra DOM and no layout change, which keeps the design lock intact. The block holds one `h1`, readable content, and (on `/`) an Education section with `id="timeline-end"` so the skip link still lands somewhere.
+- **FR-104** Every generated string goes through an escaping template helper. Content is never concatenated into markup by hand.
+- **FR-105** Projects with `draft: true` get `<meta name="robots" content="noindex">` and are left out of `sitemap.xml`.
+- **FR-106** Link-preview images are 1200×630 PNGs at `public/og/<slug>.png`, plus `public/og/home.png`. Playwright renders them from `tools/og-card.html`, which uses the real `<swiss-artwork>` component, the theme tokens, and Hanken Grotesk, in the `wide` poster layout (570 px type column, 630 px square art). The title is the largest size from 60 to 120 px that fits without breaking a word. The home card mirrors the hero (`plum-ember` palette, triangle cascade); project cards draw their own motif. The files are committed. `npm run og` regenerates them. A manifest holds a hash per card plus a fingerprint of the palette, font, poster template, artwork generators, and hero art, so `npm test` fails when a project changes, or when any of those change, without regenerated images. Images are rendered on a developer machine, not during the Netlify build, because the build image has no browser.
+
 ### Content
 - **FR-090** All content lives in `src/content/projects.ts` and is typed with `satisfies readonly Project[]`. Media lives in `public/media/<slug>/`.
 - **FR-091** Validation tests: unique slugs; alt text on every image and poster; media files exist; title length (`sm` ≤ 24 chars, others ≤ 40); valid era references; `period.start ≤ period.end`; theme contrast; iframe hosts on the allowlist.
@@ -147,7 +162,7 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 | --- | --- | --- |
 | NFR-01 | Performance | Constitution §V budgets, enforced in CI |
 | NFR-02 | Accessibility | WCAG 2.2 AA. axe clean. Manual VoiceOver (macOS and iOS) and NVDA + Firefox passes before launch |
-| NFR-03 | Browsers | Last 2 majors of Chrome/Edge, Firefox, Safari (macOS and iOS). No-JS: the identity poster and a static project list render (T070) |
+| NFR-03 | Browsers | Last 2 majors of Chrome/Edge, Firefox, Safari (macOS and iOS). No-JS: `/` renders the intro, a static project list, and education; `/work/<slug>` renders the project story (T070, FR-103) |
 | NFR-04 | Viewports | 320 to 3840 px wide, with no 2D scroll at 320 px (SC 1.4.10). Zoom to 400 % falls back to vertical mode |
 | NFR-05 | Security | CSP without `unsafe-inline`; sandboxed iframes; `Referrer-Policy: strict-origin-when-cross-origin`; `Permissions-Policy` denies camera, microphone, and geolocation |
 | NFR-06 | Privacy | No cookies and no third-party requests until the visitor opens a dialog with a Vimeo facade and activates it |
@@ -214,3 +229,5 @@ Tag filtering and search, a case-study long-form page per project, a CMS, commen
 | Use the screenshot instead of the CodePen | Q1 resolved; research R1 updated |
 | Don't worry about iframe frameability, dense reordering, or the date discrepancies | R4 and R6 accepted as-is; FR-004 assertion dropped; check-frameable moved to post-launch |
 | Implement after updating the spec | Checkpoints collapse into one v1 review (CP1); see tasks.md |
+| "Start the prerender and link previews" (2026-10-24) | T070 and T071 started ahead of CP1 sign-off. They add nothing visible when JavaScript is on, because static content sits in `<noscript>` (FR-103). US9 and FR-100–FR-106 added |
+| Scope call on T070 (assistant's, flag for review) | First-batch server rendering plus hydration is dropped: LCP is already 0.38 s warm and 1.0 s cold, and hydrating cards would put the design lock at risk. The static pages deliver what NFR-03 asks for |

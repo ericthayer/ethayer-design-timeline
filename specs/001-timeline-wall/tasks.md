@@ -69,8 +69,10 @@ Each task is done when its "done when" is true **and** `npm run check` (typechec
 
 ## After CP1 (backlog, not in v1)
 
-- [ ] **T070** Prerender the first batch + `/work/<slug>/index.html` pages with OG meta. → FR-061, NFR-03
-- [ ] **T071** [P] OG images from `<swiss-artwork>`.
+T070 and T071 were started ahead of CP1 at the owner's request (2026-10-24). They change nothing visible when JavaScript is on.
+
+- [x] **T070** Static prerender as a Vite plugin: per-route head and social tags, `<noscript>` static content, `work/<slug>.html`, forced `_redirects`, `sitemap.xml`, `robots.txt`. Replaces first-batch rendering and hydration, which is dropped (spec §11). → FR-061, FR-062, FR-100–FR-105, NFR-03, US9
+- [x] **T071** OG poster images: `tools/og-card`, `npm run og`, committed `public/og/*.png`, freshness manifest and tests. → FR-106
 - [ ] **T072** [P] Lighthouse CI; Firefox and WebKit e2e; visual baselines.
 - [ ] **T073** Manual screen reader pass (VoiceOver, NVDA). → NFR-02
 - [ ] **T074** Netlify site + subdomain (Q4) + README on adding projects (SC-4).
