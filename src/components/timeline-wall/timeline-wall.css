@@ -60,10 +60,19 @@
 
   /* Horizontal mode on screens wider than 1800 px: rows by viewport height, scroll on x (FR-003).
      A viewport query, because a container measurement shifts with the scrollbar gutter. */
+  /* Spec 002: the hero sits above, so the page scrolls on y to reach the wall, which then fills
+     the viewport and snaps flush to its top. */
   @media (min-width: 1801px) {
+    :root {
+      --wall-block: 100dvh;
+    }
     html {
-      overflow: hidden;
+      overflow-x: hidden;
       scrollbar-gutter: auto;
+      scroll-snap-type: y proximity;
+    }
+    timeline-wall {
+      scroll-snap-align: start;
     }
     .wall__grid {
       --scrollbar-reserve: 10px;
@@ -101,9 +110,12 @@
     grid-row: span 2;
   }
 
-  /* SC 2.4.11: focused cards scroll clear of the screen edge */
-  html {
-    scroll-padding-block: var(--space-4);
+  /* SC 2.4.11: focused cards scroll clear of the screen edge. In horizontal mode cards scroll
+     inside the wall, and the page docks the wall flush to the top instead (wallOwnsWheel). */
+  @media (max-width: 1800px) {
+    html {
+      scroll-padding-block: var(--space-4);
+    }
   }
 
   @supports not (container-type: inline-size) {

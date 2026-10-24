@@ -4,6 +4,7 @@
 | --- | --- |
 | Status | **Approved (CP0, 2026-10-23)**: defaults accepted, with the owner clarifications in §11 |
 | Owner | Eric Thayer |
+| Amended by | [002 hero and résumé](../002-hero-and-resume/spec.md) §5 (FR-007, FR-008, FR-070, résumé links) |
 | Companions | [research.md](./research.md) · [data-model.md](./data-model.md) · [plan.md](./plan.md) · [tasks.md](./tasks.md) · [constitution](../constitution.md) |
 
 ## 1. Summary

@@ -1,0 +1,273 @@
+@layer components {
+  /* Full-viewport hero (spec 002, FR-100–FR-105): a Swiss sleeve poster on the plum-ember ramp */
+  .site-hero {
+    --pad: clamp(1.25rem, 3.2vw, 3rem);
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto auto minmax(4rem, 1fr) auto auto;
+    column-gap: clamp(1rem, 2vw, 2rem);
+    min-block-size: calc(100dvh - var(--header-h));
+    padding: var(--pad);
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  /* Lighter wine field on the diagonal, as in the reference sleeve */
+  .site-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--art-1);
+    opacity: 0.55;
+    clip-path: polygon(56% 0, 100% 0, 100% 64%);
+  }
+  .site-hero > :not(.site-hero__art) {
+    position: relative;
+    z-index: 1;
+    animation: hero-rise var(--dur-enter) var(--ease-spring) both;
+  }
+
+  .site-hero__head {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: var(--space-4);
+    font-size: clamp(1rem, 1.5vw, 1.375rem);
+    font-weight: var(--weight-display);
+    line-height: 1.05;
+  }
+  .site-hero__index {
+    display: grid;
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .site-hero__title-block {
+    grid-column: 1 / span 9;
+    grid-row: 2;
+    display: grid;
+    justify-items: start;
+    gap: clamp(1rem, 2.4vh, 1.75rem);
+    margin-block-start: clamp(2rem, 7vh, 5.5rem);
+    animation-delay: var(--stagger);
+  }
+  .site-hero__eyebrow {
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--fg) 10%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 24%, transparent);
+    font-size: 0.75rem;
+    font-weight: var(--weight-meta);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .site-hero__name {
+    inline-size: min-content;
+    color: var(--title);
+    font-size: clamp(3.75rem, min(14vw, 21dvh), 13rem);
+    font-weight: var(--weight-display);
+    line-height: 0.86;
+    letter-spacing: -0.045em;
+  }
+  .site-hero__name:focus {
+    outline: none;
+  }
+
+  .site-hero__art {
+    grid-column: 4 / -1;
+    grid-row: 2 / 4;
+    align-self: stretch;
+    inline-size: 100%;
+    block-size: 100%;
+    max-inline-size: none;
+    contain: size;
+  }
+  .site-hero__art polygon {
+    fill: var(--art-2);
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: tri-in var(--dur-enter) var(--ease-spring) both;
+    animation-delay: calc(var(--stagger) * 2 + var(--i) * var(--stagger) * 0.5);
+  }
+  .site-hero__art [data-level='0'] {
+    fill: color-mix(in oklab, var(--art-1) 70%, var(--art-2));
+  }
+  .site-hero__art [data-level='1'] {
+    fill: color-mix(in oklab, var(--art-1) 30%, var(--art-2));
+  }
+  .site-hero__art [data-level='2'] {
+    fill: var(--art-2);
+  }
+  .site-hero__art [data-level='3'] {
+    fill: color-mix(in oklab, var(--art-2) 50%, var(--art-3));
+  }
+  .site-hero__art [data-level='4'] {
+    fill: var(--art-3);
+  }
+  .site-hero__art [data-level='5'] {
+    fill: var(--art-4);
+  }
+  .site-hero__art [data-facet='top'] {
+    fill-opacity: 0.78;
+  }
+  .site-hero__art [data-facet='right'] {
+    fill-opacity: 0.9;
+  }
+  .site-hero__art [data-facet='centre'] {
+    fill-opacity: 0.62;
+  }
+
+  .site-hero__span {
+    grid-column: 1 / span 6;
+    grid-row: 4;
+    margin-block-start: var(--space-6);
+    font-size: clamp(1.5rem, 2.6vw, 2.5rem);
+    font-weight: var(--weight-display);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    animation-delay: calc(var(--stagger) * 3);
+  }
+
+  /* Track-list footer: four columns like the sleeve's sides */
+  .site-hero__foot {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-6) clamp(1rem, 2vw, 2rem);
+    margin-block-start: var(--space-6);
+    font-size: clamp(0.875rem, 0.95vw, 1rem);
+    line-height: 1.4;
+    animation-delay: calc(var(--stagger) * 4);
+  }
+  .site-hero__label {
+    margin-block-end: var(--space-2);
+    font-size: 0.75rem;
+    font-weight: var(--weight-display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .site-hero__col p:not(.site-hero__label) {
+    max-inline-size: 36ch;
+    font-weight: 500;
+  }
+  .site-hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.9rem;
+    list-style: none;
+    font-weight: var(--weight-meta);
+  }
+  .site-hero__links a {
+    display: inline-block;
+    min-block-size: 24px;
+    padding-block: 0.1rem;
+  }
+  .site-hero__col--cta {
+    display: flex;
+    align-items: end;
+    justify-content: end;
+  }
+
+  /* Island CTA with a nested icon circle (button-in-button) */
+  .site-hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-block-size: 3.5rem;
+    padding: 0.4rem 0.4rem 0.4rem 1.4rem;
+    border-radius: 999px;
+    background: var(--fg);
+    color: var(--bg);
+    box-shadow: 0 24px 48px -24px rgb(18 18 18 / 0.55);
+    font-size: 1rem;
+    font-weight: var(--weight-display);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform var(--dur-3) var(--ease-spring);
+  }
+  .site-hero__cta-icon {
+    display: grid;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--fg);
+    transition: transform var(--dur-3) var(--ease-spring);
+  }
+  .site-hero__cta-icon svg {
+    inline-size: 1rem;
+    block-size: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .site-hero__cta:hover .site-hero__cta-icon {
+    transform: translateY(3px) scale(1.06);
+  }
+  .site-hero__cta:active {
+    transform: scale(0.98);
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+  }
+  @keyframes tri-in {
+    from {
+      opacity: 0;
+      transform: translateY(10%) scale(0.92);
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .site-hero__foot {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 719px) {
+    .site-hero__title-block {
+      grid-column: 1 / -1;
+      margin-block-start: var(--space-8);
+    }
+    .site-hero__art {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+    .site-hero__foot {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-4);
+    }
+    .site-hero__col:first-child {
+      display: none;
+    }
+    .site-hero__col--cta {
+      order: -1;
+      justify-content: stretch;
+    }
+    .site-hero__cta {
+      flex: 1;
+      justify-content: space-between;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .site-hero__art polygon {
+      fill: CanvasText;
+      fill-opacity: 0.12;
+    }
+    .site-hero__cta {
+      border: 2px solid ButtonText;
+    }
+  }
+}

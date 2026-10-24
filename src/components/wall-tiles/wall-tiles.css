@@ -26,51 +26,6 @@
     padding-block: 0.15rem;
   }
 
-  /* Identity poster (feature 2×2) */
-  .tile--identity {
-    --u: 0.5cqi;
-    display: grid;
-    grid-template-rows: auto auto minmax(0, 1fr) auto;
-    gap: calc(var(--u) * 4);
-    padding: calc(var(--u) * 6);
-  }
-  .tile--identity .tile__head {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    gap: 1rem;
-    font-size: clamp(0.75rem, calc(var(--u) * 4.6), 1.125rem);
-    font-weight: var(--weight-display);
-    line-height: 1.02;
-  }
-  .tile--identity .tile__head > p:first-child {
-    max-inline-size: 12ch;
-  }
-  .tile--identity .tile__index {
-    text-align: end;
-    line-height: 1.02;
-  }
-  .tile--identity .tile__title {
-    color: var(--title);
-    font-size: clamp(2rem, calc(var(--u) * 21), 7rem);
-    font-weight: var(--weight-display);
-    line-height: 0.9;
-    letter-spacing: -0.035em;
-  }
-  .tile--identity .tile__art {
-    min-block-size: 0;
-  }
-  .tile--identity .tile__foot {
-    display: grid;
-    gap: calc(var(--u) * 3);
-    font-size: clamp(0.8125rem, calc(var(--u) * 3.4), 1rem);
-    line-height: 1.35;
-  }
-  .tile--identity .tile__summary {
-    max-inline-size: 46ch;
-    font-weight: 500;
-  }
-
   /* Era marker (sm): chapter numerals + label on the wall color */
   .tile--era {
     display: flex;

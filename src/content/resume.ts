@@ -1,0 +1,183 @@
+import type { Resume } from './types.ts';
+
+/**
+ * HTML résumé (spec 002, FR-120), adapted from the owner's Google Doc. Identity, links, and
+ * education come from SITE. To add the intro video, drop intro.{webm,mp4,vtt} and a poster in
+ * public/media/resume/ and fill `intro`, for example:
+ *
+ *   intro: {
+ *     src: 'resume/intro',
+ *     poster: { kind: 'image', src: 'resume/poster', alt: 'Eric Thayer at his desk' },
+ *     captions: '/media/resume/intro.vtt',
+ *     title: 'A one-minute introduction',
+ *     durationSec: 60,
+ *   },
+ */
+export const RESUME = {
+  headline: 'Design systems, UX engineering, and front-end platforms',
+  summary:
+    'Team-focused UI/UX engineer with twenty years of design and development work behind an organization’s daily operations. Skilled in design discovery, visual design, prototyping, and front-end development, and at home working with cross-functional leaders to find and resolve issues, set priorities, and deliver a high level of service.',
+  experience: [
+    {
+      role: 'Senior UX Engineer',
+      company: 'CoBank',
+      location: 'Hybrid',
+      period: { start: '2023-12', end: 'present' },
+      href: 'https://cobank.com',
+      summary:
+        'Senior creative design engineer and lead design system manager, bringing a user-centered approach to every product in the organization: the design system, front-end component libraries, and UI and UX design and development across the digital product line.',
+      highlights: [
+        'Created the Figma design system: brand style guide, UI kit, design tokens, component library, and documentation structure.',
+        'Started the Storybook and React component library pipeline with Figma integration.',
+        'Established a design tokens workflow that syncs Figma variables to JSON tokens.',
+        'Developed responsive prototyping templates and front-end components for company-wide libraries.',
+      ],
+    },
+    {
+      role: 'UI/UX Designer / Front-end Developer',
+      company: 'Threecolts, Inc. (Onsite Support)',
+      location: 'Remote',
+      period: { start: '2023-06', end: '2024-11' },
+      href: 'https://onsitesupport.io',
+      summary:
+        'Lead design consultant guiding Amazon sellers through onboarding: branded web themes designed in Figma and implemented on the platform, plus the live support, FAQ, article, and video features their knowledge bases grow from.',
+      highlights: [
+        'Created a CSS framework that automates layout and styling changes across the platform.',
+        'Refactored the HTML framework behind support landing pages so content is easier to change.',
+        'Converted more than 200 non-responsive sites to mobile-friendly layouts.',
+        'Developed a grid system for videos, article lists, and calls to action.',
+      ],
+    },
+    {
+      role: 'UI/UX Designer / Front-end Developer',
+      company: 'Health Scholars',
+      location: 'Westminster, CO',
+      period: { start: '2017-12', end: '2023-07' },
+      href: 'https://healthscholars.com',
+      summary:
+        'Designed and built web and Unity interface systems for a healthcare simulation training platform: the “Workbench” VR authoring platform, 6 web applications, 10 VR applications, marketing materials, and customer support.',
+      highlights: [
+        'Established brand design systems and a style guide for the web and VR engineering teams.',
+        'Created a web component system with Vue.js and Storybook.',
+        'Established a VR design system with Unity UI Toolkit for rapid prototyping.',
+        'Built interactive prototypes, mockups, and wireframes in Figma, Sketch, and HTML.',
+        'Led design sprints and VR interface training for web, VR, and marketing teams.',
+      ],
+    },
+    {
+      role: 'UI/UX Designer / Front-end Developer',
+      company: 'KyaMedia (freelance)',
+      location: 'Denver, CO',
+      period: { start: '2015-07', end: '2017-12' },
+      summary:
+        'Lead designer and developer for a web templating platform: branding, UI/UX prototypes, DevOps, customer experience, and project management.',
+      highlights: [
+        'Produced 2 front-end design systems for rapid Kentico development.',
+        'Established a custom CSS framework for rapid prototyping.',
+        'Developed front-end architecture for 3 startups.',
+        'Revised 2 non-responsive code bases.',
+      ],
+    },
+    {
+      role: 'UI Designer / Front-end Developer',
+      company: 'The Navigators',
+      location: 'Colorado Springs, CO',
+      period: { start: '2012-01', end: '2015-07' },
+      href: 'https://www.navigators.org',
+      summary:
+        'Interface designer and front-end developer for a non-profit ministry network: branding, web design and development, Kentico CMS integration, and platform onboarding.',
+      highlights: [
+        'Delivered 40+ responsive websites for departments and missions, improving donation rates.',
+        'Created a Bootstrap framework and template system that cut Kentico development time.',
+        'Established documentation and guidelines for the client discovery team.',
+      ],
+    },
+    {
+      role: 'UI/UX Designer / Front-end Developer',
+      company: 'Concept Portal',
+      location: 'Castle Rock, CO',
+      period: { start: '2011-01', end: '2012-01' },
+      summary:
+        'Web designer and front-end developer on a Kentico CMS platform, providing visual and interaction design plus client branding and content.',
+      highlights: [
+        'Delivered 20+ responsive websites for churches large and small.',
+        'Designed 30+ sites for ministries and organized sports clubs.',
+      ],
+    },
+    {
+      role: 'Multimedia Specialist',
+      company: 'Defense Language Institute Foreign Language Center',
+      location: 'Monterey, CA',
+      period: { start: '2010-07', end: '2013-09' },
+      href: 'https://www.dliflc.edu',
+      summary:
+        'Visual and production designer creating training videos, motion and web graphics, and iOS interface content for the Department of the Army.',
+      highlights: [
+        'Delivered 100+ training videos and graphics for iOS apps that help deployed personnel communicate across cultures.',
+        'Introduced the first responsive website template system.',
+        'Optimized admin dashboards so staff could update content from their phones.',
+      ],
+    },
+    {
+      role: 'Designer / Front-end Developer / Video Editor',
+      company: 'Page1Solutions, Claremont Information Systems, HDNet',
+      location: 'Denver, CO',
+      period: { start: '2009-01', end: '2010-07' },
+      summary:
+        'Web design, front-end development, video editing, and graphic design, in-house and as a freelance contractor.',
+      highlights: [
+        'Delivered 20+ WordPress designs and templates for a real estate listing search engine.',
+        'Developed the visual design process for targeted retention campaigns.',
+        'Edited video for live events and cable programming.',
+      ],
+    },
+    {
+      role: 'Post-Production Artist',
+      company: 'Multi-Image Productions',
+      location: 'San Diego, CA',
+      period: { start: '2005-09', end: '2008-06' },
+      summary:
+        'Motion graphics, video editing, and DVD authoring for a live event production company, with clients including Pizza Hut, American Airlines, MasterCard, NCR, and Pitney Bowes.',
+      highlights: [
+        'Designed 20+ live event motion graphics packages.',
+        'Produced 50+ DVD interfaces and packaging templates.',
+      ],
+    },
+  ],
+  skills: [
+    'User interface design',
+    'User experience design',
+    'Design systems and tokens',
+    'Front-end development',
+    'VR interface development',
+    'Design discovery',
+    'Design sprint facilitation',
+    'Rapid prototyping',
+  ],
+  proficiencies: {
+    development: [
+      'HTML, SCSS, JavaScript, TypeScript',
+      'React, Vue.js, Angular',
+      'Storybook',
+      'Bootstrap, Foundation, Tailwind',
+      'AWS, GraphQL, Hasura',
+      'Hugo, WordPress, Kentico',
+    ],
+    software: ['Figma', 'Sketch', 'Adobe CC', 'Git', 'CodePen', 'Jira, Trello'],
+  },
+  projects: [
+    {
+      title: 'Health Scholars Workbench',
+      detail: 'UI design and Unity developer experience',
+      year: '2023',
+      href: 'https://youtu.be/VGTY7bCSTx8',
+    },
+    { title: 'MadRamps', detail: 'UI/UX design', year: '2021', href: 'https://madramps.com/' },
+    {
+      title: 'Denver Museum of Nature and Science',
+      detail: 'Front-end development and pattern library',
+      year: '2018',
+      href: 'https://dmns.netlify.app/pattern-library/',
+    },
+  ],
+} as const satisfies Resume;

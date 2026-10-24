@@ -18,6 +18,12 @@
     --plum: #5e1a36;
     --blush: #f3b6bf;
     --indigo: #1c1a3b;
+    /* Plum-ember ramp: hero and résumé masthead (spec 002, FR-110) */
+    --plum-deep: #4a0c2c;
+    --wine: #6e2042;
+    --rust: #a3483f;
+    --ember: #cf6a3a;
+    --amber: #f2a33a;
 
     /* Type */
     --font-sans: 'Hanken Grotesk', 'Hanken Grotesk Fallback', system-ui, sans-serif;
@@ -40,6 +46,9 @@
     --dur-2: 200ms;
     --dur-3: 320ms;
     --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+    --dur-enter: 900ms;
+    --stagger: 70ms;
 
     /* Focus: double ring passes 3:1 on every theme (FR-016) */
     --focus-inner: var(--ink);
@@ -60,6 +69,8 @@
     --dur-1: 0.01ms;
     --dur-2: 0.01ms;
     --dur-3: 0.01ms;
+    --dur-enter: 0.01ms;
+    --stagger: 0ms;
   }
 
   [data-theme='paper-mocha'] {
@@ -194,11 +205,26 @@
     --duo: var(--vermilion);
   }
 
+  [data-theme='plum-ember'] {
+    --bg: var(--plum-deep);
+    --fg: var(--paper);
+    --title: var(--paper);
+    --art-1: var(--wine);
+    --art-2: var(--rust);
+    --art-3: var(--ember);
+    --art-4: var(--amber);
+    --duo: var(--rust);
+  }
+
   /* --title follows --fg unless a theme overrides it. Re-declared per theme scope. */
-  [data-theme]:not([data-theme='paper-vermilion']) {
+  [data-theme]:not([data-theme='paper-vermilion'], [data-theme='plum-ember']) {
     --title: var(--fg);
   }
-  [data-theme]:not([data-theme='paper-graphite'], [data-theme='paper-prism']) {
+  [data-theme]:not(
+    [data-theme='paper-graphite'],
+    [data-theme='paper-prism'],
+    [data-theme='plum-ember']
+  ) {
     --art-4: var(--art-1);
   }
 }

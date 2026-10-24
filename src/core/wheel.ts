@@ -18,12 +18,21 @@ export function shouldRemap(
   return Math.abs(event.deltaY) > Math.abs(event.deltaX);
 }
 
+/**
+ * True when the wall should take the wheel (spec 002 FR-007 change): only once its top edge is
+ * docked at the viewport top, and not when scrolling up from its start (back to the hero).
+ */
+export function wallOwnsWheel(wallTop: number, scrollLeft: number, deltaY: number): boolean {
+  if (wallTop > 1) return false;
+  return !(deltaY < 0 && scrollLeft <= 0);
+}
+
 export function attachWheelToHorizontal(
   scroller: HTMLElement,
-  isActive: () => boolean,
+  isActive: (event: WheelEvent) => boolean,
 ): () => void {
   const onWheel = (event: WheelEvent): void => {
-    if (!isActive() || !shouldRemap(event)) return;
+    if (!shouldRemap(event) || !isActive(event)) return;
     event.preventDefault();
     scroller.scrollLeft += normalizeWheelDelta(event, scroller.clientWidth);
   };

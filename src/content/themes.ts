@@ -16,4 +16,5 @@ export const THEMES = [
   'plum',
   'paper-ink',
   'indigo-vermilion',
+  'plum-ember',
 ] as const;
