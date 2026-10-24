@@ -1,8 +1,15 @@
 // Prerendered pages and link previews (US13, FR-130–FR-135) against the built, served output.
-import { PROJECTS } from '../../src/content/projects/index.ts';
-import { HOME_TITLE } from '../../src/content/site.ts';
 import type { Page } from '@playwright/test';
+import { readContext, readRawContent } from '../../scripts/content-fs.ts';
+import { HOME_TITLE } from '../../src/content/site.ts';
+import { validateContent } from '../../src/content/validate/index.ts';
 import { expect, expectNoAxeViolations, test } from './fixtures.ts';
+
+// Playwright loads specs in plain Node, where the projects loader's import.meta.glob doesn't
+// exist, so read projects through the validator, as the prerender plugin does (spec 004).
+const content = validateContent(readRawContent('.'), readContext('.'));
+if (!content.ok) throw new Error('content is invalid: run npm run content:check');
+const PROJECTS = content.value.projects;
 
 /**
  * axe can't run while JavaScript is off, so serve the same static markup as live DOM: unwrap the

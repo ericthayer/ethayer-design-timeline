@@ -1,4 +1,4 @@
-import orderJson from '../data/order.json';
+import orderJson from '../data/order.json' with { type: 'json' };
 import type { Project, ProjectOrder } from '../types.ts';
 
 // Validated by content:check (FR-310).

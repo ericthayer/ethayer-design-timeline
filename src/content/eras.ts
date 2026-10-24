@@ -1,4 +1,4 @@
-import erasJson from './data/eras.json';
+import erasJson from './data/eras.json' with { type: 'json' };
 import type { Era } from './types.ts';
 
 /** Career chapters, newest first (data-model §5), from `data/eras.json` (spec 004, FR-303). */

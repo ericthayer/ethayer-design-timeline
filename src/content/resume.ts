@@ -1,4 +1,4 @@
-import resumeJson from './data/resume.json';
+import resumeJson from './data/resume.json' with { type: 'json' };
 import type { Resume } from './types.ts';
 
 /**
