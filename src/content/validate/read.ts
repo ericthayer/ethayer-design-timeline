@@ -169,7 +169,12 @@ export class Reader {
 
   /** The elements of an array field, or `undefined` when absent (optional) or invalid. */
   items(key: string, optional = false): readonly Item[] | undefined {
-    const v = this.field(key, optional, (x): x is readonly unknown[] => Array.isArray(x), 'an array');
+    const v = this.field(
+      key,
+      optional,
+      (x): x is readonly unknown[] => Array.isArray(x),
+      'an array',
+    );
     return v?.map((value, i) => ({ value, path: this.at(key) + `/${String(i)}` }));
   }
 
@@ -183,6 +188,11 @@ export class Reader {
       else this.sink.report('shape', item.path, `must be a string, got ${show(item.value)}`);
     }
     return out.length === items.length ? out : undefined;
+  }
+
+  /** Marks every key as known, after an error that makes the rest of the object moot. */
+  skipRest(): void {
+    for (const key of Object.keys(this.raw)) this.seen.add(key);
   }
 
   /** Reports every key no reader asked for (rule `unknown-key`, FR-307). */

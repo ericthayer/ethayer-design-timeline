@@ -8,7 +8,16 @@ import {
   parseJson,
   pointer,
 } from '../../src/content/validate/issue.ts';
+import { validateProject } from '../../src/content/validate/project.ts';
 import { Reader, Sink, readPeriod } from '../../src/content/validate/read.ts';
+import {
+  CTX,
+  ERA_REF_PROJECT,
+  PROJECT_FIXTURES,
+  type ProjectFixture,
+  type ProjectRule,
+  baseProject,
+} from '../fixtures/content/projects.ts';
 
 const FILE = 'src/content/data/projects/demo.json';
 
@@ -89,5 +98,54 @@ describe('paths (FR-308)', () => {
 
   it('serializes as two-space JSON with a trailing newline', () => {
     expect(serialize({ a: [1] })).toBe('{\n  "a": [\n    1\n  ]\n}\n');
+  });
+});
+
+describe('validateProject (FR-313 per-file rules)', () => {
+  const file = projectFile('demo');
+
+  it('accepts the base project and rebuilds it without stray keys', () => {
+    const result = validateProject(baseProject('demo'), file, CTX);
+    expect(result).toStrictEqual({ ok: true, value: baseProject('demo'), warnings: [] });
+  });
+
+  const cases = Object.entries(PROJECT_FIXTURES) as [ProjectRule, ProjectFixture][];
+  it.each([...cases, ['era-ref', ERA_REF_PROJECT] as const])(
+    '%s: reports rule, severity, file, path, and slug',
+    (rule, fixture) => {
+      const result = validateProject(fixture.project, file, CTX);
+      expect(result.ok).toBe(false);
+      if (result.ok) return;
+      expect(result.errors).toEqual([
+        expect.objectContaining({
+          rule,
+          severity: 'error',
+          file,
+          path: fixture.path,
+          slug: 'demo',
+        }),
+      ]);
+    },
+  );
+
+  it('skips manifest checks when the manifest is unknown (null)', () => {
+    const { project } = PROJECT_FIXTURES['media-key'];
+    const ctx = { ...CTX, mediaKeys: null };
+    expect(validateProject(project, file, ctx).ok).toBe(true);
+  });
+
+  it('takes a mobile iframe on a tall card and rejects it on a wide card (FR-035)', () => {
+    const media = {
+      kind: 'iframe',
+      src: 'https://demo.netlify.app/',
+      title: 'Live demo',
+      viewport: 'mobile',
+      poster: { kind: 'image', src: 'demo/cover', alt: 'Poster' },
+    };
+    expect(validateProject(baseProject('demo', { size: 'tall', media }), file, CTX).ok).toBe(true);
+    const wide = validateProject(baseProject('demo', { size: 'wide', media }), file, CTX);
+    expect(wide.ok ? [] : wide.errors.map((i) => [i.rule, i.path])).toEqual([
+      ['size-media', '/media/viewport'],
+    ]);
   });
 });
