@@ -1,5 +1,5 @@
 /**
- * Renders one link-preview poster for Playwright to screenshot (FR-106):
+ * Renders one link-preview poster for Playwright to screenshot (FR-136):
  * /tools/og-card.html?slug=<project-slug | home>. It uses the real <swiss-artwork> component.
  * Sets <html data-ready> once fonts are loaded and the title has been fitted to its box.
  */

@@ -1,5 +1,5 @@
 /**
- * Link-preview card data (FR-106). Pure and erasable TypeScript, so the Playwright renderer, the
+ * Link-preview card data (FR-136). Pure and erasable TypeScript, so the Playwright renderer, the
  * prerender plugin, and the freshness test all read one definition. Node runs scripts that import
  * this without a compiler, so no enums or parameter properties.
  */

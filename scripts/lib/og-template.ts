@@ -1,5 +1,5 @@
 /**
- * Fingerprint of everything that shapes a link-preview image besides the card data (FR-106):
+ * Fingerprint of everything that shapes a link-preview image besides the card data (FR-136):
  * the palette, font, poster template, artwork generators, and hero art. When any of these change,
  * the committed images are stale even though no project did. Erasable TypeScript only.
  */

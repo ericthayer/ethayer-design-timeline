@@ -9,5 +9,5 @@ export const HOME_TITLE = 'Eric Thayer — Career Timeline';
 export const HOME_DESCRIPTION =
   'Fifteen-plus years of design systems, front-end platforms, and agentic engineering work by Eric Thayer, Principal Design Engineer.';
 
-/** Page title for a project, shared by the dialog and the prerendered head (FR-101). */
+/** Page title for a project, shared by the dialog and the prerendered head (FR-131). */
 export const projectTitle = (title: string): string => `${title} — ${SITE.name}`;

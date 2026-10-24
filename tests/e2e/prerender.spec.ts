@@ -1,4 +1,4 @@
-// Prerendered pages and link previews (US9, FR-100–FR-105) against the built, served output.
+// Prerendered pages and link previews (US13, FR-130–FR-135) against the built, served output.
 import { PROJECTS } from '../../src/content/projects/index.ts';
 import { HOME_TITLE } from '../../src/content/site.ts';
 import type { Page } from '@playwright/test';
@@ -50,7 +50,7 @@ test.describe('without JavaScript', () => {
   });
 });
 
-test.describe('static content accessibility (FR-103)', () => {
+test.describe('static content accessibility (FR-133)', () => {
   for (const path of ['/', '/work/agentic-engineering-loop', '/work/dmns', '/work/workbench']) {
     test(`has no axe violations at ${path}`, async ({ page, request }) => {
       const source = await (await request.get(path)).text();

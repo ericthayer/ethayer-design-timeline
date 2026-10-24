@@ -1,4 +1,4 @@
-// Prerendered pages (FR-100–FR-105, US9): head tags, static body, sitemap, redirects.
+// Prerendered pages (FR-130–FR-135, US13): head tags, static body, sitemap, redirects.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ERAS } from '../../src/content/eras.ts';
@@ -35,7 +35,7 @@ const home = pages[0] as Page;
 /** An ampersand that isn't the start of an entity: the mark of unescaped content. */
 const BARE_AMPERSAND = /&(?!amp;|lt;|gt;|quot;|#39;)/;
 
-describe('html helper (FR-104)', () => {
+describe('html helper (FR-134)', () => {
   it('escapes interpolations, passes Raw through, flattens arrays, drops empties', () => {
     const nested = html`<i>ok</i>`;
     // prettier-ignore
@@ -46,7 +46,7 @@ describe('html helper (FR-104)', () => {
   });
 });
 
-describe('site origin (FR-102)', () => {
+describe('site origin (FR-132)', () => {
   it.each([
     [{}, FALLBACK_ORIGIN],
     [{ SITE_URL: 'https://work.ethayer.design/' }, 'https://work.ethayer.design'],
@@ -98,7 +98,7 @@ describe('page model', () => {
   });
 });
 
-describe('head tags (FR-101)', () => {
+describe('head tags (FR-131)', () => {
   const dmns = pageFor('dmns');
   const out = applyPage(shell, dmns, ORIGIN);
 
@@ -141,7 +141,7 @@ describe('head tags (FR-101)', () => {
     }
   });
 
-  it('marks drafts noindex and only drafts (FR-105)', () => {
+  it('marks drafts noindex and only drafts (FR-135)', () => {
     for (const project of PROJECTS) {
       const tags = renderHeadTags(pageFor(project.slug), ORIGIN);
       expect(tags.includes('name="robots" content="noindex"'), project.slug).toBe(
@@ -175,7 +175,7 @@ describe('head tags (FR-101)', () => {
   });
 });
 
-describe('static content (FR-103)', () => {
+describe('static content (FR-133)', () => {
   it('gives every project page one h1 and a story, with no bare ampersands', () => {
     for (const project of PROJECTS) {
       const { body } = pageFor(project.slug);
@@ -232,7 +232,7 @@ describe('static content (FR-103)', () => {
   });
 });
 
-describe('sitemap, robots, redirects (FR-100)', () => {
+describe('sitemap, robots, redirects (FR-130)', () => {
   it('lists the home page and non-draft projects only', () => {
     const xml = renderSitemap(pages, ORIGIN);
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
