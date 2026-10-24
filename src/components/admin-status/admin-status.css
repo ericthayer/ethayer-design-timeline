@@ -1,0 +1,72 @@
+/* Repeats the site's layer order: admin CSS may load before the site's (spec 004 admin-auth). */
+@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  /* Reserve room so focus is never hidden under the island (FR-357, SC 2.4.11) */
+  html:has(#admin-island) {
+    scroll-padding-block-end: calc(var(--admin-island-h, 4rem) + var(--space-4));
+  }
+  body:has(> #admin-island) {
+    padding-block-end: var(--admin-island-h, 4rem);
+  }
+
+  .admin-island {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-2) var(--space-4);
+    border-block-start: 1px solid var(--graphite);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.875rem;
+  }
+  .admin-island__toolbar:empty {
+    display: none;
+  }
+
+  admin-status {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+  }
+  .ast__info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--space-3);
+  }
+  .ast__text {
+    font-weight: var(--weight-display);
+  }
+  .ast__expiry {
+    color: #c7c7cc;
+  }
+  .ast__actions {
+    display: flex;
+    gap: var(--space-2);
+  }
+  .ast__btn {
+    min-block-size: 32px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--stone);
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  .ast__btn:hover {
+    border-color: var(--paper);
+  }
+  .ast__btn[hidden] {
+    display: none;
+  }
+}

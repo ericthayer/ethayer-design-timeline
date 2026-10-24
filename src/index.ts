@@ -40,3 +40,8 @@ export {
   AdminSignIn,
   define as defineAdminSignIn,
 } from './components/admin-sign-in/admin-sign-in.ts';
+export {
+  AdminStatus,
+  buildIsland,
+  define as defineAdminStatus,
+} from './components/admin-status/admin-status.ts';
