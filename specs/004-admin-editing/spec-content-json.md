@@ -153,3 +153,17 @@ Unit tests (Vitest, no DOM) are the main net. There is a fixture per rule, with 
 2. **Warnings in the editor.** Should Publish with warnings need an explicit confirmation (proposed), or just show them?
 3. **Delete and media.** `planDelete` returns only content changes. `edit-layer` should add `{ kind: 'delete-dir', path: 'media-src/<slug>/' }` to the same publish, so no orphaned raw media stays behind (orphans are harmless to the build). Agreed?
 4. **v2 eras.** Adding an era means editing `ERA_IDS` in code. Should it become a validated string in v2?
+
+## Implementation notes
+
+- FR-309: each plan function takes a trailing `ctx: ValidationContext` (`planCreate(raw, project, at, ctx)` and so on), because validating the resulting bundle needs the manifest keys and frame origins.
+- FR-309: `project` is typed `unknown`, so the editor can pass a draft that is not yet a valid `Project`.
+- FR-311: an unparsable file is carried in `RawContent` as a `JsonParseFailure` (from `parseJson(text)`), and `validateContent` reports it as `json-parse`. Both are exported from `validate/index.ts` with `RULE_IDS` and `severityOf`.
+- FR-307: project files follow `types.ts` order literally: the `ProjectBase` fields, then `size` and `media` last.
+- §5: the media and poster readers live in `validate/media.ts` (allowed by the plan's 300-line risk row).
+- FR-313 `era-ref` also requires `project.era` to be an id in `eras.json` (the old "references real eras" test). A missing document is a `shape` error at the file root. `artwork` media in a gallery is a `gallery-media` error, like an iframe. A Vimeo `title` must be non-empty (`a11y-text`).
+- FR-303: `eras.ts` casts through `unknown` (`as unknown as readonly [Era, ...Era[]]`), because a JSON array has no tuple type. The other loaders use a single `as`, and `projects/index.ts` uses the `import.meta.glob<Project>` type argument.
+- FR-310: `check-content.ts` prints the whole-file pointer `''` as `(root)`, and `run(root, log?)` takes an optional logger for tests.
+- T308: initial JS (gzip) went from 19,507 B to 19,988 B (+481 B, under the 0.5 KB limit). No `dist/assets/*.js` contains `swiss-share`.
+- FR-317: `migration.test.ts` compared `ERAS`, `SITE`, and `RESUME` with their TS modules in T307. From T308 on, those modules load JSON, so only the projects comparison (against the legacy `projects/*.ts` modules) still checks the old source.
+- T312 and T313 are not done yet: T312 waits for `migration.test.ts` to pass in CI on this branch, and T313 deletes the modules that test imports.
