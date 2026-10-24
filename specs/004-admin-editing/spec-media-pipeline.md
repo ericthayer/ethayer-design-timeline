@@ -132,3 +132,13 @@ Results are discriminated unions (`{ ok: true, … } | { ok: false, error }`), n
 | MQ5 | The Netlify plugin API (`utils.cache.restore/save`, ESM local plugins) is high confidence but has to be checked against Netlify docs in T327. | Verify, then build |
 | MQ6 | `content-json`: add a video-key rule that reads `video-manifest.json` keys (FR-329)? | Yes, coordinated with that module |
 | MQ7 | `github-publish` allows `.gif` uploads, but this pipeline rejects GIF (motion belongs in a clip). Drop `.gif` from that allowlist? | Yes: drop it |
+
+## Implementation notes
+
+- FR-322: "MB" is binary (10 × 1024² and 1.5 × 1024² bytes); `github-publish` should use the same constant (`LIMITS.maxImageBytes`).
+- FR-336: `checkSource(source, { bytes, width?, height? })` returns `{ ok: false, errors: string[] }` (one line per problem) rather than a single `error`; `parseSourcePath` failures carry `ignored: true` for dotfiles.
+- FR-325: passthrough also requires no EXIF reorientation, and a source whose decoded format doesn't match its extension (a PNG named `.webp`) is rejected, so passthrough can never ship the wrong bytes.
+- FR-331: until `content-json` lands, `build` is `npm run media && tsc --noEmit && vite build`; `content:check` slots in after `tsc` at merge.
+- FR-333: the plugin folder also holds a dependency-free `package.json` with `"type": "module"` (Netlify's docs require it for ESM plugins). ESM loading and the cache `cwd` are still TO VERIFY on a deploy preview.
+- FR-333: the CI cache key also hashes `scripts/media-cache.ts`, and an OS-prefix `restore-keys` allows partial hits (entries are content-addressed, so that's safe).
+- T329 (deploy-preview evidence) needs a pushed branch and was not run here. Local timings on Apple silicon: cold about 2.7 s, warm about 0.1 s for 8 covers.
