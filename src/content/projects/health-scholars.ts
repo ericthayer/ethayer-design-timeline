@@ -31,6 +31,26 @@ export const healthScholars = [
       outcome: 'Product teams consumed shared, documented components instead of rebuilding them.',
     },
     tracklist: [{ label: 'Vue.js' }, { label: 'Storybook' }, { label: 'Vuetify' }],
+    gallery: [
+      {
+        media: { kind: 'placeholder', variant: 'site' },
+        label: 'Placeholder · Component library',
+        span: 'feature',
+        focal: '25% 35%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'mobile' },
+        label: 'Placeholder · Mobile states',
+        span: 'tall',
+        focal: '50% 50%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'design' },
+        label: 'Placeholder · Storybook docs',
+        span: 'sm',
+        focal: '75% 25%',
+      },
+    ],
   },
   {
     slug: 'hs-brand-systems',
@@ -44,7 +64,7 @@ export const healthScholars = [
     treatment: 'swiss',
     layout: 'title-top',
     theme: 'paper-prism',
-    motif: 'petals',
+    motif: 'overlap',
     media: { kind: 'artwork' },
     summary:
       'Core brand and UI design systems for 6 web applications and 10 VR simulation products, including the Workbench developer platform.',
@@ -117,7 +137,7 @@ export const healthScholars = [
     treatment: 'swiss',
     layout: 'title-bottom',
     theme: 'paper-vermilion',
-    motif: 'nested-squares',
+    motif: 'concentric-knot',
     media: { kind: 'artwork' },
     summary:
       'Design sprints and interface workshops across engineering, VR, and product marketing teams.',
