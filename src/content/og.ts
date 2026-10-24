@@ -14,11 +14,15 @@ export const OG_VERSION = 1;
 
 export const HOME_OG_SLUG = 'home';
 
+/** A project poster draws a Swiss motif; the home card draws the hero's triangle cascade. */
+export type OgArt =
+  | { readonly kind: 'motif'; readonly motif: MotifName; readonly seed: number }
+  | { readonly kind: 'hero' };
+
 export interface OgCard {
   readonly slug: string;
   readonly theme: ThemeName;
-  readonly motif: MotifName;
-  readonly seed: number;
+  readonly art: OgArt;
   readonly layout: Layout;
   readonly kicker: string;
   readonly numerals: readonly [string, string];
@@ -34,16 +38,15 @@ export function homeOgCard(): OgCard {
   const [first, second] = indexNumerals(SITE.span);
   return {
     slug: HOME_OG_SLUG,
-    theme: 'paper-vermilion',
-    motif: 'tone-dots',
-    seed: 2003, // same artwork as the identity poster on the wall
+    theme: 'plum-ember', // the hero's palette and artwork (spec 002)
+    art: { kind: 'hero' },
     layout: 'title-top',
     kicker: SITE.role,
     numerals: [first, second],
     title: SITE.name,
     year: yearRange(SITE.span),
     tracks: SITE.highlights,
-    alt: `${SITE.name}, ${SITE.role}. Poster with a grid of dots.`,
+    alt: `${SITE.name}, ${SITE.role}. Poster with a cascade of overlapping triangles.`,
   };
 }
 
@@ -53,8 +56,11 @@ export function ogCardFor(project: Project): OgCard {
   return {
     slug: project.slug,
     theme: project.theme,
-    motif: project.motif,
-    seed: project.seed ?? hashSeed(project.slug), // must match seedOf() in card-media.ts
+    art: {
+      kind: 'motif',
+      motif: project.motif,
+      seed: project.seed ?? hashSeed(project.slug), // must match seedOf() in card-media.ts
+    },
     layout: project.layout,
     kicker: project.client,
     numerals: [first, second],

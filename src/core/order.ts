@@ -1,14 +1,14 @@
 import type { Era, Project, WallItem } from '../content/types.ts';
 
 /**
- * Projects → render list (FR-001): identity poster, then each era newest first with its
+ * Projects → render list (FR-001): each era newest first with its
  * projects in curated order, then the end-cap. Eras without projects are skipped.
  */
 export function buildWallItems(projects: readonly Project[], eras: readonly Era[]): WallItem[] {
   const sortedEras = [...eras].sort((a, b) => b.period.start.localeCompare(a.period.start));
   const sequence = sortedEras.flatMap((era) => projects.filter((p) => p.era === era.id));
   const total = sequence.length;
-  const items: WallItem[] = [{ type: 'identity' }];
+  const items: WallItem[] = [];
   let index = 0;
   for (const era of sortedEras) {
     const inEra = projects.filter((p) => p.era === era.id);

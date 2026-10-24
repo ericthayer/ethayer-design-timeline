@@ -37,7 +37,7 @@ npm run og         # regenerate the link-preview images in public/og/
 - The build also writes `sitemap.xml` (drafts left out), `robots.txt`, and a `_redirects` file that makes Netlify serve each page at `/work/<slug>`.
 - Absolute URLs come from `SITE_URL`, else Netlify's `URL` (production) or `DEPLOY_PRIME_URL` (previews), else `https://ethayer-design.netlify.app`. A custom domain needs no code change.
 
-The preview images (`public/og/*.png`, 1200 × 630) are rendered locally by `npm run og` from `tools/og-card.html` and committed, because the Netlify build has no browser. `npm test` fails if a project changes without regenerated images. After a change, `npm run og -- <slug>` re-renders one.
+The preview images (`public/og/*.png`, 1200 × 630) are rendered locally by `npm run og` from `tools/og-card.html` and committed, because the Netlify build has no browser. `npm test` fails if a project, the palette, the font, or the artwork code changes without regenerated images. `npm run og -- <slug>` re-renders one card, but only while the template is unchanged. After a style or artwork change, run `npm run og` for the full set.
 
 ## Docs
 

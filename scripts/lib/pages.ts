@@ -89,7 +89,7 @@ function homeBody(items: readonly WallItem[]): string {
       </ul>
     </section>
     <p class="static__note">${NOTE}</p>
-    <section aria-labelledby="static-projects">
+    <section id="wall" aria-labelledby="static-projects">
       <h2 id="static-projects">Projects</h2>
       ${groupByEra(items).map(
         ({ era, projects }) =>
@@ -137,7 +137,7 @@ function projectBody(project: Project, near: Neighbors, manifest: MediaManifest)
   ];
   return html` <div class="static">
     <p class="static__note">${NOTE}</p>
-    <article aria-labelledby="static-title">
+    <article id="wall" aria-labelledby="static-title">
       <header class="static__head" data-theme="${project.theme}">
         <p class="static__kicker">${project.client} · ${years}</p>
         <h1 id="static-title">${project.title}</h1>

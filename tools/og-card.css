@@ -96,4 +96,8 @@
     inline-size: 630px;
     block-size: 630px;
   }
+  /* A screenshot is a still: the hero's entry animation must not catch triangles mid-flight. */
+  .og .og__art polygon {
+    animation: none;
+  }
 }

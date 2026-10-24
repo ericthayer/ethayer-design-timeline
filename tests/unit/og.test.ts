@@ -12,11 +12,9 @@ import {
   ogImagePath,
 } from '../../src/content/og.ts';
 import { PROJECTS } from '../../src/content/projects/index.ts';
+import { ogTemplateHash, type OgManifest } from '../../scripts/lib/og-template.ts';
 
-const manifest = JSON.parse(readFileSync('src/content/og-manifest.json', 'utf8')) as Record<
-  string,
-  string
->;
+const manifest = JSON.parse(readFileSync('src/content/og-manifest.json', 'utf8')) as OgManifest;
 const cards = ogCards(PROJECTS);
 const fileFor = (slug: string): string => `public${ogImagePath(slug)}`;
 
@@ -29,9 +27,13 @@ describe('card data', () => {
 
   it('draws the same artwork as the wall card', () => {
     for (const project of PROJECTS) {
-      expect(ogCardFor(project).seed, project.slug).toBe(seedOf(project));
-      expect(ogCardFor(project).motif, project.slug).toBe(project.motif);
-      expect(ogCardFor(project).theme, project.slug).toBe(project.theme);
+      const { art, theme } = ogCardFor(project);
+      expect(art, project.slug).toEqual({
+        kind: 'motif',
+        motif: project.motif,
+        seed: seedOf(project),
+      });
+      expect(theme, project.slug).toBe(project.theme);
     }
   });
 
@@ -52,13 +54,15 @@ describe('card data', () => {
     for (const change of [
       { title: `${card.title}!` },
       { theme: card.theme === 'coral' ? 'navy' : 'coral' },
-      { seed: card.seed + 1 },
+      { art: { kind: 'hero' } },
       { year: '1999' },
       { tracks: [...card.tracks, 'extra'] },
     ] as const) {
       expect(ogHash({ ...card, ...change }), JSON.stringify(change)).not.toBe(ogHash(card));
     }
     expect(homeOgCard().title).toBe('Eric Thayer');
+    expect(homeOgCard().theme).toBe('plum-ember');
+    expect(homeOgCard().art).toEqual({ kind: 'hero' });
   });
 });
 
@@ -77,13 +81,19 @@ describe('committed images', () => {
 
   it('is fresh: every card hash matches the manifest', () => {
     for (const card of cards) {
-      expect(manifest[card.slug], `${card.slug} is stale: run npm run og`).toBe(ogHash(card));
+      expect(manifest.cards[card.slug], `${card.slug} is stale: run npm run og`).toBe(ogHash(card));
     }
+  });
+
+  it('is fresh: palette, font, template, and artwork are unchanged since the last render', () => {
+    expect(manifest.template, 'a style or artwork file changed: run npm run og').toBe(
+      ogTemplateHash(),
+    );
   });
 
   it('has no orphan images or manifest entries', () => {
     const wanted = new Set(cards.map((card) => card.slug));
-    for (const slug of Object.keys(manifest)) {
+    for (const slug of Object.keys(manifest.cards)) {
       expect(wanted.has(slug), `manifest lists unknown card "${slug}"`).toBe(true);
     }
     for (const file of readdirSync('public/og')) {

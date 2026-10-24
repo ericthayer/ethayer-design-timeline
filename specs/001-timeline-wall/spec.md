@@ -4,6 +4,7 @@
 | --- | --- |
 | Status | **Approved (CP0, 2026-10-23)**: defaults accepted, with the owner clarifications in §11 |
 | Owner | Eric Thayer |
+| Amended by | [002 hero and résumé](../002-hero-and-resume/spec.md) §5 (FR-007, FR-008, FR-070, résumé links) |
 | Companions | [research.md](./research.md) · [data-model.md](./data-model.md) · [plan.md](./plan.md) · [tasks.md](./tasks.md) · [constitution](../constitution.md) |
 
 ## 1. Summary
@@ -148,7 +149,7 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 - **FR-103** Static content sits in a `<noscript>` block inside `<main>`. People with JavaScript get no extra DOM and no layout change, which keeps the design lock intact. The block holds one `h1`, readable content, and (on `/`) an Education section with `id="timeline-end"` so the skip link still lands somewhere.
 - **FR-104** Every generated string goes through an escaping template helper. Content is never concatenated into markup by hand.
 - **FR-105** Projects with `draft: true` get `<meta name="robots" content="noindex">` and are left out of `sitemap.xml`.
-- **FR-106** Link-preview images are 1200×630 PNGs at `public/og/<slug>.png`, plus `public/og/home.png`. Playwright renders them from `tools/og-card.html`, which uses the real `<swiss-artwork>` component, the theme tokens, and Hanken Grotesk, in the `wide` poster layout (570 px type column, 630 px square art). The title is the largest size from 60 to 120 px that fits without breaking a word. The files are committed. `npm run og` regenerates them, and a manifest of input hashes makes `npm test` fail when a project changes without a regenerated image. Images are rendered on a developer machine, not during the Netlify build, because the build image has no browser.
+- **FR-106** Link-preview images are 1200×630 PNGs at `public/og/<slug>.png`, plus `public/og/home.png`. Playwright renders them from `tools/og-card.html`, which uses the real `<swiss-artwork>` component, the theme tokens, and Hanken Grotesk, in the `wide` poster layout (570 px type column, 630 px square art). The title is the largest size from 60 to 120 px that fits without breaking a word. The home card mirrors the hero (`plum-ember` palette, triangle cascade); project cards draw their own motif. The files are committed. `npm run og` regenerates them. A manifest holds a hash per card plus a fingerprint of the palette, font, poster template, artwork generators, and hero art, so `npm test` fails when a project changes, or when any of those change, without regenerated images. Images are rendered on a developer machine, not during the Netlify build, because the build image has no browser.
 
 ### Content
 - **FR-090** All content lives in `src/content/projects.ts` and is typed with `satisfies readonly Project[]`. Media lives in `public/media/<slug>/`.

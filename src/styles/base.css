@@ -101,6 +101,8 @@
       --dur-1: 0.01ms;
       --dur-2: 0.01ms;
       --dur-3: 0.01ms;
+      --dur-enter: 0.01ms;
+      --stagger: 0ms;
     }
   }
 

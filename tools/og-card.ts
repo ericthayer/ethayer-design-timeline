@@ -6,7 +6,9 @@
 import '../src/styles/layers.css';
 import '../src/styles/fonts.css';
 import '../src/styles/tokens.css';
+import '../src/components/site-hero/site-hero.css';
 import './og-card.css';
+import { renderHeroArt } from '../src/components/site-hero/site-hero.ts';
 import {
   define as defineArtwork,
   SwissArtwork,
@@ -33,11 +35,17 @@ function fitTitle(title: HTMLElement, zone: HTMLElement): void {
   }
 }
 
+function artFor(card: OgCard): Element {
+  if (card.art.kind === 'hero') return renderHeroArt();
+  const art = new SwissArtwork();
+  art.setAttribute('motif', card.art.motif);
+  art.setAttribute('seed', String(card.art.seed));
+  return art;
+}
+
 function build(card: OgCard): { root: HTMLElement; title: HTMLElement; zone: HTMLElement } {
   defineArtwork();
-  const art = new SwissArtwork();
-  art.setAttribute('motif', card.motif);
-  art.setAttribute('seed', String(card.seed));
+  const art = artFor(card);
 
   const title = el('h1', { class: 'og__title' }, [card.title]);
   const zone = el('div', { class: 'og__mid' }, [title]);

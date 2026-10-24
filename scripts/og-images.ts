@@ -10,6 +10,7 @@ import sharp from 'sharp';
 import { createServer } from 'vite';
 import { OG_SIZE, ogCards, ogHash } from '../src/content/og.ts';
 import { PROJECTS } from '../src/content/projects/index.ts';
+import { ogTemplateHash, type OgManifest } from './lib/og-template.ts';
 
 const OUT_DIR = 'public/og';
 const MANIFEST = 'src/content/og-manifest.json';
@@ -24,12 +25,15 @@ if (unknown.length > 0) {
 const todo = cards.filter((card) => only.size === 0 || only.has(card.slug));
 
 mkdirSync(OUT_DIR, { recursive: true });
-const previous = JSON.parse(readFileSync(MANIFEST, 'utf8').trim() || '{}') as Record<
-  string,
-  string
->;
+const previous = JSON.parse(readFileSync(MANIFEST, 'utf8').trim() || '{}') as Partial<OgManifest>;
+const template = ogTemplateHash();
+// A changed template makes every image stale, so a partial run can't certify the rest.
+if (only.size > 0 && previous.template !== template) {
+  console.error('The template changed since the last full run. Run `npm run og` without slugs.');
+  process.exit(1);
+}
 const hashes: Record<string, string> = {};
-for (const card of cards) hashes[card.slug] = previous[card.slug] ?? '';
+for (const card of cards) hashes[card.slug] = previous.cards?.[card.slug] ?? '';
 
 const server = await createServer({ logLevel: 'error', server: { host: '127.0.0.1', port: 5199 } });
 await server.listen();
@@ -38,7 +42,11 @@ if (!base) throw new Error('Vite dev server did not report a URL');
 
 const browser = await chromium.launch();
 try {
-  const page = await browser.newPage({ viewport: OG_SIZE, deviceScaleFactor: 1 });
+  const page = await browser.newPage({
+    viewport: OG_SIZE,
+    deviceScaleFactor: 1,
+    reducedMotion: 'reduce', // stills only: no entry animations in a screenshot
+  });
   page.on('pageerror', (error) => {
     throw error;
   });
@@ -64,4 +72,5 @@ for (const file of readdirSync(OUT_DIR)) {
     console.log(`removed orphan ${file}`);
   }
 }
-writeFileSync(MANIFEST, `${JSON.stringify(hashes, null, 2)}\n`);
+const manifest: OgManifest = { template, cards: hashes };
+writeFileSync(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);

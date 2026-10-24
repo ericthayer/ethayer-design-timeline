@@ -3,9 +3,10 @@ import { ERAS } from '../../src/content/eras.ts';
 import { PROJECTS } from '../../src/content/projects/index.ts';
 import { hashSeed, indexNumerals, pad2, periodText, yearRange } from '../../src/core/format.ts';
 import { buildWallItems, itemIndexOf, projectSequence } from '../../src/core/order.ts';
-import { parseSlug } from '../../src/core/router.ts';
+import { cascade, toPoints } from '../../src/core/cascade.ts';
+import { isResumePath, parseSlug } from '../../src/core/router.ts';
 import { nextIndex, type Box } from '../../src/core/spatial-nav.ts';
-import { normalizeWheelDelta, shouldRemap } from '../../src/core/wheel.ts';
+import { normalizeWheelDelta, shouldRemap, wallOwnsWheel } from '../../src/core/wheel.ts';
 
 describe('format', () => {
   it('builds poster numerals and spoken periods', () => {
@@ -26,8 +27,9 @@ describe('format', () => {
 describe('order', () => {
   const items = buildWallItems(PROJECTS, ERAS);
 
-  it('opens with the identity poster and closes with the end-cap', () => {
-    expect(items[0]?.type).toBe('identity');
+  it('opens with the first era marker and closes with the end-cap (spec 002 FR-008)', () => {
+    expect(items[0]?.type).toBe('era');
+    expect(items.some((item) => (item.type as string) === 'identity')).toBe(false);
     expect(items.at(-1)?.type).toBe('end-cap');
   });
 
@@ -48,7 +50,7 @@ describe('order', () => {
   });
 
   it('finds item positions by slug', () => {
-    expect(itemIndexOf(items, 'agentic-engineering-loop')).toBe(2);
+    expect(itemIndexOf(items, 'agentic-engineering-loop')).toBe(1);
     expect(itemIndexOf(items, 'missing')).toBe(-1);
   });
 });
@@ -59,6 +61,31 @@ describe('router', () => {
     expect(parseSlug('/work/dmns/')).toBe('dmns');
     expect(parseSlug('/')).toBeNull();
     expect(parseSlug('/work/Bad_Slug')).toBeNull();
+  });
+
+  it('recognizes /resume (spec 002 FR-124)', () => {
+    expect(isResumePath('/resume')).toBe(true);
+    expect(isResumePath('/resume/')).toBe(true);
+    expect(isResumePath('/resumes')).toBe(false);
+    expect(parseSlug('/resume')).toBeNull();
+  });
+});
+
+describe('hero cascade (spec 002 FR-104)', () => {
+  const triangles = cascade([78, 0], [8, 100], [148, 100], 5);
+
+  it('emits 1 + 4 × depth triangles, deterministically, within the node cap', () => {
+    expect(triangles).toHaveLength(21);
+    expect(triangles.length).toBeLessThanOrEqual(80);
+    expect(cascade([78, 0], [8, 100], [148, 100], 5)).toEqual(triangles);
+  });
+
+  it('shrinks toward the bottom-left corner', () => {
+    const bases = triangles.filter((t) => t.facet === 'base');
+    for (const base of bases) expect(base.points[1]).toEqual([8, 100]);
+    const widths = bases.map((t) => t.points[2][0] - t.points[1][0]);
+    expect(widths).toEqual([...widths].sort((a, b) => b - a));
+    expect(toPoints(bases[1]?.points ?? [])).toBe('43,50 8,100 78,100');
   });
 });
 
@@ -74,6 +101,13 @@ describe('wheel', () => {
     expect(shouldRemap(base)).toBe(true);
     expect(shouldRemap({ ...base, deltaX: 140 })).toBe(false);
     expect(shouldRemap({ ...base, ctrlKey: true })).toBe(false);
+  });
+
+  it('takes the wheel only once the wall is docked, and lets "up" pass at its start', () => {
+    expect(wallOwnsWheel(240, 0, 100)).toBe(false);
+    expect(wallOwnsWheel(0, 0, 100)).toBe(true);
+    expect(wallOwnsWheel(0, 0, -100)).toBe(false);
+    expect(wallOwnsWheel(0, 500, -100)).toBe(true);
   });
 });
 

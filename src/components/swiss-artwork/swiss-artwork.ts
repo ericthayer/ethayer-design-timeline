@@ -4,6 +4,16 @@ import { defineOnce, svg } from '../../core/dom.ts';
 import { mulberry32 } from '../../core/rng.ts';
 import type { MotifGenerator } from './motif-types.ts';
 import { diagonalLines, eclipse, horizonLines, nestedSquares } from './motifs-form.ts';
+import {
+  concentricKnot,
+  halftoneHalves,
+  impossibleHex,
+  orbitRings,
+  overlap,
+  pinwheels,
+  triMosaic,
+  triStack,
+} from './motifs-batch-b.ts';
 import { dotGridMark, driftBars, petals, scatter, toneDots } from './motifs-grid.ts';
 import './swiss-artwork.css';
 
@@ -17,10 +27,27 @@ export const MOTIF_REGISTRY: Readonly<Record<MotifName, MotifGenerator>> = {
   'diagonal-lines': diagonalLines,
   'nested-squares': nestedSquares,
   'horizon-lines': horizonLines,
+  'tri-mosaic': triMosaic,
+  'halftone-halves': halftoneHalves,
+  overlap,
+  pinwheels,
+  'impossible-hex': impossibleHex,
+  'concentric-knot': concentricKnot,
+  'tri-stack': triStack,
+  'orbit-rings': orbitRings,
 };
 
 /** Field motifs crop to fill (slice); lattice motifs stay whole and align left (meet). */
-const CROPS: ReadonlySet<MotifName> = new Set(['eclipse', 'diagonal-lines', 'nested-squares']);
+const CROPS: ReadonlySet<MotifName> = new Set([
+  'eclipse',
+  'diagonal-lines',
+  'nested-squares',
+  'halftone-halves',
+  'overlap',
+  'concentric-knot',
+  'tri-stack',
+  'orbit-rings',
+]);
 
 export const isMotif = (value: string | null): value is MotifName =>
   MOTIFS.some((motif) => motif === value);

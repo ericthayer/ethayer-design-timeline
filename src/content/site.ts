@@ -1,4 +1,4 @@
-/** Identity, contact, and education content for the identity poster and end-cap. */
+/** Identity, contact, and education content for the hero and end-cap. */
 export const HOME_TITLE = 'Eric Thayer — Career Timeline';
 export const HOME_DESCRIPTION =
   'Fifteen-plus years of design systems, front-end platforms, and agentic engineering work by Eric Thayer, Principal Design Engineer.';
@@ -12,10 +12,8 @@ export const SITE = {
   span: { start: '2003-01', end: 'present' },
   highlights: ['Design systems', 'Agentic engineering', 'Front-end platforms'],
   links: [
-    {
-      label: 'Résumé',
-      href: 'https://docs.google.com/document/d/1CG5F0XGEuR3ZWTTyU3i7L-wGu6gGtFXgkrhgAyKZcfM/edit?usp=sharing',
-    },
+    // Opens <resume-dialog> (spec 002, FR-124)
+    { label: 'Résumé', href: '/resume' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ethayerdesign/' },
     { label: 'GitHub', href: 'https://github.com/ericthayer/' },
     { label: 'CodePen', href: 'https://codepen.io/ericthayer/' },

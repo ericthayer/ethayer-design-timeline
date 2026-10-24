@@ -16,7 +16,7 @@ export const earlyCareer = [
     treatment: 'swiss',
     layout: 'title-bottom',
     theme: 'indigo-vermilion',
-    motif: 'scatter',
+    motif: 'tri-mosaic',
     media: { kind: 'artwork' },
     summary:
       'Delivered 40+ responsive web platforms, standardizing UI patterns and improving conversion and donation workflows.',
@@ -56,6 +56,26 @@ export const earlyCareer = [
       outcome: 'Shorter delivery cycles for new sites.',
     },
     tracklist: [{ label: 'Bootstrap' }, { label: 'Kentico CMS' }],
+    gallery: [
+      {
+        media: { kind: 'placeholder', variant: 'site' },
+        label: 'Placeholder · Template library',
+        span: 'wide',
+        focal: '10% 30%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'mobile' },
+        label: 'Placeholder · Responsive pass',
+        span: 'sm',
+        focal: '60% 70%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'design' },
+        label: 'Placeholder · Grid system',
+        span: 'sm',
+        focal: '40% 40%',
+      },
+    ],
   },
   {
     slug: 'dli-mobile-learning',
@@ -80,6 +100,26 @@ export const earlyCareer = [
       outcome: 'Training and administration usable on mobile devices.',
     },
     tracklist: [{ label: 'Mobile UI' }, { label: 'Responsive templates' }],
+    gallery: [
+      {
+        media: { kind: 'placeholder', variant: 'mobile' },
+        label: 'Placeholder · Lesson screen',
+        span: 'feature',
+        focal: '50% 40%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'video' },
+        label: 'Placeholder · Training clip',
+        span: 'wide',
+        focal: '50% 50%',
+      },
+      {
+        media: { kind: 'placeholder', variant: 'site' },
+        label: 'Placeholder · Admin dashboard',
+        span: 'sm',
+        focal: '20% 80%',
+      },
+    ],
   },
   {
     slug: 'dli-training-media',
@@ -125,7 +165,13 @@ export const earlyCareer = [
       outcome: 'The reel is below.',
     },
     tracklist: [{ label: 'Motion graphics' }, { label: 'Compositing' }],
-    gallery: [{ kind: 'vimeo', id: '143960525', title: 'Motion demo reel' }],
+    gallery: [
+      {
+        media: { kind: 'vimeo', id: '143960525', title: 'Motion demo reel' },
+        label: 'Motion demo reel',
+        span: 'feature',
+      },
+    ],
     links: [{ label: 'Watch on Vimeo', href: 'https://vimeo.com/143960525', kind: 'video' }],
     draft: true,
   },
