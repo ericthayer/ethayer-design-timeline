@@ -134,7 +134,6 @@ export type Project = {
 
 /** Derived render list consumed by <timeline-wall>. */
 export type WallItem =
-  | { readonly type: 'identity' }
   | { readonly type: 'era'; readonly era: Era }
   | {
       readonly type: 'project';
@@ -143,3 +142,45 @@ export type WallItem =
       readonly total: number;
     }
   | { readonly type: 'end-cap' };
+
+/** Optional intro video at the top of the résumé (spec 002, FR-121). Captions are required. */
+export interface ResumeIntro {
+  /** Base path, e.g. 'resume/intro' → /media/resume/intro.{webm,mp4}. */
+  readonly src: string;
+  readonly poster: ImageMedia;
+  /** WebVTT captions (WCAG 1.2.2), e.g. '/media/resume/intro.vtt'. */
+  readonly captions: `/media/${string}.vtt`;
+  readonly title: string;
+  readonly durationSec: number;
+}
+
+export interface ResumeRole {
+  readonly role: string;
+  readonly company: string;
+  readonly location: string;
+  readonly period: Period;
+  readonly summary: string;
+  readonly highlights: readonly string[];
+  readonly href?: `https://${string}`;
+}
+
+export interface ResumeProject {
+  readonly title: string;
+  readonly detail: string;
+  readonly year: string;
+  readonly href?: `https://${string}`;
+}
+
+/** HTML résumé (spec 002, FR-120). Public content only: no phone numbers or references. */
+export interface Resume {
+  readonly headline: string;
+  readonly summary: string;
+  readonly intro?: ResumeIntro;
+  readonly experience: readonly ResumeRole[];
+  readonly skills: readonly string[];
+  readonly proficiencies: {
+    readonly development: readonly string[];
+    readonly software: readonly string[];
+  };
+  readonly projects: readonly ResumeProject[];
+}

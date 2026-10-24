@@ -48,6 +48,13 @@ describe('theme contrast', () => {
     expect(contrast(title, bg)).toBeGreaterThanOrEqual(3);
   });
 
+  it('keeps the hero name ≥ 3:1 over every triangle it can overlap (FR-106)', () => {
+    const paper = swatches.get('paper') ?? '';
+    for (const swatch of ['plum-deep', 'wine', 'rust', 'ember']) {
+      expect(contrast(paper, swatches.get(swatch) ?? '')).toBeGreaterThanOrEqual(3);
+    }
+  });
+
   it('keeps standard label chips AA (ink and graphite on paper)', () => {
     const paper = swatches.get('paper') ?? '';
     expect(contrast(swatches.get('ink') ?? '', paper)).toBeGreaterThanOrEqual(4.5);

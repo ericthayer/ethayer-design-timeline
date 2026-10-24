@@ -1,7 +1,7 @@
 import { expect, expectNoAxeViolations, renderEverything, test } from './fixtures.ts';
 
 test.describe('wall', () => {
-  test('opens with the identity poster and the first batch (US1, FR-008)', async ({ page }) => {
+  test('opens with the hero and the first batch (US1, spec 002 FR-100)', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 2, name: 'CoBank' })).toBeVisible();
@@ -25,12 +25,21 @@ test.describe('wall', () => {
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.goto('/');
     await expect(page.locator('timeline-wall')).toHaveAttribute('data-mode', 'horizontal');
+    // Over the hero the wheel scrolls the page (spec 002 FR-007 change)
     await page.mouse.move(960, 600);
+    await page.mouse.wheel(0, 400);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+    expect(await page.locator('.wall__grid').evaluate((el) => el.scrollLeft)).toBe(0);
+    // Once the wall is docked at the top, the wheel scrolls it sideways
+    await page.locator('timeline-wall').evaluate((el) => {
+      el.scrollIntoView({ block: 'start' });
+    });
+    const docked = await page.evaluate(() => window.scrollY);
     await page.mouse.wheel(0, 800);
     await expect
       .poll(() => page.locator('.wall__grid').evaluate((el) => el.scrollLeft))
       .toBeGreaterThan(0);
-    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    expect(await page.evaluate(() => window.scrollY)).toBe(docked);
   });
 
   test('loads batches as the visitor scrolls and ends with the end-cap (FR-070–FR-072)', async ({

@@ -2,9 +2,9 @@ import type { WallItem } from '../../content/types.ts';
 import { defineOnce, el } from '../../core/dom.ts';
 import { getScheduler } from '../../core/media-scheduler.ts';
 import { isNavKey, nextIndex } from '../../core/spatial-nav.ts';
-import { attachWheelToHorizontal } from '../../core/wheel.ts';
+import { attachWheelToHorizontal, wallOwnsWheel } from '../../core/wheel.ts';
 import { ProjectCard } from '../project-card/project-card.ts';
-import { renderEndCap, renderEra, renderIdentity } from '../wall-tiles/wall-tiles.ts';
+import { renderEndCap, renderEra } from '../wall-tiles/wall-tiles.ts';
 import './timeline-wall.css';
 
 declare global {
@@ -34,8 +34,13 @@ export class TimelineWall extends HTMLElement {
   connectedCallback(): void {
     if (this.grid.isConnected) return;
     this.append(this.grid);
-    this.renderCount(1 + this.batchSize, false);
-    attachWheelToHorizontal(this.grid, () => this.horizontal);
+    this.renderCount(this.batchSize, false);
+    attachWheelToHorizontal(
+      this.grid,
+      (event) =>
+        this.horizontal &&
+        wallOwnsWheel(this.grid.getBoundingClientRect().top, this.grid.scrollLeft, event.deltaY),
+    );
     this.addEventListener('click', this.onClick);
     this.addEventListener('keydown', this.onKeydown);
     this.addEventListener('pointerover', this.onIntent);
@@ -111,10 +116,6 @@ export class TimelineWall extends HTMLElement {
 
   private renderItem(item: WallItem, index: number): HTMLLIElement {
     switch (item.type) {
-      case 'identity':
-        return el('li', { class: 'wall__item', 'data-size': 'feature', 'data-type': 'identity' }, [
-          renderIdentity(),
-        ]);
       case 'era':
         return el('li', { class: 'wall__item', 'data-size': 'sm', 'data-type': 'era' }, [
           renderEra(item.era),
