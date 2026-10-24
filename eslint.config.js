@@ -24,5 +24,22 @@ export default defineConfig(
       'no-restricted-properties': ['error', ...htmlSinks],
     },
   },
+  {
+    // Spec 004 admin-auth FR-356: nothing on the token's path may log.
+    files: ['src/admin/**', 'src/core/auth/**', 'src/components/admin-*/**'],
+    rules: { 'no-console': 'error' },
+  },
+  {
+    // The editor imports the frame-src list from here (spec 004 edit-layer X2).
+    files: ['scripts/csp.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [{ group: ['node:*'], message: 'scripts/csp.ts must run in the browser too.' }],
+        },
+      ],
+    },
+  },
   { files: ['eslint.config.js'], extends: [tseslint.configs.disableTypeChecked] },
 );
