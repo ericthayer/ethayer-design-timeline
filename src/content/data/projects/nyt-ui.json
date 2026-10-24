@@ -1,0 +1,41 @@
+{
+  "slug": "nyt-ui",
+  "title": "NYT UI Study",
+  "client": "CodePen",
+  "era": "independent",
+  "engagement": "personal",
+  "role": "UI study",
+  "period": {
+    "start": "2021-01",
+    "end": "2021-12"
+  },
+  "theme": "paper-ink",
+  "motif": "horizon-lines",
+  "layout": "title-top",
+  "treatment": "swiss",
+  "summary": "A personal UI study of editorial news layout, built on CodePen.",
+  "body": {
+    "context": "A self-directed study, not client work.",
+    "contribution": "Rebuilt an editorial news interface in HTML and CSS.",
+    "outcome": "Published on CodePen."
+  },
+  "tracklist": [
+    {
+      "label": "CodePen"
+    },
+    {
+      "label": "CSS layout"
+    }
+  ],
+  "links": [
+    {
+      "label": "CodePen",
+      "href": "https://codepen.io/ericthayer/pen/LYRMzdM",
+      "kind": "codepen"
+    }
+  ],
+  "size": "sm",
+  "media": {
+    "kind": "artwork"
+  }
+}

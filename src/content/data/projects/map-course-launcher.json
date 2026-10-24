@@ -1,0 +1,43 @@
+{
+  "slug": "map-course-launcher",
+  "title": "MAP Course Launcher",
+  "client": "Health Scholars",
+  "era": "health-scholars",
+  "engagement": "full-time",
+  "role": "UI/UX Designer & Front-End Developer",
+  "period": {
+    "start": "2017-12",
+    "end": "2023-07"
+  },
+  "theme": "navy-coral",
+  "motif": "scatter",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Design discovery for a learner course launcher.",
+  "body": {
+    "context": "Details coming soon.",
+    "contribution": "Design discovery mapped in InVision Freehand.",
+    "outcome": "Details coming soon."
+  },
+  "tracklist": [
+    {
+      "label": "Discovery"
+    },
+    {
+      "label": "InVision"
+    }
+  ],
+  "links": [
+    {
+      "label": "Discovery board",
+      "href": "https://brooksaths.invisionapp.com/freehand/MAP--Course-Launcher---Learner-sa8QstSzG",
+      "kind": "prototype"
+    }
+  ],
+  "draft": true,
+  "size": "sm",
+  "media": {
+    "kind": "placeholder",
+    "variant": "design"
+  }
+}

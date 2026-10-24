@@ -1,0 +1,34 @@
+{
+  "slug": "design-sprints",
+  "title": "Design Sprints",
+  "client": "Health Scholars",
+  "era": "health-scholars",
+  "engagement": "full-time",
+  "role": "UI/UX Designer & Front-End Developer",
+  "period": {
+    "start": "2017-12",
+    "end": "2023-07"
+  },
+  "theme": "paper-vermilion",
+  "motif": "concentric-knot",
+  "layout": "title-bottom",
+  "treatment": "swiss",
+  "summary": "Design sprints and interface workshops across engineering, VR, and product marketing teams.",
+  "body": {
+    "context": "Engineering, VR, and marketing teams scoped interfaces separately.",
+    "contribution": "Facilitated design sprints and interface development workshops across the teams.",
+    "outcome": "Shared problem framing before build."
+  },
+  "tracklist": [
+    {
+      "label": "Facilitation"
+    },
+    {
+      "label": "Workshops"
+    }
+  ],
+  "size": "sm",
+  "media": {
+    "kind": "artwork"
+  }
+}

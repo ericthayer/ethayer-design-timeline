@@ -1,0 +1,57 @@
+{
+  "slug": "dmns",
+  "title": "Denver Museum of Nature & Science",
+  "client": "DMNS",
+  "era": "independent",
+  "engagement": "freelance",
+  "role": "Front-end development",
+  "period": {
+    "start": "2018-01",
+    "end": "2018-12"
+  },
+  "theme": "navy",
+  "motif": "eclipse",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Front-end development and an inclusive pattern library for the Denver Museum of Nature & Science.",
+  "body": {
+    "context": "The museum needed accessible display patterns for a wide public audience.",
+    "contribution": "Built the front end and a pattern library of inclusive display components.",
+    "outcome": "Delivered with a documented pattern library."
+  },
+  "tracklist": [
+    {
+      "label": "Front-end"
+    },
+    {
+      "label": "Pattern library"
+    },
+    {
+      "label": "Accessibility"
+    }
+  ],
+  "links": [
+    {
+      "label": "Live build",
+      "href": "https://dmns.netlify.app/",
+      "kind": "live"
+    },
+    {
+      "label": "Pattern library",
+      "href": "https://dmns.netlify.app/pattern-library/",
+      "kind": "storybook"
+    }
+  ],
+  "size": "feature",
+  "media": {
+    "kind": "iframe",
+    "src": "https://dmns.netlify.app/",
+    "title": "Denver Museum of Nature & Science front-end build",
+    "viewport": "desktop",
+    "poster": {
+      "kind": "image",
+      "src": "dmns/cover",
+      "alt": "Denver Museum of Nature & Science home page"
+    }
+  }
+}

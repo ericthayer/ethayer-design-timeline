@@ -1,0 +1,50 @@
+{
+  "slug": "accessible-components",
+  "title": "A11y Standards",
+  "client": "CoBank",
+  "era": "cobank",
+  "engagement": "full-time",
+  "role": "Senior UX Engineer / Systems Lead",
+  "period": {
+    "start": "2023-12",
+    "end": "present"
+  },
+  "theme": "paper-ink",
+  "motif": "nested-squares",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Standardized component access and implementation guidelines, dropping performance and accessibility errors by 37 %.",
+  "body": {
+    "context": "Legacy feature views averaged 30 flagged issues in Lighthouse, axe-core, and Chromatic audits.",
+    "contribution": "Embedded pre-tested ARIA patterns and optimized asset pipelines into the core components, plus implementation guidelines.",
+    "outcome": "Teams inherit compliant code by default. Flagged issues dropped from 30 to 19."
+  },
+  "tracklist": [
+    {
+      "label": "Audit errors",
+      "value": "−37 %"
+    },
+    {
+      "label": "axe-core"
+    },
+    {
+      "label": "Lighthouse"
+    },
+    {
+      "label": "Chromatic"
+    }
+  ],
+  "metrics": [
+    {
+      "value": "37 %",
+      "label": "fewer performance and a11y errors",
+      "baseline": "30",
+      "result": "19"
+    }
+  ],
+  "size": "sm",
+  "media": {
+    "kind": "placeholder",
+    "variant": "site"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "slug": "onsite-figma-template",
+  "title": "Figma Theme Template",
+  "client": "Onsite Support",
+  "era": "threecolts",
+  "engagement": "contract",
+  "role": "Lead UI/UX Designer & Front-End Developer",
+  "period": {
+    "start": "2023-06",
+    "end": "2023-12"
+  },
+  "theme": "paper-cobalt",
+  "motif": "petals",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Modular Figma themes that guide Amazon sellers through onboarding.",
+  "body": {
+    "context": "Each seller landing page was designed from scratch.",
+    "contribution": "Designed a modular Figma theme and landing page template with reusable sections.",
+    "outcome": "New pages start from a shared, themeable template."
+  },
+  "tracklist": [
+    {
+      "label": "Figma"
+    },
+    {
+      "label": "Design tokens"
+    }
+  ],
+  "links": [
+    {
+      "label": "Figma file",
+      "href": "https://www.figma.com/file/sVLBxIeqZxFLzCOxh0C8vw/onsite-support-landing-page-design-template-CURRENT",
+      "kind": "figma"
+    }
+  ],
+  "size": "sm",
+  "media": {
+    "kind": "image",
+    "src": "onsite-figma-template/cover",
+    "alt": "Onsite Support landing page design template in Figma"
+  }
+}

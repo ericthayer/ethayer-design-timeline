@@ -1,0 +1,40 @@
+{
+  "slug": "onsite-grid-framework",
+  "title": "CSS Grid Framework",
+  "client": "Threecolts",
+  "era": "threecolts",
+  "engagement": "contract",
+  "role": "Lead UI/UX Designer & Front-End Developer",
+  "period": {
+    "start": "2023-06",
+    "end": "2024-11"
+  },
+  "theme": "mustard",
+  "motif": "pinwheels",
+  "layout": "title-top",
+  "treatment": "swiss",
+  "summary": "A custom CSS and grid framework that automates layouts across live support, FAQs, and media widgets.",
+  "body": {
+    "context": "Dynamic content types each carried their own one-off layout code.",
+    "contribution": "Built a custom CSS and grid framework that lays out live support, FAQ, and media widgets automatically.",
+    "outcome": "New content types drop into the grid without bespoke CSS."
+  },
+  "tracklist": [
+    {
+      "label": "CSS Grid"
+    },
+    {
+      "label": "Live support"
+    },
+    {
+      "label": "FAQs"
+    },
+    {
+      "label": "Media widgets"
+    }
+  ],
+  "size": "tall",
+  "media": {
+    "kind": "artwork"
+  }
+}

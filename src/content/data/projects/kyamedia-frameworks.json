@@ -1,0 +1,45 @@
+{
+  "slug": "kyamedia-frameworks",
+  "title": "Startup CSS Frameworks",
+  "client": "KyaMedia",
+  "era": "independent",
+  "engagement": "freelance",
+  "role": "UI/UX Designer & Front-End Architecture Consultant",
+  "period": {
+    "start": "2015-07",
+    "end": "2017-12"
+  },
+  "theme": "paper-graphite",
+  "motif": "drift-bars",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Custom CSS frameworks, front-end architectures, and 2 design systems for 3 early-stage startups.",
+  "body": {
+    "context": "Early-stage startups needed front ends they could validate with clients quickly.",
+    "contribution": "Designed custom CSS frameworks and front-end architectures, plus 2 design systems and HTML prototype templates.",
+    "outcome": "Faster client validation and CMS development for 3 startups."
+  },
+  "tracklist": [
+    {
+      "label": "Startups",
+      "value": "3"
+    },
+    {
+      "label": "CSS frameworks"
+    },
+    {
+      "label": "HTML prototypes"
+    }
+  ],
+  "metrics": [
+    {
+      "value": "3",
+      "label": "startups"
+    }
+  ],
+  "size": "wide",
+  "media": {
+    "kind": "placeholder",
+    "variant": "site"
+  }
+}

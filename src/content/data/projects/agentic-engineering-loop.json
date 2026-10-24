@@ -1,0 +1,52 @@
+{
+  "slug": "agentic-engineering-loop",
+  "title": "Agentic Engineering Loop",
+  "client": "CoBank",
+  "era": "cobank",
+  "engagement": "full-time",
+  "role": "Senior UX Engineer / Systems Lead",
+  "period": {
+    "start": "2023-12",
+    "end": "present"
+  },
+  "theme": "ink-vermilion",
+  "motif": "orbit-rings",
+  "layout": "title-top",
+  "treatment": "swiss",
+  "summary": "An MCP server and agent toolkit that turns Figma specs into token-wired React scaffolding, cutting feature development time by 40 %.",
+  "body": {
+    "context": "Developers spent about 10 hours per component or view translating Figma specs by hand and wiring tokens into boilerplate React.",
+    "contribution": "Designed and built an agentic engineering loop: a Model Context Protocol server plus an agent toolkit that reads design context, injects tokens, and scaffolds components against the design system.",
+    "outcome": "Average scaffolding and token wiring dropped from 10 hours to 6 per component or view across sprint tasks."
+  },
+  "tracklist": [
+    {
+      "label": "Feature dev time",
+      "value": "−40 %"
+    },
+    {
+      "label": "MCP server"
+    },
+    {
+      "label": "Agent toolkit"
+    },
+    {
+      "label": "React · MUI"
+    },
+    {
+      "label": "TypeScript"
+    }
+  ],
+  "metrics": [
+    {
+      "value": "40 %",
+      "label": "less feature development time",
+      "baseline": "10 h",
+      "result": "6 h"
+    }
+  ],
+  "size": "feature",
+  "media": {
+    "kind": "artwork"
+  }
+}

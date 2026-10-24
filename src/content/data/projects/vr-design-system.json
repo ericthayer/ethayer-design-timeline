@@ -1,0 +1,38 @@
+{
+  "slug": "vr-design-system",
+  "title": "VR Design System",
+  "client": "Health Scholars",
+  "era": "health-scholars",
+  "engagement": "full-time",
+  "role": "UI/UX Designer & Front-End Developer",
+  "period": {
+    "start": "2017-12",
+    "end": "2023-07"
+  },
+  "theme": "graphite-flag",
+  "motif": "nested-squares",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "A VR design system in Unity UI Toolkit that sped up 3D prototyping.",
+  "body": {
+    "context": "VR simulation interfaces were prototyped one scene at a time.",
+    "contribution": "Designed and implemented a VR design system within the Unity UI Toolkit.",
+    "outcome": "Faster 3D prototyping across the VR simulation products."
+  },
+  "tracklist": [
+    {
+      "label": "Unity UI Toolkit"
+    },
+    {
+      "label": "VR"
+    },
+    {
+      "label": "3D prototyping"
+    }
+  ],
+  "size": "tall",
+  "media": {
+    "kind": "placeholder",
+    "variant": "video"
+  }
+}
