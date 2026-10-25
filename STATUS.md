@@ -11,7 +11,7 @@ updatedBy: claude
 - PR #8 (release-please and commitlint) is a draft and will be rebased later. Keep using Conventional Commit messages, and keep `package.json` and lockfile changes small.
 - The PR #5 post-deploy smoke test passed on production on 2026-10-24 (steps 1–5). It turned up one console error, now follow-up 1.
 
-- T078 (owner request 2026-10-25): an Education tile near the start of the wall and a contact end-cap with Eric's portrait are in a PR on `claude/project-thread-cfada7`. It needs the owner's review and a written OK before any visual baseline covers it.
+- T078 (PR #13) is on hold: the wall runs newest first, so its end is 2003, not a place for a contact card. Spec 006 (Experience and Projects views, categories, contact footer) is drafted in `specs/006-experience-and-projects/` and waits for CP6a. PR #13 now carries the spec. Its T078 code commits get removed in T510.
 
 ## Next step
 
@@ -24,6 +24,8 @@ updatedBy: claude
 - `edit-layer` is blocked until CP4d is approved (`tasks-edit-layer.md`: "Starts only after CP4a–CP4d are approved"). T389 uploads also need CP4b.
 
 ## Waiting on
+
+- Owner: CP6a (spec 006, categories Q1–Q5)
 
 - Owner: CP4b (review the media-pipeline deploy preview, the migration manifest diff and the timings, and answer MQ1–MQ4)
 - Owner: CP4d (review the `github-publish` API and tests, and run a smoke publish against a scratch repo: create, update, delete, and one media upload. This needs a scratch repo and a real token.)
