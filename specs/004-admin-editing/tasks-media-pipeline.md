@@ -42,4 +42,4 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). Spec: [spec-media-pipel
   - Acceptance: SC-M1 ≤ 60 s and SC-M2 ≤ 5 s added. The image is served in AVIF and WebP.
   - Verify: Netlify deploy logs and the network panel on the preview.
   - Files: none beyond a throwaway test commit, reverted before merge
-- [ ] **CP4b** Owner reviews the media-pipeline deploy preview, the migration manifest diff, and the timings, and answers MQ1–MQ4. Media upload in `edit-layer` waits for this.
+- [x] **CP4b** (approved by the owner, 2026-10-24) Owner reviews the media-pipeline deploy preview, the migration manifest diff, and the timings, and answers MQ1–MQ4. Media upload in `edit-layer` waits for this.

@@ -13,16 +13,16 @@ updatedBy: claude
 
 ## Next step
 
-- The owner records CP4a–CP4d. They are still unchecked in the 004 tasks files, so `edit-layer` (T380+) can't start yet.
-- Meanwhile, work the follow-ups below, in order.
+- CP4a–CP4d were approved by the owner on 2026-10-24, so `edit-layer` (T380+) is unblocked.
+- Land the follow-up 1 fix (branch `fix/deep-link-transition-abort`), then start `edit-layer` on its own branch.
 
 ## Blockers
 
-- `edit-layer` is blocked on the CP4a–CP4d sign-off (CLAUDE.md rule 4)
+- None
 
 ## Waiting on
 
-- Owner: CP4a–CP4d sign-off (the CP4d scratch-repo smoke publish needs a scratch repo and a real token), and the original cover images for `media-src/<slug>/` (D5)
+- Owner: the original cover images for `media-src/<slug>/` (D5)
 
 ## Open decisions
 
@@ -39,13 +39,13 @@ In the order I'd do them. Checked against the repo and production on 2026-10-24.
 
 Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its own title, canonical, `og:image` and `twitter:image`. (2) `/og/dmns.png` and `/og/home.png` are 1200×630 PNGs. (3) `sitemap.xml` (22 URLs) and `robots.txt` return 200, the seven drafts are absent from the sitemap, and `/work/workbench` is `noindex`. (4) `/work/not-a-project` falls back to the app and lands on `/`. (5) The deep link opens the dialog, and Escape restores the home title, the `/` URL, and focus on the card.
 
-1. Fix an unhandled `InvalidStateError: Transition was aborted because of invalid state` that appears when you close a **deep-linked** dialog. Opening and closing from a card is clean. In `src/core/transition.ts`, `transition.ready` is never handled and `.finally()` passes on the rejection. Nothing visible breaks.
+1. An unhandled `InvalidStateError: Transition was aborted because of invalid state` appeared once on production around a deep-linked dialog. Chrome rejects `transition.ready` when it skips a View Transition (for example in a background tab), and `src/core/transition.ts` didn't handle that rejection. Nothing visible breaks. The fix and its unit test are on `fix/deep-link-transition-abort`, waiting for a PR.
 2. Paste a project URL into Slack, LinkedIn and iMessage, and try LinkedIn's Post Inspector. Use a URL they haven't cached. (Owner)
 
 **Spec 004**
 
-3. Owner sign-off on CP4a–CP4d (#6 and #7 are merged, but the checkboxes are still open).
-4. `edit-layer` (T380–T396), on `main`, once item 3 is done.
+3. Done 2026-10-24: owner sign-off on CP4a–CP4d.
+4. `edit-layer` (T380–T396), on a branch from `origin/main`. Next up.
 5. `content-json` T312 and T313: delete the old TS project modules once the migration test has passed in CI.
 6. Media T327–T329: collect the Netlify plugin cache and CI cache evidence.
 7. Per-module budget baselines. The admin isolation WARN reports +565 B against FR-358's +307 B.
