@@ -5,6 +5,10 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Restores and saves .cache/media so unchanged sources aren't re-encoded (004 media-pipeline FR-333).
+[[plugins]]
+  package = "./netlify/plugins/media-cache"
+
 # Deep links open the dialog client-side (FR-061). Prerendered pages replace this in T070.
 [[redirects]]
   from = "/work/*"
@@ -16,13 +20,42 @@
   to = "/index.html"
   status = 200
 
+# Admin entry (spec 004 FR-340): its own HTML, never linked from the public site (FR-344).
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin.html"
+  status = 200
+
+# CSP ceiling from scripts/csp.ts (spec 004 FR-355). dist/index.html adds a <meta> floor that
+# keeps public pages at connect-src 'self' and img-src 'self'; only /admin reaches GitHub.
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://qrlanding.netlify.app https://dmns.netlify.app https://madramps.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; media-src 'self'; font-src 'self'; connect-src 'self' https://api.github.com; frame-src https://qrlanding.netlify.app https://dmns.netlify.app https://madramps.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     X-Content-Type-Options = "nosniff"
+
+# noindex on every admin path, whether rules match the request or the rewritten path (FR-344, V6)
+[[headers]]
+  for = "/admin"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]
   for = "/assets/*"

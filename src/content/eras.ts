@@ -1,47 +1,7 @@
+import erasJson from './data/eras.json' with { type: 'json' };
 import type { Era } from './types.ts';
 
-/** Career chapters, newest first (data-model §5). */
-export const ERAS = [
-  {
-    id: 'cobank',
-    label: 'CoBank',
-    period: { start: '2023-12', end: 'present' },
-    engagement: 'full-time',
-  },
-  {
-    id: 'threecolts',
-    label: 'Threecolts / Onsite Support',
-    period: { start: '2023-06', end: '2024-11' },
-    engagement: 'contract',
-  },
-  {
-    id: 'health-scholars',
-    label: 'Health Scholars',
-    period: { start: '2017-12', end: '2023-07' },
-    engagement: 'full-time',
-  },
-  {
-    id: 'independent',
-    label: 'ethayer.design — Independent',
-    period: { start: '2015-07', end: '2021-12' },
-    engagement: 'freelance',
-  },
-  {
-    id: 'navigators',
-    label: 'The Navigators',
-    period: { start: '2011-01', end: '2015-07' },
-    engagement: 'full-time',
-  },
-  {
-    id: 'dli',
-    label: 'Defense Language Institute',
-    period: { start: '2010-07', end: '2013-09' },
-    engagement: 'full-time',
-  },
-  {
-    id: 'post-production',
-    label: 'Post-production, San Diego',
-    period: { start: '2005-06', end: '2010-06' },
-    engagement: 'full-time',
-  },
-] as const satisfies readonly Era[];
+/** Career chapters, newest first (data-model §5), from `data/eras.json` (spec 004, FR-303). */
+// Validated by content:check (FR-310), which also proves the list is non-empty. A JSON array has
+// no tuple type, hence the step through `unknown`.
+export const ERAS = erasJson as unknown as readonly [Era, ...Era[]];

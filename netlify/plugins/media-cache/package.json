@@ -1,0 +1,6 @@
+{
+  "name": "media-cache",
+  "private": true,
+  "type": "module",
+  "main": "index.js"
+}

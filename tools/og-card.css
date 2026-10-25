@@ -1,4 +1,4 @@
-/* The 1200 × 630 link-preview poster (FR-106). Fixed pixel sizes: this is a screenshot canvas,
+/* The 1200 × 630 link-preview poster (FR-136). Fixed pixel sizes: this is a screenshot canvas,
    not a responsive surface. Colors and type come from the site tokens. */
 @layer components {
   html,

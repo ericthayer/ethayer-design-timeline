@@ -1,4 +1,4 @@
-/** Site origin for absolute URLs in canonical and social tags (FR-102). */
+/** Site origin for absolute URLs in canonical and social tags (FR-132). */
 export const FALLBACK_ORIGIN = 'https://ethayer-design.netlify.app';
 
 type Env = Readonly<Record<string, string | undefined>>;

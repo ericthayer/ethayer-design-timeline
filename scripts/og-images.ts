@@ -1,5 +1,5 @@
 // Usage: npm run og [-- <slug> ...]
-// Renders the 1200 × 630 link-preview posters (FR-106): starts a Vite dev server, screenshots
+// Renders the 1200 × 630 link-preview posters (FR-136): starts a Vite dev server, screenshots
 // tools/og-card.html with Playwright for every card, shrinks each PNG with sharp, and records
 // an input hash per card in src/content/og-manifest.json so `npm test` can spot stale images.
 // Commit the results; the Netlify build has no browser.

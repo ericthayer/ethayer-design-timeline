@@ -1,0 +1,42 @@
+{
+  "slug": "responsive-modernization",
+  "title": "200+ Responsive Rebuilds",
+  "client": "Threecolts",
+  "era": "threecolts",
+  "engagement": "contract",
+  "role": "Lead UI/UX Designer & Front-End Developer",
+  "period": {
+    "start": "2023-06",
+    "end": "2024-11"
+  },
+  "theme": "navy-coral",
+  "motif": "scatter",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Modernized over 200 non-responsive web properties into mobile-optimized layouts.",
+  "body": {
+    "context": "Over 200 web properties were desktop-only.",
+    "contribution": "Rebuilt them as responsive, mobile-optimized layouts on the shared grid framework.",
+    "outcome": "200+ properties now work on phones and tablets."
+  },
+  "tracklist": [
+    {
+      "label": "Properties",
+      "value": "200+"
+    },
+    {
+      "label": "Responsive CSS"
+    }
+  ],
+  "metrics": [
+    {
+      "value": "200+",
+      "label": "web properties made responsive"
+    }
+  ],
+  "size": "sm",
+  "media": {
+    "kind": "placeholder",
+    "variant": "mobile"
+  }
+}

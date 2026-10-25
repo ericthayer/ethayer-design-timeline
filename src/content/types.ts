@@ -1,3 +1,4 @@
+import type { ERA_IDS } from './era-ids.ts';
 import type { MOTIFS } from './motifs.ts';
 import type { THEMES } from './themes.ts';
 
@@ -97,14 +98,7 @@ export interface Period {
   readonly end: YearMonth | 'present';
 }
 
-export type EraId =
-  | 'cobank'
-  | 'threecolts'
-  | 'health-scholars'
-  | 'independent'
-  | 'navigators'
-  | 'dli'
-  | 'post-production';
+export type EraId = (typeof ERA_IDS)[number];
 
 export interface Era {
   readonly id: EraId;
@@ -145,6 +139,9 @@ export type Project = {
   [S in Size]: ProjectBase & { readonly size: S; readonly media: CardMedia<S> };
 }[Size];
 
+/** Curated project order within each era: `order.json` (spec 004 content-json, FR-301). */
+export type ProjectOrder = { readonly [E in EraId]?: readonly string[] };
+
 /** Derived render list consumed by <timeline-wall>. */
 export type WallItem =
   | { readonly type: 'era'; readonly era: Era }
@@ -158,11 +155,14 @@ export type WallItem =
 
 /** Optional intro video at the top of the résumé (spec 002, FR-121). Captions are required. */
 export interface ResumeIntro {
-  /** Base path, e.g. 'resume/intro' → /media/resume/intro.{webm,mp4}. */
+  /** Media key, e.g. 'resume/intro': sources in media-src/resume/, served at /media/resume/intro.{webm,mp4}. */
   readonly src: string;
   readonly poster: ImageMedia;
-  /** WebVTT captions (WCAG 1.2.2), e.g. '/media/resume/intro.vtt'. */
-  readonly captions: `/media/${string}.vtt`;
+  /**
+   * WebVTT captions (WCAG 1.2.2), e.g. '/captions/resume-intro.vtt', from public/captions/.
+   * Not under /media/: the media pipeline owns that folder and removes files it didn't produce.
+   */
+  readonly captions: `/captions/${string}.vtt`;
   readonly title: string;
   readonly durationSec: number;
 }
@@ -196,4 +196,29 @@ export interface Resume {
     readonly software: readonly string[];
   };
   readonly projects: readonly ResumeProject[];
+}
+
+export interface SiteLink {
+  readonly label: string;
+  /** `/resume` opens <resume-dialog> (spec 002, FR-124). */
+  readonly href: '/resume' | `https://${string}` | `mailto:${string}`;
+}
+
+export interface Education {
+  readonly degree: string;
+  readonly school: string;
+  readonly year: string;
+}
+
+/** Identity, contact, and education for the hero, end-cap, and résumé (`site.json`, FR-300). */
+export interface Site {
+  readonly name: string;
+  readonly role: string;
+  readonly location: string;
+  readonly summary: string;
+  readonly span: Period;
+  /** Short highlight list for the home link-preview card (PR #5, og.ts). */
+  readonly highlights: readonly string[];
+  readonly links: readonly SiteLink[];
+  readonly education: readonly Education[];
 }

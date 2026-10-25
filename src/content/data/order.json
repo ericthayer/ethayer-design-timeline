@@ -1,0 +1,44 @@
+{
+  "cobank": [
+    "agentic-engineering-loop",
+    "cobank-design-system",
+    "figma-token-pipeline",
+    "drift-detection",
+    "accessible-components"
+  ],
+  "threecolts": [
+    "qr-landing",
+    "onsite-figma-template",
+    "onsite-grid-framework",
+    "responsive-modernization"
+  ],
+  "health-scholars": [
+    "hs-vue-library",
+    "hs-brand-systems",
+    "vr-design-system",
+    "workbench",
+    "design-sprints",
+    "map-course-launcher"
+  ],
+  "independent": [
+    "madramps",
+    "nyt-ui",
+    "merchants",
+    "curiteva",
+    "safetyhive",
+    "dmns",
+    "sublist",
+    "kyamedia-frameworks"
+  ],
+  "navigators": [
+    "navigators-platforms",
+    "kentico-framework"
+  ],
+  "dli": [
+    "dli-mobile-learning",
+    "dli-training-media"
+  ],
+  "post-production": [
+    "motion-reel"
+  ]
+}

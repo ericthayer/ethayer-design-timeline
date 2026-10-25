@@ -1,6 +1,7 @@
 /**
  * History API routes (FR-060, spec 002 FR-124): '/' is the wall, '/work/:slug' opens the
- * project dialog, and '/resume' opens the résumé dialog.
+ * project dialog, and '/resume' opens the résumé dialog. Inside the admin entry the same routes
+ * live under the '/admin' base (spec 004 FR-342).
  */
 const WORK = /^\/work\/([a-z0-9-]+)\/?$/;
 const RESUME = /^\/resume\/?$/;
@@ -13,6 +14,10 @@ export function parseSlug(pathname: string): string | null {
 export const isResumePath = (pathname: string): boolean => RESUME.test(pathname);
 
 export const workPath = (slug: string): string => `/work/${slug}`;
+
+/** '/admin' for /admin and /admin/*, otherwise '' (spec 004 FR-342). */
+export const routerBase = (pathname: string): string =>
+  /^\/admin(\/|$)/.test(pathname) ? '/admin' : '';
 
 interface RouteState {
   readonly path: string;
@@ -29,7 +34,10 @@ export interface RouterHandlers {
 }
 
 export class Router {
-  constructor(private readonly handlers: RouterHandlers) {
+  constructor(
+    private readonly handlers: RouterHandlers,
+    private readonly base = routerBase(location.pathname),
+  ) {
     addEventListener('popstate', () => {
       this.sync();
     });
@@ -37,31 +45,29 @@ export class Router {
 
   /** Apply the current URL (initial load and Back/Forward). */
   sync(): void {
-    const slug = parseSlug(location.pathname);
+    const pathname = location.pathname.slice(this.base.length) || '/';
+    const slug = parseSlug(pathname);
     if (slug) this.handlers.onOpen(slug);
-    else if (isResumePath(location.pathname)) this.handlers.onResume();
+    else if (isResumePath(pathname)) this.handlers.onResume();
     else this.handlers.onClose();
   }
 
   /** Opening from the wall pushes one entry. */
   open(slug: string): void {
-    const path = workPath(slug);
+    const path = this.base + workPath(slug);
     history.pushState({ path, pushedByApp: true } satisfies RouteState, '', path);
     this.handlers.onOpen(slug);
   }
 
   openResume(): void {
-    history.pushState(
-      { path: RESUME_PATH, pushedByApp: true } satisfies RouteState,
-      '',
-      RESUME_PATH,
-    );
+    const path = this.base + RESUME_PATH;
+    history.pushState({ path, pushedByApp: true } satisfies RouteState, '', path);
     this.handlers.onResume();
   }
 
   /** Prev/Next replaces the entry so Back still returns to the wall. */
   replace(slug: string): void {
-    const path = workPath(slug);
+    const path = this.base + workPath(slug);
     const pushedByApp = isRouteState(history.state) && history.state.pushedByApp;
     history.replaceState({ path, pushedByApp } satisfies RouteState, '', path);
     this.handlers.onOpen(slug);
@@ -73,12 +79,12 @@ export class Router {
       history.back();
       return;
     }
-    history.replaceState(null, '', '/');
+    history.replaceState(null, '', this.base || '/');
     this.handlers.onClose();
   }
 
   /** Leave an unknown /work/ URL without adding history. */
   reset(): void {
-    history.replaceState(null, '', '/');
+    history.replaceState(null, '', this.base || '/');
   }
 }

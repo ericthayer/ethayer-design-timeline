@@ -1,4 +1,4 @@
-/* Static content for people without JavaScript (FR-103). It lives in <noscript>, so it never
+/* Static content for people without JavaScript (FR-133). It lives in <noscript>, so it never
    renders alongside the wall. Tokens only: no new colors. */
 @layer components {
   .static {

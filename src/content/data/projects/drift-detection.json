@@ -1,0 +1,49 @@
+{
+  "slug": "drift-detection",
+  "title": "Spec & Drift Detection",
+  "client": "CoBank",
+  "era": "cobank",
+  "engagement": "full-time",
+  "role": "Senior UX Engineer / Systems Lead",
+  "period": {
+    "start": "2023-12",
+    "end": "present"
+  },
+  "theme": "paper-graphite",
+  "motif": "drift-bars",
+  "layout": "title-bottom",
+  "treatment": "swiss",
+  "summary": "An agentic spec and drift detection tool in CI/CD that catches UI inconsistencies before merge, cutting drift fixes by 33 %.",
+  "body": {
+    "context": "QA tickets tagged \"UI inconsistency\", \"spec mismatch\", or \"outdated documentation\" averaged 18 per release cycle.",
+    "contribution": "Engineered an automated agentic spec and drift detection tool that runs in CI/CD and flags discrepancies before pull requests merge.",
+    "outcome": "Drift tickets fell from 18 to 12 per release, with 6 caught upstream in pre-merge checks."
+  },
+  "tracklist": [
+    {
+      "label": "Drift fixes",
+      "value": "−33 %"
+    },
+    {
+      "label": "CI/CD"
+    },
+    {
+      "label": "Agentic linting"
+    },
+    {
+      "label": "Spec checks"
+    }
+  ],
+  "metrics": [
+    {
+      "value": "33 %",
+      "label": "fewer drift-related release fixes",
+      "baseline": "18",
+      "result": "12"
+    }
+  ],
+  "size": "tall",
+  "media": {
+    "kind": "artwork"
+  }
+}

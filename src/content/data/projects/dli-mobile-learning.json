@@ -1,0 +1,64 @@
+{
+  "slug": "dli-mobile-learning",
+  "title": "Mobile Learning UI",
+  "client": "Defense Language Institute",
+  "era": "dli",
+  "engagement": "full-time",
+  "role": "Multimedia Specialist & Front-End Designer",
+  "period": {
+    "start": "2010-07",
+    "end": "2013-09"
+  },
+  "theme": "graphite",
+  "motif": "nested-squares",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Mobile learning UI and responsive templates for military language training, plus mobile-ready admin dashboards.",
+  "body": {
+    "context": "Training content and admin dashboards were built for desktop only.",
+    "contribution": "Built mobile learning UI assets, introduced responsive front-end templates, and optimized legacy admin dashboards for mobile accessibility.",
+    "outcome": "Training and administration usable on mobile devices."
+  },
+  "tracklist": [
+    {
+      "label": "Mobile UI"
+    },
+    {
+      "label": "Responsive templates"
+    }
+  ],
+  "gallery": [
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "mobile"
+      },
+      "label": "Placeholder · Lesson screen",
+      "span": "feature",
+      "focal": "50% 40%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "video"
+      },
+      "label": "Placeholder · Training clip",
+      "span": "wide",
+      "focal": "50% 50%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "site"
+      },
+      "label": "Placeholder · Admin dashboard",
+      "span": "sm",
+      "focal": "20% 80%"
+    }
+  ],
+  "size": "tall",
+  "media": {
+    "kind": "placeholder",
+    "variant": "mobile"
+  }
+}

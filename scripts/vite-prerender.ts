@@ -5,8 +5,8 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import type { Plugin, ResolvedConfig } from 'vite';
-import { ERAS } from '../src/content/eras.ts';
-import { PROJECTS } from '../src/content/projects/index.ts';
+import { validateContent } from '../src/content/validate/index.ts';
+import { readContext, readRawContent } from './content-fs.ts';
 import { resolveOrigin } from './lib/origin.ts';
 import {
   applyPage,
@@ -38,7 +38,12 @@ export function prerender(): Plugin {
         readFileSync(join(config.root, 'src/content/media-manifest.json'), 'utf8'),
       ) as MediaManifest;
       const origin = resolveOrigin(process.env);
-      const pages = buildPages({ projects: PROJECTS, eras: ERAS, manifest });
+      // Read content through the validator (spec 004 content-json), not the src/content loaders:
+      // projects/index.ts uses import.meta.glob, which only Vite's transform understands.
+      const content = validateContent(readRawContent(config.root), readContext(config.root));
+      if (!content.ok) throw new Error('prerender: content is invalid; run npm run content:check');
+      const { projects, eras } = content.value;
+      const pages = buildPages({ projects, eras, manifest });
 
       for (const page of pages) write(join(outDir, page.file), applyPage(shell, page, origin));
       write(join(outDir, 'sitemap.xml'), renderSitemap(pages, origin));

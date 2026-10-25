@@ -1,0 +1,42 @@
+{
+  "slug": "dli-training-media",
+  "title": "100+ Training Media",
+  "client": "Defense Language Institute",
+  "era": "dli",
+  "engagement": "full-time",
+  "role": "Multimedia Specialist & Front-End Designer",
+  "period": {
+    "start": "2010-07",
+    "end": "2013-09"
+  },
+  "theme": "plum",
+  "motif": "tone-dots",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Produced 100+ training media assets for military personnel communication systems.",
+  "body": {
+    "context": "Language programs needed training media at scale.",
+    "contribution": "Produced 100+ training media assets.",
+    "outcome": "Used across military personnel communication systems."
+  },
+  "tracklist": [
+    {
+      "label": "Assets",
+      "value": "100+"
+    },
+    {
+      "label": "Motion"
+    }
+  ],
+  "metrics": [
+    {
+      "value": "100+",
+      "label": "training media assets"
+    }
+  ],
+  "size": "sm",
+  "media": {
+    "kind": "placeholder",
+    "variant": "video"
+  }
+}

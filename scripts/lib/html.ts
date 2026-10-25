@@ -1,5 +1,5 @@
 /**
- * Escaping HTML template helper for build-time pages (FR-104). Interpolations are escaped unless
+ * Escaping HTML template helper for build-time pages (FR-134). Interpolations are escaped unless
  * they come from another `html` call, so content is never concatenated into markup by hand.
  * Erasable TypeScript only: Node runs build scripts that import this without a compiler.
  */

@@ -1,0 +1,34 @@
+{
+  "slug": "curiteva",
+  "title": "Curiteva",
+  "client": "Curiteva",
+  "era": "independent",
+  "engagement": "freelance",
+  "role": "Front-end development",
+  "period": {
+    "start": "2020-01",
+    "end": "2020-12"
+  },
+  "theme": "plum",
+  "motif": "tone-dots",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Front-end development for Curiteva.",
+  "body": {
+    "context": "Details coming soon.",
+    "contribution": "Front-end development.",
+    "outcome": "Details coming soon."
+  },
+  "tracklist": [
+    {
+      "label": "Front-end"
+    }
+  ],
+  "draft": true,
+  "size": "sm",
+  "media": {
+    "kind": "image",
+    "src": "curiteva/cover",
+    "alt": "Curiteva home page"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "slug": "merchants",
+  "title": "Merchants Office Furniture",
+  "client": "Merchants",
+  "era": "independent",
+  "engagement": "freelance",
+  "role": "Web design",
+  "period": {
+    "start": "2020-01",
+    "end": "2020-12"
+  },
+  "theme": "paper-cobalt",
+  "motif": "drift-bars",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Web design in Sketch for a long-time Denver furniture company.",
+  "body": {
+    "context": "A Denver office furniture company, established 1940, needed a modern storefront.",
+    "contribution": "Designed the site in Sketch, from the hero to the quote builder.",
+    "outcome": "Delivered in 2020. The live site has since been redesigned by others."
+  },
+  "tracklist": [
+    {
+      "label": "Sketch"
+    },
+    {
+      "label": "Web design"
+    }
+  ],
+  "size": "wide",
+  "media": {
+    "kind": "video",
+    "src": "merchants/clip",
+    "poster": {
+      "kind": "image",
+      "src": "merchants/cover",
+      "alt": "Merchants home page hero"
+    },
+    "label": "Slow scroll through the full Merchants home page design",
+    "durationSec": 8
+  }
+}

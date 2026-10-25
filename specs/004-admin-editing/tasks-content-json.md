@@ -1,0 +1,33 @@
+# Tasks 004 · content-json
+
+Legend as in [001 tasks](../001-timeline-wall/tasks.md). A task is done when its Acceptance holds **and** `npm run check` passes. One task per commit, citing its `T3xx`. Spec: [spec-content-json.md](./spec-content-json.md) · Plan: [plan-content-json.md](./plan-content-json.md)
+
+- [x] **T300** Amend the older specs: 001 plan ADR-7 marked superseded by 004 content-json; 001 FR-011b becomes "warning in the validator"; 001 FR-091 and G4 point to the validator; 003 FR-220 drops the five-slug snapshot. → FR-312, FR-318
+  - Acceptance: every amendment links to `spec-content-json.md`. No code changes. · Verify: the owner reads the diff · Files: `specs/001-timeline-wall/plan.md`, `specs/001-timeline-wall/spec.md`, `specs/003-batch-b-and-gallery/spec.md`
+- [x] **T301** Add `ERA_IDS` in `era-ids.ts` (`EraId` derived from it), plus `Site` and `ProjectOrder` in `types.ts`. `site.ts` changes `as const` to `satisfies Site`. → FR-300, FR-302
+  - Acceptance: no consumer changes beyond types · Verify: `npm run check` · Files: `src/content/types.ts`, `src/content/era-ids.ts`, `src/content/site.ts`
+- [x] **T302** Issue model, readers, and paths: `Issue`, `RuleId` (the full FR-313 union), `Validated<T>`, a `Reader` with JSON Pointer tracking and an `unknown-key` check, and `projectFile`, `CONTENT_FILES`, and `serialize`. → FR-305–FR-308
+  - Acceptance: readers narrow with type predicates only (no `as`, no `any`) · Verify: `npm test -- validate` · Files: `src/content/validate/issue.ts`, `src/content/validate/read.ts`, `src/content/paths.ts`, `tests/unit/validate.test.ts`
+- [x] **T303** `validateProject`: the per-size media `switch`, gallery, links, text lengths, a11y text, focal, period, theme and motif names, iframe host, media key, and video duration. → FR-307, FR-313 (per-file rules)
+  - Acceptance: one failing fixture per rule, asserting `rule`, `severity`, `file`, `path`, and `slug` · Verify: `npm test -- validate` · Files: `src/content/validate/project.ts`, `tests/unit/validate.test.ts`, `tests/fixtures/content/projects.ts`
+- [x] **T304** Document rules for `eras.json` (unique, newest first, `ERA_IDS`), `site.json`, `resume.json`, and the shape of `order.json`. → FR-300, FR-313 (`era-ref`, `period`, `url`)
+  - Acceptance: eras parse to a non-empty tuple type · Verify: `npm test -- validate` · Files: `src/content/validate/documents.ts`, `tests/unit/validate.test.ts`, `tests/fixtures/content/documents.ts`
+- [x] **T305** `validateContent`: `order` integrity, the `era` ↔ key match, and the warnings `swiss-share`, `standard-run`, and `swiss-motif-unique`. The entry module re-exports everything. → FR-305, FR-312, FR-313
+  - Acceptance: a `Record<RuleId, Fixture>` covers every rule; warnings never set `ok: false` · Verify: `npm test -- validate` · Files: `src/content/validate/composition.ts`, `src/content/validate/index.ts`, `tests/unit/validate.test.ts`
+- [x] **T306** `scripts/content-fs.ts` (`readRawContent`, `readContext` from the manifest and the `frame-src` in `netlify.toml`). Run the validator on the **legacy TS** content passed as `unknown`. → FR-310, FR-316
+  - Acceptance: 0 errors and 0 warnings on today's content, before any file moves · Verify: `npm test -- content` · Files: `scripts/content-fs.ts`, `tests/unit/content.test.ts`
+- [x] **T307** One-time migration: `node scripts/migrate-content.ts` writes `src/content/data/**` (28 project files, `order.json`, `eras.json`, `site.json`, `resume.json`). The output is generated and never hand-edited. Add `src/content/data` to `.prettierignore`. → FR-300, FR-301, FR-315, FR-317
+  - Acceptance: `migration.test.ts` shows `buildWallItems`, `ERAS`, `SITE`, and `RESUME` `toStrictEqual` the TS modules · Verify: `npm test -- migration` · Files: `scripts/migrate-content.ts`, `src/content/data/**` (generated), `.prettierignore`, `tests/unit/migration.test.ts`
+- [x] **T308** Switch the loaders to JSON: `projects/index.ts` (glob plus `order.json`), `eras.ts`, `site.ts`, and `resume.ts` (still lazy). Add the loader ≡ validator test. → FR-303, FR-304
+  - Acceptance: initial JS delta ≤ 0.5 KB gzip, recorded in the PR; no `dist/assets/*.js` contains `swiss-share` · Verify: `npm run build && npm run budgets && npm run e2e` (no baseline changes) · Files: `src/content/projects/index.ts`, `src/content/eras.ts`, `src/content/site.ts`, `src/content/resume.ts`, `tests/unit/content.test.ts`
+- [x] **T309** Build gate: `scripts/check-content.ts` (`run(root): number`), the `content:check` script, and `build` = `tsc --noEmit && npm run content:check && vite build`. → FR-310, FR-311
+  - Acceptance: the bad fixtures exit 1 with `error <file> <pointer> <rule>: …` lines; warnings print but exit 0 · Verify: `npm test -- check-content`, `npm run build` · Files: `scripts/check-content.ts`, `package.json`, `tests/unit/check-content.test.ts`, `tests/fixtures/content/bad/**`
+- [x] **T310** Change plans: `planCreate`, `planUpdate`, `planDelete`, and `planReorder` → `Validated<readonly ContentChange[]>` (`put` or `delete`, a subset of github-publish FR-361). → FR-309
+  - Acceptance: a delete removes the file and the `order.json` entry together; deleting a Swiss card gives a warning, not an error; a slug change is an error; an invalid plan yields no changes · Verify: `npm test -- changes` · Files: `src/content/changes.ts`, `tests/unit/changes.test.ts`
+- [x] **T311** Fold the overlapping assertions in `content.test.ts` and `gallery.test.ts` into "real content has zero validator errors". Keep the file-on-disk checks (FR-314). Drop the FR-220 snapshot. → FR-314, FR-316, FR-318
+  - Acceptance: every removed assertion maps to a `RuleId` (listed in the commit body) · Verify: `npm run check` · Files: `tests/unit/content.test.ts`, `tests/unit/gallery.test.ts`
+- [ ] **T312** Remove the migration once `migration.test.ts` has passed in CI on this branch. → FR-315, FR-317
+  - Acceptance: no references remain (`grep -r migrate-content`) · Verify: `npm run check` · Files: `scripts/migrate-content.ts` (delete), `tests/unit/migration.test.ts` (delete)
+- [ ] **T313** Delete the TS data modules. `projects/index.ts` is the only file left in `src/content/projects/`. → spec §9.5
+  - Acceptance: spec success criteria 1–5 · Verify: `npm run check && npm run build && npm run budgets && npm run e2e` · Files: `src/content/projects/{cobank,threecolts,health-scholars,independent,early-career}.ts` (delete)
+- [ ] **CP4a** Owner reviews the running build (it should look identical), the error versus warning policy (FR-312), the JSON layout and paths (FR-300, FR-308), and spec §10 open questions. `github-publish` and `edit-layer` start only after approval.

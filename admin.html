@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin — Eric Thayer</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta
+      name="description"
+      content="Fifteen-plus years of design systems, front-end platforms, and agentic engineering work by Eric Thayer, Principal Design Engineer."
+    />
+    <meta name="theme-color" content="#121212" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="/fonts/hanken-grotesk-latin-wght.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <script type="module" src="/src/admin/entry.ts"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="skip-link" href="#wall">Skip to projects</a>
+      <a class="skip-link" href="#timeline-end">Skip to end of timeline</a>
+      <p class="site-header__brand">
+        <span class="site-header__name">Eric Thayer</span>
+        <span class="site-header__role">Principal Design Engineer · Career timeline</span>
+      </p>
+      <nav class="site-header__nav" aria-label="Contact">
+        <ul class="site-header__links">
+          <li><a href="/resume">Résumé</a></li>
+          <li><a href="https://www.linkedin.com/in/ethayerdesign/">LinkedIn</a></li>
+          <li><a href="https://github.com/ericthayer/">GitHub</a></li>
+          <li><a href="mailto:ethayer.design@gmail.com">Email</a></li>
+        </ul>
+        <motion-toggle></motion-toggle>
+      </nav>
+      <p id="wall-status" class="visually-hidden" role="status" aria-live="polite"></p>
+    </header>
+    <main id="main" tabindex="-1">
+      <noscript>
+        <p class="noscript">
+          This timeline needs JavaScript.
+          <a
+            href="https://docs.google.com/document/d/1CG5F0XGEuR3ZWTTyU3i7L-wGu6gGtFXgkrhgAyKZcfM/edit?usp=sharing"
+            >Read the résumé instead</a
+          >.
+        </p>
+      </noscript>
+    </main>
+  </body>
+</html>

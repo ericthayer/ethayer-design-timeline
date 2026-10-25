@@ -1,4 +1,4 @@
-// Link-preview images (FR-106): card data, committed PNGs, and their freshness.
+// Link-preview images (FR-136): card data, committed PNGs, and their freshness.
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { seedOf } from '../../src/components/card-media/card-media.ts';

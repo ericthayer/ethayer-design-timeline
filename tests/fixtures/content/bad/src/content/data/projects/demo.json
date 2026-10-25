@@ -1,0 +1,29 @@
+{
+  "slug": "demo",
+  "title": "Demo",
+  "client": "Demo Co",
+  "era": "cobank",
+  "engagement": "full-time",
+  "role": "Engineer",
+  "period": {
+    "start": "2024-01",
+    "end": "present"
+  },
+  "theme": "paper-ink",
+  "motif": "petals",
+  "layout": "title-bottom",
+  "treatment": "swiss",
+  "summary": "A demo project.",
+  "body": {
+    "context": "Context.",
+    "contribution": "Contribution.",
+    "outcome": "Outcome."
+  },
+  "tracklist": [],
+  "size": "sm",
+  "media": {
+    "kind": "image",
+    "src": "demo/cover",
+    "alt": ""
+  }
+}

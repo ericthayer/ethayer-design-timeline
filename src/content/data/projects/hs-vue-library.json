@@ -1,0 +1,68 @@
+{
+  "slug": "hs-vue-library",
+  "title": "Vue Component Library",
+  "client": "Health Scholars",
+  "era": "health-scholars",
+  "engagement": "full-time",
+  "role": "UI/UX Designer & Front-End Developer",
+  "period": {
+    "start": "2017-12",
+    "end": "2023-07"
+  },
+  "theme": "paper-prism",
+  "motif": "tone-dots",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "A scalable web component library built with Vue.js and documented in Storybook.",
+  "body": {
+    "context": "Six web applications shipped their own versions of the same UI.",
+    "contribution": "Built a scalable web component library in Vue.js with Storybook documentation.",
+    "outcome": "Product teams consumed shared, documented components instead of rebuilding them."
+  },
+  "tracklist": [
+    {
+      "label": "Vue.js"
+    },
+    {
+      "label": "Storybook"
+    },
+    {
+      "label": "Vuetify"
+    }
+  ],
+  "gallery": [
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "site"
+      },
+      "label": "Placeholder · Component library",
+      "span": "feature",
+      "focal": "25% 35%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "mobile"
+      },
+      "label": "Placeholder · Mobile states",
+      "span": "tall",
+      "focal": "50% 50%"
+    },
+    {
+      "media": {
+        "kind": "placeholder",
+        "variant": "design"
+      },
+      "label": "Placeholder · Storybook docs",
+      "span": "sm",
+      "focal": "75% 25%"
+    }
+  ],
+  "size": "feature",
+  "media": {
+    "kind": "image",
+    "src": "hs-vue-library/cover",
+    "alt": "Health Scholars Vue component library documentation in Storybook"
+  }
+}

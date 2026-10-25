@@ -1,0 +1,47 @@
+{
+  "slug": "navigators-platforms",
+  "title": "40+ Responsive Platforms",
+  "client": "The Navigators",
+  "era": "navigators",
+  "engagement": "full-time",
+  "role": "UI Designer & Front-End Developer",
+  "period": {
+    "start": "2011-01",
+    "end": "2015-07"
+  },
+  "theme": "indigo-vermilion",
+  "motif": "tri-mosaic",
+  "layout": "title-bottom",
+  "treatment": "swiss",
+  "summary": "Delivered 40+ responsive web platforms, standardizing UI patterns and improving conversion and donation workflows.",
+  "body": {
+    "context": "A global ministry ran dozens of separate web properties with inconsistent UI.",
+    "contribution": "Delivered 40+ responsive platforms on standardized UI patterns, and authored system documentation and UX guidelines.",
+    "outcome": "Better conversion and donation workflows across the network."
+  },
+  "tracklist": [
+    {
+      "label": "Platforms",
+      "value": "40+"
+    },
+    {
+      "label": "Donation flows"
+    },
+    {
+      "label": "UX guidelines"
+    },
+    {
+      "label": "Responsive"
+    }
+  ],
+  "metrics": [
+    {
+      "value": "40+",
+      "label": "responsive web platforms"
+    }
+  ],
+  "size": "feature",
+  "media": {
+    "kind": "artwork"
+  }
+}

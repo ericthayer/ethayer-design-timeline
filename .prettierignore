@@ -2,3 +2,5 @@ dist
 public
 *.md
 package-lock.json
+src/content/data
+tests/fixtures/content/bad

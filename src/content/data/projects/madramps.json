@@ -1,0 +1,50 @@
+{
+  "slug": "madramps",
+  "title": "MadRamps",
+  "client": "VEA Technologies",
+  "era": "independent",
+  "engagement": "freelance",
+  "role": "Design & prototype",
+  "period": {
+    "start": "2021-01",
+    "end": "2021-12"
+  },
+  "theme": "graphite",
+  "motif": "diagonal-lines",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "Design and prototype for an ATV and snowmobile loading ramp brand.",
+  "body": {
+    "context": "VEA Technologies needed a storefront for its pivoting ramp system.",
+    "contribution": "Designed and prototyped the site for MadRamps.",
+    "outcome": "Live at madramps.com."
+  },
+  "tracklist": [
+    {
+      "label": "Design"
+    },
+    {
+      "label": "Prototype"
+    }
+  ],
+  "links": [
+    {
+      "label": "Live site",
+      "href": "https://madramps.com/",
+      "kind": "live"
+    }
+  ],
+  "draft": true,
+  "size": "wide",
+  "media": {
+    "kind": "iframe",
+    "src": "https://madramps.com/",
+    "title": "MadRamps live site",
+    "viewport": "desktop",
+    "poster": {
+      "kind": "image",
+      "src": "madramps/cover",
+      "alt": "MadRamps home page"
+    }
+  }
+}

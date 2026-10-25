@@ -24,5 +24,29 @@ export default defineConfig(
       'no-restricted-properties': ['error', ...htmlSinks],
     },
   },
+  {
+    // Spec 004 admin-auth FR-356: nothing on the token's path may log.
+    files: ['src/admin/**', 'src/core/auth/**', 'src/components/admin-*/**'],
+    rules: { 'no-console': 'error' },
+  },
+  {
+    // The editor imports the frame-src list from here (spec 004 edit-layer X2).
+    files: ['scripts/csp.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [{ group: ['node:*'], message: 'scripts/csp.ts must run in the browser too.' }],
+        },
+      ],
+    },
+  },
   { files: ['eslint.config.js'], extends: [tseslint.configs.disableTypeChecked] },
+  // Netlify local build plugins: plain Node ESM outside the TS project (004 media-pipeline T327).
+  {
+    files: ['netlify/plugins/**/*.js'],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: { globals: globals.node },
+    rules: { '@typescript-eslint/explicit-function-return-type': 'off' },
+  },
 );

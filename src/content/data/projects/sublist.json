@@ -1,0 +1,44 @@
+{
+  "slug": "sublist",
+  "title": "SubList Prototype",
+  "client": "SubList",
+  "era": "independent",
+  "engagement": "freelance",
+  "role": "Prototyping",
+  "period": {
+    "start": "2017-01",
+    "end": "2017-12"
+  },
+  "theme": "coral",
+  "motif": "dot-grid-mark",
+  "layout": "title-top",
+  "treatment": "standard",
+  "summary": "A prototype for a sub-contractor app, built in Adobe XD.",
+  "body": {
+    "context": "A startup needed to validate a sub-contractor app before building it.",
+    "contribution": "Designed and prototyped the app in Adobe XD.",
+    "outcome": "A clickable prototype for client validation."
+  },
+  "tracklist": [
+    {
+      "label": "Adobe XD"
+    },
+    {
+      "label": "Prototype"
+    }
+  ],
+  "links": [
+    {
+      "label": "XD prototype",
+      "href": "https://xd.adobe.com/view/f6018739-abfe-4c02-9fd3-aa9cfd99a9f8-a352/",
+      "kind": "prototype"
+    }
+  ],
+  "size": "tall",
+  "media": {
+    "kind": "image",
+    "src": "sublist/cover",
+    "alt": "SubList sub-contractor app prototype screens in Adobe XD",
+    "focal": "50% 50%"
+  }
+}

@@ -1,0 +1,129 @@
+/* Repeats the site's layer order: admin CSS may load before the site's (spec 004 admin-auth). */
+@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  /* Sign-in form (FR-345, FR-357) */
+  .asi {
+    display: grid;
+    gap: var(--space-4);
+    max-inline-size: 40rem;
+    font-size: 1rem;
+  }
+  .asi[data-mode='page'] {
+    margin-inline: auto;
+    padding: clamp(var(--space-6), 6vw, 4rem) var(--space-4);
+  }
+  .asi__title {
+    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+    font-weight: var(--weight-display);
+    letter-spacing: var(--tracking-display);
+    line-height: 1.1;
+  }
+  .asi[data-mode='dialog'] .asi__title {
+    font-size: 1.5rem;
+  }
+  .asi__lede {
+    max-inline-size: 60ch;
+  }
+  .asi__steps {
+    display: grid;
+    gap: var(--space-2);
+    padding-inline-start: 1.5rem;
+  }
+  .asi__steps a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 24px;
+    font-weight: var(--weight-meta);
+  }
+  .asi__field {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .asi__label {
+    font-weight: var(--weight-display);
+  }
+  .asi__hint {
+    color: #c7c7cc;
+    font-size: 0.875rem;
+  }
+  .asi__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .asi__input {
+    flex: 1 1 16rem;
+    min-inline-size: 0;
+    min-block-size: 44px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--stone);
+    border-radius: 6px;
+    background: #1d1d1f;
+    color: var(--paper);
+    font: inherit;
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 0.9375rem;
+  }
+  .asi__input[aria-invalid='true'] {
+    border-color: var(--coral);
+    border-width: 2px;
+  }
+  .asi__error {
+    color: var(--coral);
+    font-weight: var(--weight-meta);
+  }
+  .asi__toggle,
+  .asi__submit,
+  .asi__cancel {
+    min-block-size: 44px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--stone);
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .asi__toggle[aria-pressed='true'] {
+    border-color: var(--paper);
+  }
+  .asi__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .asi__submit {
+    border-color: var(--paper);
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: var(--weight-display);
+  }
+  .asi__submit[aria-disabled='true'] {
+    cursor: progress;
+    opacity: 0.75;
+  }
+  .asi__status:empty {
+    display: none;
+  }
+
+  /* Re-auth dialog (FR-352) */
+  .asi-dialog {
+    inline-size: min(40rem, 100vw - 2rem);
+    max-block-size: calc(100dvh - 2rem);
+    padding: var(--space-6);
+    border: 1px solid var(--stone);
+    border-radius: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    overflow-y: auto;
+  }
+  .asi-dialog::backdrop {
+    background: rgb(18 18 18 / 0.8);
+  }
+
+  @media (forced-colors: active) {
+    .asi__submit {
+      border-color: ButtonText;
+    }
+  }
+}

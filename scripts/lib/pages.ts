@@ -1,5 +1,5 @@
 /**
- * Prerendered pages (FR-100–FR-105): per-route head tags and static `<noscript>` content, applied
+ * Prerendered pages (FR-130–FR-135): per-route head tags and static `<noscript>` content, applied
  * to the built app shell. Pure functions, so unit tests cover them without a build.
  */
 import { HOME_OG_SLUG, OG_SIZE, homeOgCard, ogCardFor, ogImagePath } from '../../src/content/og.ts';
@@ -29,7 +29,7 @@ export interface Page {
   /** Path inside the build output, e.g. 'work/dmns.html'. */
   readonly file: string;
   readonly meta: PageMeta;
-  /** Inner HTML of the `<noscript>` block in `<main>` (FR-103). */
+  /** Inner HTML of the `<noscript>` block in `<main>` (FR-133). */
   readonly body: string;
 }
 
@@ -235,7 +235,7 @@ export function buildPages(input: BuildInput): Page[] {
   return [home, ...projects];
 }
 
-/** Canonical, robots, Open Graph, and Twitter tags for one page (FR-101). */
+/** Canonical, robots, Open Graph, and Twitter tags for one page (FR-131). */
 export function renderHeadTags(page: Page, origin: string): string {
   const { meta } = page;
   const url = `${origin}${page.route}`;
@@ -305,7 +305,7 @@ export function renderRobots(origin: string): string {
   return `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`;
 }
 
-/** Forced rewrites (the trailing `!`) so a static page always beats the wildcard fallback (FR-100). */
+/** Forced rewrites (the trailing `!`) so a static page always beats the wildcard fallback (FR-130). */
 export function renderRedirects(pages: readonly Page[]): string {
   return `${pages
     .filter((page) => page.route !== '/')
