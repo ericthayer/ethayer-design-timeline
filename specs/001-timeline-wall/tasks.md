@@ -78,4 +78,5 @@ T070 and T071 were started ahead of CP1 at the owner's request (2026-10-24). The
 - [ ] **T074** Netlify site + subdomain (Q4) + README on adding projects (SC-4). *Status 2026-10-24: the site is live at ethayer-design.netlify.app and the README covers adding a project with JSON content and `media-src/`. Still open: a custom subdomain.*
 - [ ] **T075** (P3) Era rail. → US7
 - [x] **T076** Batch B motifs. → FR-041. Done in [spec 003](../003-batch-b-and-gallery/spec.md) (T201–T202, PR #4).
+- [x] **T078** Owner-approved design change (2026-10-25): Education tile near the start of the wall, and the end-cap becomes a contact card with Eric's portrait. Visual baselines for this change need the owner's written OK. → FR-072, FR-074
 - [ ] **T077** Real media to replace placeholders (owner assets: VR capture, motion-reel source, NDA-cleared shots); `scripts/check-frameable.ts`; generated CSP. → FR-092. *Status 2026-10-24: media now goes in `media-src/<slug>/` (spec 004 media-pipeline), and the CSP has one source in `scripts/csp.ts` (spec 004 admin-auth). Still open: the owner's assets, `check-frameable.ts`, and generating `frame-src` from content.*

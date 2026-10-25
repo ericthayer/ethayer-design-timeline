@@ -4,7 +4,7 @@ import { getScheduler } from '../../core/media-scheduler.ts';
 import { isNavKey, nextIndex } from '../../core/spatial-nav.ts';
 import { attachWheelToHorizontal, wallOwnsWheel } from '../../core/wheel.ts';
 import { ProjectCard } from '../project-card/project-card.ts';
-import { renderEndCap, renderEra } from '../wall-tiles/wall-tiles.ts';
+import { renderEducation, renderEndCap, renderEra } from '../wall-tiles/wall-tiles.ts';
 import './timeline-wall.css';
 
 declare global {
@@ -120,8 +120,12 @@ export class TimelineWall extends HTMLElement {
         return el('li', { class: 'wall__item', 'data-size': 'sm', 'data-type': 'era' }, [
           renderEra(item.era),
         ]);
+      case 'education':
+        return el('li', { class: 'wall__item', 'data-size': 'sm', 'data-type': 'education' }, [
+          renderEducation(),
+        ]);
       case 'end-cap':
-        return el('li', { class: 'wall__item', 'data-size': 'tall', 'data-type': 'end-cap' }, [
+        return el('li', { class: 'wall__item', 'data-size': 'feature', 'data-type': 'end-cap' }, [
           renderEndCap(),
         ]);
       case 'project': {

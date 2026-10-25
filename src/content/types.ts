@@ -151,6 +151,7 @@ export type WallItem =
       readonly index: number;
       readonly total: number;
     }
+  | { readonly type: 'education' }
   | { readonly type: 'end-cap' };
 
 /** Optional intro video at the top of the résumé (spec 002, FR-121). Captions are required. */

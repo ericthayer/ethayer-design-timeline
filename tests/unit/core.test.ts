@@ -39,6 +39,14 @@ describe('order', () => {
     expect(items.at(-1)?.type).toBe('end-cap');
   });
 
+  it('places one Education tile at the end of the first era (FR-074)', () => {
+    const at = items.findIndex((item) => item.type === 'education');
+    expect(items.filter((item) => item.type === 'education')).toHaveLength(1);
+    expect(items[at - 1]?.type).toBe('project');
+    expect(items.slice(1, at).every((item) => item.type === 'project')).toBe(true);
+    expect(items[at + 1]?.type).toBe('era');
+  });
+
   it('starts each era with its marker and numbers projects 1…N', () => {
     const sequence = projectSequence(items);
     expect(sequence).toHaveLength(PROJECTS.length);
