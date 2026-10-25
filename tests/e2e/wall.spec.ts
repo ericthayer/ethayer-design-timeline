@@ -47,7 +47,7 @@ test.describe('wall', () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/');
-    const endCap = page.getByRole('heading', { level: 2, name: 'Education' });
+    const endCap = page.getByRole('heading', { level: 2, name: 'End of the timeline' });
     for (let i = 0; i < 12 && !(await endCap.isVisible()); i += 1) {
       await page.mouse.wheel(0, 2500);
       await page.waitForTimeout(150);
@@ -55,6 +55,21 @@ test.describe('wall', () => {
     await expect(endCap).toBeVisible();
     await expect(page.locator('#wall-status')).toHaveText(/Loaded \d+ more projects/);
     await expect(page.locator('project-card')).toHaveCount(28);
+  });
+
+  test('shows Education near the start and a contact end-cap with a portrait (FR-072, FR-074)', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 2, name: 'Education' })).toBeAttached();
+    await renderEverything(page);
+    const endCap = page.locator('[data-type="end-cap"]');
+    await expect(endCap.getByRole('link', { name: 'Résumé' })).toBeAttached();
+    await expect(endCap.getByRole('link', { name: 'Email' })).toBeAttached();
+    await expect(endCap.locator('.tile__education')).toHaveCount(0);
+    const portrait = endCap.getByRole('img', { name: /Eric Thayer/ });
+    await expect(portrait).toHaveAttribute('loading', 'lazy');
+    await expect(portrait).toHaveAttribute('width', /\d+/);
   });
 
   test('renders about one Swiss card in four (FR-011b)', async ({ page }) => {

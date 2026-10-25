@@ -3,6 +3,7 @@ import type { Era, Project, WallItem } from '../content/types.ts';
 /**
  * Projects → render list (FR-001): each era newest first with its
  * projects in curated order, then the end-cap. Eras without projects are skipped.
+ * The Education tile closes the first era, near the start of the wall (FR-074).
  */
 export function buildWallItems(projects: readonly Project[], eras: readonly Era[]): WallItem[] {
   const sortedEras = [...eras].sort((a, b) => b.period.start.localeCompare(a.period.start));
@@ -18,6 +19,7 @@ export function buildWallItems(projects: readonly Project[], eras: readonly Era[
       index += 1;
       items.push({ type: 'project', project, index, total });
     }
+    if (!items.some((item) => item.type === 'education')) items.push({ type: 'education' });
   }
   items.push({ type: 'end-cap' });
   return items;

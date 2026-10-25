@@ -4,7 +4,7 @@
 | --- | --- |
 | Status | **Approved (CP0, 2026-10-23)**: defaults accepted, with the owner clarifications in §11 |
 | Owner | Eric Thayer |
-| Amended by | [002 hero and résumé](../002-hero-and-resume/spec.md) §5 (FR-007, FR-008, FR-070, résumé links) |
+| Amended by | [002 hero and résumé](../002-hero-and-resume/spec.md) §5 (FR-007, FR-008, FR-070, résumé links) · owner request 2026-10-25 (FR-072, FR-074) |
 | Companions | [research.md](./research.md) · [data-model.md](./data-model.md) · [plan.md](./plan.md) · [tasks.md](./tasks.md) · [constitution](../constitution.md) |
 
 ## 1. Summary
@@ -133,7 +133,8 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 ### Loading
 - **FR-070** The first batch is the identity poster plus 12 items. Later batches of 12 render when a sentinel comes within one viewport of the scroll edge. The observer root is the wall itself in horizontal mode and the viewport in vertical mode.
 - **FR-071** A single `role="status"` live region in the header announces batch loads and routing errors.
-- **FR-072** The end-cap tile (education, résumé, contact) renders after the final batch, and the sentinel disconnects.
+- **FR-072** The end-cap tile renders after the final batch, and the sentinel disconnects. *Amended (owner, 2026-10-25):* it is a `feature` contact card headed "End of the timeline": a paper panel with the copy line and the Résumé and Email links on the left, and a portrait of Eric (`media-src/site/portrait.jpg`, responsive, lazy, with alt text) on the right. It no longer lists education (FR-074). It keeps `id="timeline-end"` for the skip link.
+- **FR-074** *(owner, 2026-10-25)* An `sm` Education tile (the former end-cap's heading and degree list, same theme and type) closes the first era, so it sits near the start of the wall.
 - **FR-073** Home and End move focus to the first and last *rendered* card. End also renders the remaining batches.
 
 ### Motion and keyboard

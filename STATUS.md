@@ -1,6 +1,6 @@
 ---
 state: active
-updated: 2026-10-24
+updated: 2026-10-25
 updatedBy: claude
 ---
 
@@ -10,6 +10,8 @@ updatedBy: claude
 - Spec 004 (admin editing) parts 1 and 2 are merged to main: PR #6 (content as JSON, build-time media, `/admin` sign-in) and PR #7 (`github-publish`).
 - PR #8 (release-please and commitlint) is a draft and will be rebased later. Keep using Conventional Commit messages, and keep `package.json` and lockfile changes small.
 - The PR #5 post-deploy smoke test passed on production on 2026-10-24 (steps 1–5). It turned up one console error, now follow-up 1.
+
+- T078 (owner request 2026-10-25): an Education tile near the start of the wall and a contact end-cap with Eric's portrait are in a PR on `claude/project-thread-cfada7`. It needs the owner's review and a written OK before any visual baseline covers it.
 
 ## Next step
 
