@@ -41,7 +41,10 @@ export default defineConfig(
       ],
     },
   },
-  { files: ['eslint.config.js'], extends: [tseslint.configs.disableTypeChecked] },
+  {
+    files: ['eslint.config.js', 'commitlint.config.js'],
+    extends: [tseslint.configs.disableTypeChecked],
+  },
   // Netlify local build plugins: plain Node ESM outside the TS project (004 media-pipeline T327).
   {
     files: ['netlify/plugins/**/*.js'],

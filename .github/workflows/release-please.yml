@@ -1,0 +1,20 @@
+# Opens/updates a release PR from Conventional Commits; merging it tags vX.Y.Z,
+# writes CHANGELOG.md and bumps the version file.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v5
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
