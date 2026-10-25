@@ -9,4 +9,4 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). Each task is done when 
 - [x] **T104** Résumé content and types. → FR-120, FR-121
 - [x] **T105** `<resume-dialog>` (lazy), `/resume` route, Netlify rewrite, print styles. → FR-122–FR-126
 - [x] **T106** Tests: unit (order, router, contrast), e2e (hero CTA focus, résumé open/close/deep link, axe). → US9, US10
-- [ ] **CP2** Owner reviews the hero and résumé in the running build.
+- [x] **CP2** (approved by the owner, 2026-10-24) Owner reviews the hero and résumé in the running build.

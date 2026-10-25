@@ -13,8 +13,8 @@ updatedBy: claude
 
 ## Next step
 
-- CP4a–CP4d were approved by the owner on 2026-10-24, so `edit-layer` (T380+) is unblocked.
-- Land the follow-up 1 fix (branch `fix/deep-link-transition-abort`), then start `edit-layer` on its own branch.
+- The owner approved CP1–CP3 and CP4a–CP4d on 2026-10-24. `edit-layer` (T380+) is unblocked, and the current design is locked (constitution I).
+- Merge #9 (follow-up 1) and #10, then start `edit-layer` on its own branch.
 
 ## Blockers
 
@@ -26,8 +26,7 @@ updatedBy: claude
 
 ## Open decisions
 
-- CP1 (v1 design lock and visual baselines) was never formally approved, and the design has changed since (hero, palette, gallery). Approve the current design so baselines can be taken? · since 2026-10-23
-- Keep Hanken Grotesk, or license a face like Neue Haas Unica? · since 2026-10-23
+- License a face like Neue Haas Unica later? Hanken Grotesk is locked for now by the CP1 approval, so switching would be an owner-approved design change. · since 2026-10-23
 - Swiss artwork: keep the fixed assignment (14 motifs in use), or rotate which cards get one? · since 2026-10-23
 - A static `/resume` page for visitors without JavaScript and for link previews (PR #5 left it out; `/resume` previews as the home card) · since 2026-10-24
 
@@ -39,7 +38,7 @@ In the order I'd do them. Checked against the repo and production on 2026-10-24.
 
 Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its own title, canonical, `og:image` and `twitter:image`. (2) `/og/dmns.png` and `/og/home.png` are 1200×630 PNGs. (3) `sitemap.xml` (22 URLs) and `robots.txt` return 200, the seven drafts are absent from the sitemap, and `/work/workbench` is `noindex`. (4) `/work/not-a-project` falls back to the app and lands on `/`. (5) The deep link opens the dialog, and Escape restores the home title, the `/` URL, and focus on the card.
 
-1. An unhandled `InvalidStateError: Transition was aborted because of invalid state` appeared once on production around a deep-linked dialog. Chrome rejects `transition.ready` when it skips a View Transition (for example in a background tab), and `src/core/transition.ts` didn't handle that rejection. Nothing visible breaks. The fix and its unit test are on `fix/deep-link-transition-abort`, waiting for a PR.
+1. An unhandled `InvalidStateError: Transition was aborted because of invalid state` appeared once on production around a deep-linked dialog. Chrome rejects `transition.ready` when it skips a View Transition (for example in a background tab), and `src/core/transition.ts` didn't handle that rejection. Nothing visible breaks. The fix and its unit test are in PR #9.
 2. Paste a project URL into Slack, LinkedIn and iMessage, and try LinkedIn's Post Inspector. Use a URL they haven't cached. (Owner)
 
 **Spec 004**
@@ -58,7 +57,7 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 
 **Planned, not started**
 
-11. CP1 sign-off, then screenshot baselines at 390, 1280 and 1920 px. (Needs the type decision)
+11. Screenshot baselines at 390, 1280 and 1920 px (part of T072). CP1 was approved on 2026-10-24, so the baselines are unblocked.
 12. T072: Firefox and WebKit e2e and Lighthouse thresholds in CI. Only Chromium is verified.
 13. T073: manual screen-reader pass (VoiceOver and NVDA).
 14. T074: custom subdomain (`work.ethayer.design`). The site is live at `ethayer-design.netlify.app`.

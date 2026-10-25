@@ -9,4 +9,4 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). Each task is done when 
 - [x] **T204** `dialog-gallery.ts` bento renderer, wired into `dialog-content.ts`, CSS grid with spans, focal custom property, placeholder zoom. → FR-212–FR-217
 - [x] **T205** Placeholder galleries for five projects with "Placeholder ·" captions. → FR-220
 - [x] **T206** Tests: unit (motif registry, determinism, distinct Swiss motifs, gallery captions and focal points), e2e (gallery renders, tile spans, axe with a gallery open, Vimeo facade still click-to-load).
-- [ ] **CP3** Owner reviews the running build (Swiss cards and a gallery dialog).
+- [x] **CP3** (approved by the owner, 2026-10-24) Owner reviews the running build (Swiss cards and a gallery dialog).
