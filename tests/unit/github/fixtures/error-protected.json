@@ -1,0 +1,5 @@
+{
+  "message": "Protected branch update failed for refs/heads/main.",
+  "documentation_url": "https://docs.github.com/articles/about-protected-branches",
+  "status": "422"
+}
