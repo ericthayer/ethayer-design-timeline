@@ -39,4 +39,4 @@ From [spec-admin-auth.md](./spec-admin-auth.md) and [plan-admin-auth.md](./plan-
 - [ ] **T352** Deploy-preview check (owner). → FR-341, FR-344, FR-355
   - Acceptance: `curl -sI` shows the ceiling CSP and `X-Robots-Tag` on `/admin`. A real token signs in, and a read-only token is refused. The public network panel shows no GitHub request.
   - Verify: results noted in the PR. Files: none
-- [ ] **CP4c** Owner reviews sign-in, sign-out, the error messages, and the headers on the deploy preview, and approves before `github-publish` (T360+) starts.
+- [x] **CP4c** (approved by the owner, 2026-10-24) Owner reviews sign-in, sign-out, the error messages, and the headers on the deploy preview, and approves before `github-publish` (T360+) starts.

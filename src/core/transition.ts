@@ -18,8 +18,12 @@ export function morph(
     const target = to();
     if (target) target.style.viewTransitionName = NAME;
   });
-  void transition.finished.finally(() => {
-    const target = to();
-    if (target) target.style.viewTransitionName = '';
-  });
+  // A skipped transition (hidden tab, invalid state) rejects `ready`; the update has still run.
+  transition.ready.catch(() => undefined);
+  void transition.finished
+    .catch(() => undefined)
+    .then(() => {
+      const target = to();
+      if (target) target.style.viewTransitionName = '';
+    });
 }

@@ -65,7 +65,7 @@ Each task is done when its "done when" is true **and** `npm run check` (typechec
 
 - [x] **T060** E2E (Chromium): wall renders, layout switches at 1800 vs 1801 px, wheel mapping, batches, dialog open/close/back/deep-link/prev-next, focus restore, motion toggle, axe on the wall and the open dialog.
 - [x] **T061** Screenshot review at 390 / 1280 / 1920 px; fix defects; `npm run build` within budgets (initial JS 16.5 KB, CSS 6.1 KB, font 33.9 KB gzip/raw).
-- [ ] **CP1** **v1 review.** Owner reviews the running build (Netlify preview or `npm run dev`). Approved designs get locked as Playwright baselines (`tests/visual/`).
+- [x] **CP1** **v1 review.** (Approved by the owner, 2026-10-24. The current design is locked: hero, palette, gallery, and Hanken Grotesk for now. T072 takes the visual baselines.) Owner reviews the running build (Netlify preview or `npm run dev`). Approved designs get locked as Playwright baselines (`tests/visual/`).
 
 ## After CP1 (backlog, not in v1)
 
