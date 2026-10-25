@@ -1,6 +1,6 @@
 ---
 state: active
-updated: 2026-10-24
+updated: 2026-10-25
 updatedBy: claude
 ---
 
@@ -32,6 +32,7 @@ updatedBy: claude
 - License a face like Neue Haas Unica later? Hanken Grotesk is locked for now by the CP1 approval, so switching would be an owner-approved design change. · since 2026-10-23
 - Swiss artwork: keep the fixed assignment (14 motifs in use), or rotate which cards get one? · since 2026-10-23
 - A static `/resume` page for visitors without JavaScript and for link previews (PR #5 left it out; `/resume` previews as the home card) · since 2026-10-24
+- Spec 005 (Ask): approve the spec, constitution amendments A1 (the Anthropic SDK in server functions only) and A2 (visitor text to a third party behind a notice), and AQ1–AQ9. Plan only, no code yet · since 2026-10-25
 
 ## Follow-ups
 
@@ -73,6 +74,11 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 18. Unity capture of the VR design system, and the motion-reel source for an 8-second loop.
 19. CoBank and Threecolts screenshots, if you're cleared to show them.
 20. Copy and dates for the seven drafts: `curiteva`, `madramps`, `motion-reel`, `qr-landing`, `map-course-launcher`, `safetyhive`, `workbench`. They stay `noindex` until `draft: true` is removed, which will be possible in `/admin` once `edit-layer` ships.
+
+**Spec 005 (Ask), planned, not started**
+
+- Owner: draft `about.json` and 8–16 suggestion chips with answers (T399). This can start any time.
+- Pure core T400–T403 may run on a branch during the CP4d wait if AQ6 = yes. Everything visible waits for CP4e.
 
 **Housekeeping**
 
