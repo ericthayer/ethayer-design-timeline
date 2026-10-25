@@ -7,21 +7,22 @@ updatedBy: claude
 ## Left off
 
 - v1, the hero and résumé (spec 002), the Batch B artwork and gallery (spec 003), and the prerender and link previews (T070, T071) are merged to main.
-- Spec 004 (admin editing) part 1 is in PR #6: content as JSON, build-time media, and `/admin` sign-in. Read-only tokens are refused and Sign out works inside a project dialog.
-- `github-publish` (spec 004) is in PR #7. It is retargeted to `main` so Netlify builds a preview. `edit-layer` comes after it.
+- Spec 004 (admin editing) parts 1 and 2 are merged to main: PR #6 (content as JSON, build-time media, `/admin` sign-in) and PR #7 (`github-publish`).
+- PR #8 (release-please and commitlint) is a draft and will be rebased later. Keep using Conventional Commit messages, and keep `package.json` and lockfile changes small.
+- The PR #5 post-deploy smoke test passed on production on 2026-10-24 (steps 1–5). It turned up one console error, now follow-up 1.
 
 ## Next step
 
-- Merge #6, then review the #7 deploy preview and merge it (CP4d: scratch-repo smoke publish).
-- Then work the follow-ups below, in order.
+- The owner records CP4a–CP4d. They are still unchecked in the 004 tasks files, so `edit-layer` (T380+) can't start yet.
+- Meanwhile, work the follow-ups below, in order.
 
 ## Blockers
 
-- None
+- `edit-layer` is blocked on the CP4a–CP4d sign-off (CLAUDE.md rule 4)
 
 ## Waiting on
 
-- Owner: the CP4a–CP4c reviews on PR #6, the CP4d review on PR #7, and the original cover images for `media-src/<slug>/` (D5)
+- Owner: CP4a–CP4d sign-off (the CP4d scratch-repo smoke publish needs a scratch repo and a real token), and the original cover images for `media-src/<slug>/` (D5)
 
 ## Open decisions
 
@@ -36,13 +37,15 @@ In the order I'd do them. Checked against the repo and production on 2026-10-24.
 
 **Verify what shipped**
 
-1. Run the six-step post-deploy smoke test from PR #5. Spot checks pass: `/`, `/work/workbench`, `/og/home.png` and `sitemap.xml` (22 URLs) return 200.
+Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its own title, canonical, `og:image` and `twitter:image`. (2) `/og/dmns.png` and `/og/home.png` are 1200×630 PNGs. (3) `sitemap.xml` (22 URLs) and `robots.txt` return 200, the seven drafts are absent from the sitemap, and `/work/workbench` is `noindex`. (4) `/work/not-a-project` falls back to the app and lands on `/`. (5) The deep link opens the dialog, and Escape restores the home title, the `/` URL, and focus on the card.
+
+1. Fix an unhandled `InvalidStateError: Transition was aborted because of invalid state` that appears when you close a **deep-linked** dialog. Opening and closing from a card is clean. In `src/core/transition.ts`, `transition.ready` is never handled and `.finally()` passes on the rejection. Nothing visible breaks.
 2. Paste a project URL into Slack, LinkedIn and iMessage, and try LinkedIn's Post Inspector. Use a URL they haven't cached. (Owner)
 
 **Spec 004**
 
-3. Merge #6 and #7. Owner checkpoints: CP4a–CP4c, CP4d.
-4. `edit-layer` (T380–T396), stacked on `main` after #7.
+3. Owner sign-off on CP4a–CP4d (#6 and #7 are merged, but the checkboxes are still open).
+4. `edit-layer` (T380–T396), on `main`, once item 3 is done.
 5. `content-json` T312 and T313: delete the old TS project modules once the migration test has passed in CI.
 6. Media T327–T329: collect the Netlify plugin cache and CI cache evidence.
 7. Per-module budget baselines. The admin isolation WARN reports +565 B against FR-358's +307 B.
