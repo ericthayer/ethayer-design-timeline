@@ -8,6 +8,7 @@ import {
   AdminStatus,
   buildIsland,
   define as defineStatus,
+  followModals,
 } from '../components/admin-status/admin-status.ts';
 import { patProvider, type AuthProvider } from '../core/auth/provider.ts';
 import { announceSignedIn, type AdminSession } from '../core/auth/session.ts';
@@ -43,7 +44,9 @@ async function boot(session: AdminSession): Promise<void> {
   const status = new AdminStatus();
   status.provider = provider;
   status.session = session;
-  document.body.append(buildIsland(status));
+  const island = buildIsland(status);
+  document.body.append(island);
+  followModals(island);
   main?.replaceChildren();
   // FR-357: focus moves to <main>; a deep-linked dialog then takes it (US-A6).
   main?.focus();

@@ -97,6 +97,41 @@ async function readJson(response: Response): Promise<Record<string, unknown> | n
 }
 
 /**
+ * Fixed content for the write check. The same text gives the same blob sha every time, so the
+ * check adds at most one unreferenced object to the repo, ever. It never touches a branch.
+ */
+export const WRITE_PROBE = 'ethayer-design-timeline admin write check\n';
+
+/**
+ * V2 (refuted 2026-10-24 with a real token): `permissions.push` reflects the account's role, not
+ * the token, so a read-only fine-grained token passed. Creating a blob needs Contents: write, so
+ * a 403 or 404 here means the token is read-only (FR-347 amended).
+ */
+async function checkWrite(
+  send: FetchLike,
+  token: string,
+  now: number,
+): Promise<AuthFailure | null> {
+  let response: Response;
+  try {
+    response = await send(
+      `${API_ORIGIN}/repos/${REPO.owner}/${REPO.name}/git/blobs`,
+      apiInit(token, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: WRITE_PROBE, encoding: 'utf-8' }),
+      }),
+    );
+  } catch {
+    return failure('network');
+  }
+  const limited = rateLimit(response, now);
+  if (limited) return failure('rate-limited', limited.retryAt);
+  if (response.status === 403 || response.status === 404) return failure('read-only');
+  return response.ok ? null : failure('github-error');
+}
+
+/**
  * FR-347: `GET /user` and `GET /repos/{owner}/{repo}` in parallel, mapped with this precedence:
  * network → rate-limited → /user 401 → wrong-account → wrong-repo → read-only → github-error.
  */
@@ -142,6 +177,8 @@ export async function verifyToken(token: string, deps: VerifyDeps = {}): Promise
   }
 
   if (!user.ok || !repo.ok || login === null) return failure('github-error');
+  const writeFailure = await checkWrite(send, token, now());
+  if (writeFailure) return writeFailure;
   return {
     ok: true,
     login,

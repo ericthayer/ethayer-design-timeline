@@ -12,6 +12,8 @@ export interface MockReply {
 export interface Scenario {
   readonly user: MockReply | 'abort';
   readonly repo: MockReply | 'abort';
+  /** POST git/blobs, the write check. Defaults to 201 (the token can write). */
+  readonly blob?: MockReply | 'abort';
 }
 
 const REPO_BODY = {
@@ -33,6 +35,12 @@ export const SCENARIOS = {
   readOnly: {
     user: { status: 200, body: { login: 'ericthayer' } },
     repo: { status: 200, body: { ...REPO_BODY, permissions: { push: false, pull: true } } },
+  },
+  // The real-world case (V2): the account can push, but the token is read-only.
+  readOnlyToken: {
+    user: { status: 200, body: { login: 'ericthayer' } },
+    repo: { status: 200, body: REPO_BODY },
+    blob: { status: 403, body: { message: 'Resource not accessible by personal access token' } },
   },
   rateLimited: {
     user: { status: 403, headers: { 'x-ratelimit-remaining': '0', 'retry-after': '120' } },
@@ -73,7 +81,12 @@ export async function mockGitHub(
     }
     requests.push(request);
     const path = new URL(request.url()).pathname;
-    const reply = path === '/user' ? scenario.user : scenario.repo;
+    const reply =
+      path === '/user'
+        ? scenario.user
+        : path.endsWith('/git/blobs')
+          ? (scenario.blob ?? { status: 201, body: { sha: 'probe' } })
+          : scenario.repo;
     if (reply === 'abort') {
       await route.abort('internetdisconnected');
       return;
