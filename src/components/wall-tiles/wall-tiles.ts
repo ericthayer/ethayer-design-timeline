@@ -7,7 +7,7 @@ import './wall-tiles.css';
 
 const PORTRAIT_SRC = 'site/portrait';
 const PORTRAIT_ALT =
-  'Eric Thayer smiling on a boat in a black-and-white photo, wearing a San Francisco Giants cap, sunglasses, and a dark zip-up jacket.';
+  'Eric Thayer in a hot-air balloon basket, in a cap and mirrored sunglasses, under the rainbow-striped canopy.';
 /** The portrait fills the right half of a feature tile: one cell wide (FR-030 cells). */
 const PORTRAIT_SIZES =
   '(min-width: 1801px) 34vh, (min-width: 1500px) 17vw, (min-width: 1200px) 20vw, (min-width: 900px) 25vw, (min-width: 600px) 33vw, 50vw';
@@ -59,7 +59,7 @@ export function renderEducation(): HTMLElement {
 /** End-cap: contact card with Eric's portrait that closes the timeline (FR-072). */
 export function renderEndCap(): HTMLElement {
   const portrait = renderPicture(
-    { kind: 'image', src: PORTRAIT_SRC, alt: PORTRAIT_ALT, focal: '50% 0%' },
+    { kind: 'image', src: PORTRAIT_SRC, alt: PORTRAIT_ALT, focal: '42% 50%' },
     { sizes: PORTRAIT_SIZES, className: 'tile__portrait' },
   );
   return el(
@@ -70,7 +70,10 @@ export function renderEndCap(): HTMLElement {
         el('h2', { class: 'tile__title', id: 'timeline-end', tabindex: '-1' }, [
           'End of the timeline',
         ]),
-        el('p', { class: 'tile__cta' }, ['Start of the timeline. Let’s talk about what’s next.']),
+        el('p', { class: 'tile__cta' }, [
+          `You’ve scrolled from today back to ${SITE.span.start.slice(0, 4)}. The next chapter is still open. Let’s talk about it.`,
+        ]),
+        el('p', { class: 'tile__signoff' }, [`${SITE.name}, ${SITE.role} · ${SITE.location}`]),
         el(
           'ul',
           { class: 'tile__links', 'aria-label': 'Contact' },

@@ -133,7 +133,7 @@ A hiring manager lands on the page and reads the wall as a mosaic of posters, ne
 ### Loading
 - **FR-070** The first batch is the identity poster plus 12 items. Later batches of 12 render when a sentinel comes within one viewport of the scroll edge. The observer root is the wall itself in horizontal mode and the viewport in vertical mode.
 - **FR-071** A single `role="status"` live region in the header announces batch loads and routing errors.
-- **FR-072** The end-cap tile renders after the final batch, and the sentinel disconnects. *Amended (owner, 2026-10-25):* it is a `feature` contact card headed "End of the timeline": a paper panel with the copy line and the Résumé and Email links on the left, and a portrait of Eric (`media-src/site/portrait.jpg`, responsive, lazy, with alt text) on the right. It no longer lists education (FR-074). It keeps `id="timeline-end"` for the skip link.
+- **FR-072** The end-cap tile renders after the final batch, and the sentinel disconnects. *Amended (owner, 2026-10-25):* it is a `feature` contact card headed "End of the timeline": a paper panel with a closing line (from today back to the career start year, then an invitation to talk), a sign-off (name, role, location) and the Résumé and Email links on the left, and a portrait of Eric (`media-src/site/portrait.jpg`, responsive, lazy, with alt text) on the right. It no longer lists education (FR-074). It keeps `id="timeline-end"` for the skip link.
 - **FR-074** *(owner, 2026-10-25)* An `sm` Education tile (the former end-cap's heading and degree list, same theme and type) closes the first era, so it sits near the start of the wall.
 - **FR-073** Home and End move focus to the first and last *rendered* card. End also renders the remaining batches.
 

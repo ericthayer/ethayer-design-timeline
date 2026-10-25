@@ -117,4 +117,8 @@
     font-size: clamp(0.875rem, calc(var(--u) * 5), 1.125rem);
     font-weight: var(--weight-meta);
   }
+  .tile__signoff {
+    font-size: clamp(0.875rem, calc(var(--u) * 4), 1rem);
+    opacity: 0.85;
+  }
 }
