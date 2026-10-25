@@ -13,15 +13,18 @@ updatedBy: claude
 
 ## Next step
 
-- The owner approved CP1–CP3 and CP4a–CP4d on 2026-10-24. `edit-layer` (T380+) is unblocked, and the current design is locked (constitution I).
-- Merge #9 (follow-up 1) and #10, then start `edit-layer` on its own branch.
+- The owner approved CP1–CP3, CP4a and CP4c on 2026-10-24. The current design is locked (constitution I).
+- Merge #9 (follow-up 1) and #10.
+- CP4b and CP4d are still open. `edit-layer` (T380+) starts once CP4d is approved, and its uploads (T389) also need CP4b.
 
 ## Blockers
 
-- None
+- `edit-layer` is blocked until CP4d is approved (`tasks-edit-layer.md`: "Starts only after CP4a–CP4d are approved"). T389 uploads also need CP4b.
 
 ## Waiting on
 
+- Owner: CP4b (review the media-pipeline deploy preview, the migration manifest diff and the timings, and answer MQ1–MQ4)
+- Owner: CP4d (review the `github-publish` API and tests, and run a smoke publish against a scratch repo: create, update, delete, and one media upload. This needs a scratch repo and a real token.)
 - Owner: the original cover images for `media-src/<slug>/` (D5)
 
 ## Open decisions
@@ -43,8 +46,8 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 
 **Spec 004**
 
-3. Done 2026-10-24: owner sign-off on CP4a–CP4d.
-4. `edit-layer` (T380–T396), on a branch from `origin/main`. Next up.
+3. Owner sign-off on CP4b and CP4d. (CP4a and CP4c were approved on 2026-10-24.)
+4. `edit-layer` (T380–T396), on a branch from `origin/main`, once CP4d is approved. T389 uploads also wait for CP4b.
 5. `content-json` T312 and T313: delete the old TS project modules once the migration test has passed in CI.
 6. Media T327–T329: collect the Netlify plugin cache and CI cache evidence.
 7. Per-module budget baselines. The admin isolation WARN reports +565 B against FR-358's +307 B.
