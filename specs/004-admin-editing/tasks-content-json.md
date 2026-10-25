@@ -30,4 +30,4 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). A task is done when its
   - Acceptance: no references remain (`grep -r migrate-content`) · Verify: `npm run check` · Files: `scripts/migrate-content.ts` (delete), `tests/unit/migration.test.ts` (delete)
 - [ ] **T313** Delete the TS data modules. `projects/index.ts` is the only file left in `src/content/projects/`. → spec §9.5
   - Acceptance: spec success criteria 1–5 · Verify: `npm run check && npm run build && npm run budgets && npm run e2e` · Files: `src/content/projects/{cobank,threecolts,health-scholars,independent,early-career}.ts` (delete)
-- [ ] **CP4a** Owner reviews the running build (it should look identical), the error versus warning policy (FR-312), the JSON layout and paths (FR-300, FR-308), and spec §10 open questions. `github-publish` and `edit-layer` start only after approval.
+- [x] **CP4a** (approved by the owner, 2026-10-24) Owner reviews the running build (it should look identical), the error versus warning policy (FR-312), the JSON layout and paths (FR-300, FR-308), and spec §10 open questions. `github-publish` and `edit-layer` start only after approval.
