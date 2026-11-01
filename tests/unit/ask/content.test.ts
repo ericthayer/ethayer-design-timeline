@@ -1,6 +1,7 @@
 // Ask content rules (spec 005, T400): ask.json chips (FR-410) and the about.json corpus (FR-435).
 import { describe, expect, it } from 'vitest';
 import { ASK_FILES } from '../../../src/content/paths.ts';
+import { ASK_CAPS } from '../../../src/core/ask/protocol.ts';
 import { ASK_LIMITS, validateAbout, validateAsk } from '../../../src/content/validate/ask.ts';
 import type { Issue, Validated } from '../../../src/content/validate/issue.ts';
 import { ASK_PROJECTS, baseAbout, baseAsk } from '../../fixtures/content/ask.ts';
@@ -53,6 +54,14 @@ describe('validateAsk (FR-410)', () => {
     const result = validateAsk(withChip(patch), ASK_PROJECTS);
     expect(result.ok).toBe(false);
     expect(rulesAt(result)).toContainEqual([rule, path]);
+  });
+
+  it('caps a whole answer at the protocol assistant-turn limit', () => {
+    const answer = Array.from({ length: 4 }, () => 'x'.repeat(ASK_LIMITS.paragraph));
+    expect(rulesAt(validateAsk(withChip({ answer }), ASK_PROJECTS))).toEqual([
+      ['text-length', '/chips/0/answer'],
+    ]);
+    expect(ASK_LIMITS.answer).toBe(ASK_CAPS.assistantTurn);
   });
 
   it('refuses a duplicate id', () => {

@@ -11,6 +11,8 @@ const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 export const ASK_LIMITS = {
   label: 60,
   paragraph: 600,
+  /** Joined with blank lines; matches the protocol's assistant-turn cap (FR-417). */
+  answer: 2000,
   maxChips: 16,
   aboutChars: 12_000,
 } as const;
@@ -84,6 +86,14 @@ function readChip(r: Reader, projects: AskProjects): AskChip | undefined {
   const answer = readTexts(r, 'answer', 'An answer paragraph', ASK_LIMITS.paragraph);
   if (answer?.length === 0)
     r.error('a11y-text', 'answer', 'An answer needs at least one paragraph');
+  const joined = answer?.join('\n\n').length ?? 0;
+  if (joined > ASK_LIMITS.answer) {
+    r.error(
+      'text-length',
+      'answer',
+      `The answer is ${joined} characters, the limit is ${ASK_LIMITS.answer}`,
+    );
+  }
   const related = readRelated(r, projects);
   const followups = r.strings('followups');
   if (id === undefined || label === undefined || topic === undefined) return undefined;

@@ -99,7 +99,7 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 **Spec 005 (Ask)**
 
 - Owner: draft `about.json` and 8–16 suggestion chips with answers (T399). This can start any time.
-- T400–T403 (pure core) on `claude/project-thread-vg1394` after the spec PR #12 merges. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
+- T400–T403 (pure core) are done on `claude/project-thread-vg1394` (2026-11-01): content validators, corpus builder, answer parser, and stream protocol, with unit tests and no UI. They're in a draft PR, and no review is needed until CP4e. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
 
 **Housekeeping**
 

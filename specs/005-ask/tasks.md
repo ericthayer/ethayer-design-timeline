@@ -15,7 +15,7 @@ The owner approved this spec on 2026-11-01 (spec §13). T400–T403 may run now 
   - Acceptance: drafts are absent, two runs give byte-identical output, and key order in the source JSON doesn't change the output. · Verify: `npx vitest run tests/unit/ask/corpus` · Files: `src/core/ask/corpus.ts`, `tests/unit/ask/corpus.test.ts`
 - [x] **T402** `render.ts` segment parser. → FR-432
   - Acceptance: `[[dmns]]` → project ref, `[[nope]]` → dropped, `[[link:Email]]` → the site link, a bare `https://…`, `<b>`, `![x](y)`, and `[a](b)` stay inert text, and a half token at the end is dropped. · Verify: `npx vitest run tests/unit/ask/render` · Files: `src/core/ask/render.ts`, `tests/unit/ask/render.test.ts`
-- [ ] **T403** `protocol.ts` and `history.ts`: request validation and caps, the event union, the incremental NDJSON decoder (split chunks, multi-byte UTF-8 across chunks), and history trimming. → FR-417, FR-418, FR-436
+- [x] **T403** `protocol.ts` and `history.ts`: request validation and caps, the event union, the incremental NDJSON decoder (split chunks, multi-byte UTF-8 across chunks), and history trimming. → FR-417, FR-418, FR-436
   - Acceptance: an oversize body, a seventh turn, a non-string field, and an unknown event type are all rejected, and a decoder fed one byte at a time yields the same events. · Verify: `npx vitest run tests/unit/ask/protocol` · Files: `src/core/ask/protocol.ts`, `src/core/ask/history.ts`, `tests/unit/ask/protocol.test.ts`
 
 ## Phase 1 · Ask, static (after CP4e)
