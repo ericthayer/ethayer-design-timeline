@@ -6,7 +6,12 @@ import {
   isDraft,
   memoryBackend,
 } from '../../../src/admin/edit/draft-store.ts';
-import { type Bundled, type Reader, draftFrom, takeSnapshot } from '../../../src/admin/edit/snapshot.ts';
+import {
+  type Bundled,
+  type Reader,
+  draftFrom,
+  takeSnapshot,
+} from '../../../src/admin/edit/snapshot.ts';
 import type { AdminSession } from '../../../src/core/auth/session.ts';
 import type { ReadFileResult } from '../../../src/core/github/types.ts';
 import { CONTENT_FILES, projectFile, serialize } from '../../../src/content/paths.ts';

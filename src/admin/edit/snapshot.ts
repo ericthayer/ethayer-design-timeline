@@ -103,27 +103,15 @@ export async function takeSnapshot(
   if (orderText === null) return { kind: 'failed', error: { kind: 'not-found' } };
   const order = readOrder(parseJson(orderText));
   const bySlug = new Map(bundled.projects.map((p) => [p.slug, p]));
-  const raw: Record<string, unknown> = {
-    [CONTENT_FILES.order]: parseJson(orderText),
-    [CONTENT_FILES.eras]: bundled.eras,
-    [CONTENT_FILES.site]: bundled.site,
-    [CONTENT_FILES.resume]: bundled.resume,
-  };
   for (const listed of slugsOf(order)) {
     const path = projectFile(listed);
-    const copy = bySlug.get(listed);
-    if (listed !== slug && copy !== undefined) {
-      raw[path] = copy;
-      continue;
-    }
-    if (!(path in files)) {
+    if ((listed === slug || !bySlug.has(listed)) && !(path in files)) {
       const read = await text(reader, session, path, sha);
       if (read.kind !== 'ok') return { kind: 'failed', error: read };
       files[path] = read.text;
     }
-    const repoText = files[path] ?? null;
-    if (repoText !== null) raw[path] = parseJson(repoText);
   }
+  const raw = assembleRaw(slug, files, bundled);
   const repoText = files[file] ?? null;
   const ownText = repoText === null ? null : parseJson(repoText);
   const checked = ownText === null ? null : validateProject(ownText, file, ctx);
@@ -134,6 +122,35 @@ export async function takeSnapshot(
     (repoText !== null && bundledOwn !== undefined && !same(ownText, bundledOwn)) ||
     !same(order, bundled.order);
   return { kind: 'ok', sha, files, raw, order, project, behind, invalid };
+}
+
+/**
+ * `RawContent` for validation (FR-384): the repo `order.json`, the edited project and any listed
+ * project the bundle lacks from repo text, bundled copies for the rest, and bundled eras, site,
+ * and résumé. Works from a stored draft's `base.files` too.
+ */
+export function assembleRaw(
+  slug: string,
+  files: Readonly<Record<string, string | null>>,
+  bundled: Bundled,
+): RawContent {
+  const orderText = files[CONTENT_FILES.order] ?? null;
+  const orderRaw = orderText === null ? bundled.order : parseJson(orderText);
+  const bySlug = new Map(bundled.projects.map((p) => [p.slug, p]));
+  const raw: Record<string, unknown> = {
+    [CONTENT_FILES.order]: orderRaw,
+    [CONTENT_FILES.eras]: bundled.eras,
+    [CONTENT_FILES.site]: bundled.site,
+    [CONTENT_FILES.resume]: bundled.resume,
+  };
+  for (const listed of slugsOf(readOrder(orderRaw))) {
+    const path = projectFile(listed);
+    const copy = bySlug.get(listed);
+    const repoText = files[path];
+    if (listed !== slug && copy !== undefined) raw[path] = copy;
+    else if (typeof repoText === 'string') raw[path] = parseJson(repoText);
+  }
+  return raw;
 }
 
 /** A fresh update draft from a valid snapshot. */

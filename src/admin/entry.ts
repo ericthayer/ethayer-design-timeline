@@ -59,6 +59,9 @@ async function boot(session: AdminSession): Promise<void> {
     return;
   }
   announceSignedIn(session);
+  // edit-layer FR-380: one dynamic import, so the editor is its own `admin-edit` chunk. If it
+  // fails to load, the signed-in site still works; Sign out stays in the island.
+  import('./edit/attach.ts').then((mod) => mod.attach(session)).catch(() => undefined);
 }
 
 async function start(): Promise<void> {
