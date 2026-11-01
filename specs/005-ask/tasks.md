@@ -11,7 +11,7 @@ The owner approved this spec on 2026-11-01 (spec §13). T400–T403 may run now 
 - [x] **T400** Types and validator rules for `ask.json` and `about.json`, with fixtures. → FR-410, FR-435
   - Acceptance: an unknown or draft `related` slug, a missing follow-up id, a self follow-up, a label over 60 chars, and an about corpus over 12,000 chars each give an error-level issue. · Verify: `npx vitest run tests/unit/ask/content` · Files: `src/content/ask.ts`, `src/content/validate/ask.ts`, `tests/unit/ask/content.test.ts`
   - Done 2026-11-01. The rules reuse the shared rule ids (`slug`, `text-length`, `a11y-text`, `shape`), so `RULE_IDS` is unchanged. The paths live in `ASK_FILES`, apart from `CONTENT_FILES`, so `npm run content:check` keeps passing until the files exist. `content:check` starts calling the validators when T399 adds the files.
-- [ ] **T401** `buildCorpus(bundle)`. → FR-430
+- [x] **T401** `buildCorpus(bundle)`. → FR-430
   - Acceptance: drafts are absent, two runs give byte-identical output, and key order in the source JSON doesn't change the output. · Verify: `npx vitest run tests/unit/ask/corpus` · Files: `src/core/ask/corpus.ts`, `tests/unit/ask/corpus.test.ts`
 - [ ] **T402** `render.ts` segment parser. → FR-432
   - Acceptance: `[[dmns]]` → project ref, `[[nope]]` → dropped, `[[link:Email]]` → the site link, a bare `https://…`, `<b>`, `![x](y)`, and `[a](b)` stay inert text, and a half token at the end is dropped. · Verify: `npx vitest run tests/unit/ask/render` · Files: `src/core/ask/render.ts`, `tests/unit/ask/render.test.ts`
