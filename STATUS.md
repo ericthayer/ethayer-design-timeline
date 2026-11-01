@@ -1,6 +1,6 @@
 ---
 state: active
-updated: 2026-10-27
+updated: 2026-11-01
 updatedBy: claude
 ---
 
@@ -18,6 +18,7 @@ updatedBy: claude
 - The owner approved CP1–CP3, CP4a and CP4c on 2026-10-24. The current design is locked (constitution I).
 - The owner approved CP4d on 2026-11-01. `edit-layer` (T380+) can start, on a branch from `origin/main`.
 - CP4b is still open, and T389 uploads wait for it.
+- Spec 005 (Ask) was approved on 2026-11-01 with all of AQ1–AQ9 answered (Claude Haiku 5.5, a $20 monthly cap, no question logging), and constitution amendments A1 and A2 are applied. Pure core T400–T403 may run now. Everything visible waits for CP4e.
 
 ## Blockers
 
@@ -94,6 +95,11 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 18. Unity capture of the VR design system, and the motion-reel source for an 8-second loop.
 19. CoBank and Threecolts screenshots, if you're cleared to show them.
 20. Copy and dates for the seven drafts: `curiteva`, `madramps`, `motion-reel`, `qr-landing`, `map-course-launcher`, `safetyhive`, `workbench`. They stay `noindex` until `draft: true` is removed, which will be possible in `/admin` once `edit-layer` ships.
+
+**Spec 005 (Ask)**
+
+- Owner: draft `about.json` and 8–16 suggestion chips with answers (T399). This can start any time.
+- T400–T403 (pure core) on `claude/project-thread-vg1394` after the spec PR #12 merges. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
 
 **Housekeeping**
 
