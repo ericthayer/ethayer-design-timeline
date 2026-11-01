@@ -13,7 +13,7 @@ updatedBy: claude
 - CP4d smoke publish passed on 2026-11-01 against `ericthayer/admin-sandbox`: create (JSON + image), update and delete each made one commit, JSON read-backs matched with UTF-8 intact, the `sha: null` delete worked, and deploy status read `queued → unknown: timeout`.
 - The PR #5 post-deploy smoke test passed on production on 2026-10-24 (steps 1–5). It turned up one console error, now follow-up 1.
 
-- T078 (PR #13) is on hold: the wall runs newest first, so its end is 2003, not a place for a contact card. Spec 006 (Experience and Projects views, categories, contact footer) is drafted in `specs/006-experience-and-projects/` and waits for CP6a. PR #13 now carries the spec. Its T078 code commits get removed in T510.
+- Spec 006 (Experience and Projects views, categories, contact footer) is in PR #13. The owner approved CP6a on 2026-11-01 (Q1 five categories, Q2 Experience stays `/`, Q3 placeholder portrait, Q4 drop the early Education tile, Q5 Claude drafts the footer copy). The T078 prototype commits are reverted (T510).
 
 ## Next step
 
@@ -26,8 +26,6 @@ updatedBy: claude
 - T389 uploads (edit-layer) are blocked until CP4b is approved.
 
 ## Waiting on
-
-- Owner: CP6a (spec 006, categories Q1–Q5)
 
 - Owner: CP4b (review the media-pipeline deploy preview, the migration manifest diff and the timings, and answer MQ1–MQ4)
 - Owner: the original cover images for `media-src/<slug>/` (D5)
