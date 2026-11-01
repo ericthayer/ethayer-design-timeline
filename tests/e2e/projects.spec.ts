@@ -89,4 +89,12 @@ test.describe('projects view', () => {
     await expect(page.getByRole('link', { name: 'Experience' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Pause motion' })).toBeVisible();
   });
+
+  test('category markers span the full row on a phone (FR-515)', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/projects');
+    const grid = await page.locator('.wall__grid').boundingBox();
+    const marker = await page.locator('.wall__item[data-type="category"]').nth(1).boundingBox();
+    expect(grid && marker && Math.abs(marker.width - grid.width)).toBeLessThan(1);
+  });
 });
