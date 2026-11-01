@@ -25,7 +25,7 @@ const isTextField = (target: EventTarget | null): boolean =>
   (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
 
 export class ToolbarController {
-  readonly toolbar = new AdminToolbar();
+  readonly toolbar: AdminToolbar;
   job: JobStatus = { kind: 'none' };
   panelOpen = false;
   liveUrl: string | null = null;
@@ -35,6 +35,7 @@ export class ToolbarController {
 
   constructor(layer: EditLayer, validation: Validation) {
     defineToolbar();
+    this.toolbar = new AdminToolbar();
     this.#layer = layer;
     this.#validation = validation;
     document.querySelector('[data-admin-slot="toolbar"]')?.append(this.toolbar);

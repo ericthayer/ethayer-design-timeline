@@ -1,0 +1,66 @@
+/* Repeats the site's layer order: admin CSS may load before the site's (spec 004 admin-auth). */
+@layer reset, tokens, base, components, utilities;
+
+/* Inline editing signposts and errors (spec 004 edit-layer FR-386, FR-387, FR-399). */
+@layer components {
+  [data-admin-edit='on'] .ed-field {
+    outline: 1px dashed currentColor;
+    outline-offset: 2px;
+    cursor: text;
+  }
+  [data-admin-edit='on'] .ed-field:hover {
+    outline-width: 2px;
+  }
+  /* The base double ring replaces the signpost on keyboard focus. */
+  [data-admin-edit='on'] .ed-field:focus-visible {
+    outline: 3px solid var(--focus-outer);
+    box-shadow: 0 0 0 2px var(--focus-inner);
+  }
+  .ed-field:empty {
+    display: inline-block;
+    min-inline-size: 4ch;
+  }
+  .ed-empty .ed-field:empty::before {
+    content: 'Value';
+    opacity: 0.6;
+  }
+  .ed-field[aria-invalid='true'] {
+    outline-style: solid;
+    outline-color: var(--vermilion);
+  }
+  .ed-error {
+    display: block;
+    color: inherit;
+    font-size: 0.8125rem;
+    font-weight: var(--weight-meta);
+  }
+  .ed-error::before {
+    content: '⚠ ';
+  }
+  .ed-row {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin-inline-start: auto;
+  }
+  .ed-row-btn {
+    min-block-size: 24px;
+    min-inline-size: 24px;
+    padding: 0 var(--space-2);
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-size: 0.75rem;
+  }
+  .ed-row-btn[aria-disabled='true'] {
+    border-style: dashed;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  /* Room so focus never hides under the island inside the dialog (SC 2.4.11). */
+  dialog.pd:has(> #admin-island) {
+    scroll-padding-block-end: calc(var(--admin-island-h, 4rem) + var(--space-4));
+  }
+}

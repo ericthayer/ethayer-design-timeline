@@ -1,46 +1,7 @@
 // The edit layer drives the real <project-dialog> (spec 004 edit-layer FR-381, FR-382, T385).
 // happy-dom stands in for the browser; the e2e suite (T393) covers the router and Prev/Next.
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DraftStore, memoryBackend } from '../../../src/admin/edit/draft-store.ts';
-import { EditLayer } from '../../../src/admin/edit/edit-layer.ts';
-import { dialogView } from '../../../src/admin/edit/view.ts';
-import {
-  ProjectDialog,
-  define as defineDialog,
-} from '../../../src/components/project-dialog/project-dialog.ts';
-import { define as defineArtwork } from '../../../src/components/swiss-artwork/swiss-artwork.ts';
-import type { AdminSession } from '../../../src/core/auth/session.ts';
-import { asProject } from '../../../src/core/editor/preview.ts';
-import { demoDraft, demoProject } from './fixtures.ts';
-
-const session: AdminSession = {
-  login: 'ericthayer',
-  repo: { owner: 'o', name: 'r', branch: 'main' },
-  expiresAt: null,
-  authorizedFetch: () => Promise.reject(new Error('not used')),
-};
-
-function setup(): { layer: EditLayer; modal: HTMLDialogElement; island: HTMLElement } {
-  document.body.replaceChildren();
-  defineArtwork();
-  defineDialog();
-  const island = document.createElement('aside');
-  island.id = 'admin-island';
-  const button = document.createElement('button');
-  button.textContent = 'Card settings';
-  island.append(button);
-  document.body.append(island);
-  const host = new ProjectDialog();
-  document.body.append(host);
-  const modal = host.querySelector('dialog');
-  if (!modal) throw new Error('no dialog');
-  const project = asProject(demoProject());
-  if (!project) throw new Error('invalid fixture');
-  host.show(dialogView(project));
-  const layer = new EditLayer(session, new DraftStore(memoryBackend(), true), host, modal);
-  layer.replaceDraft(demoDraft());
-  return { layer, modal, island };
-}
+import { setup } from './dom.ts';
 
 beforeEach(() => {
   try {

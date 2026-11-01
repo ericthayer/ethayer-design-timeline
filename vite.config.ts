@@ -45,6 +45,14 @@ export const ADMIN_EDIT_CHUNK = 'admin-edit';
 const ADMIN_EDIT =
   /[\\/]src[\\/](?:admin[\\/]edit|core[\\/]editor|components[\\/]admin-(?:toolbar|panel|gallery|confirm|create))[\\/]/;
 
+/**
+ * What the editor reads but doesn't own: content data and its validator, github-publish, and the
+ * media rules. Its own chunk, so `admin-edit` imports it and nothing imports back (a cycle would
+ * evaluate `admin-edit` before its data).
+ */
+const ADMIN_CONTENT =
+  /[\\/](?:src[\\/](?:content|core[\\/]github)[\\/]|src[\\/]core[\\/](?:media-rules|order)\.ts$|scripts[\\/]csp\.ts$)/;
+
 const ADMIN_PATH = /^\/admin(?:\/|$)/;
 
 /** `/admin` and `/admin/*` serve admin.html in dev and preview, as netlify.toml does (FR-340). */
@@ -143,6 +151,11 @@ function adminBuild(): Plugin {
                   {
                     name: ADMIN_EDIT_CHUNK,
                     test: ADMIN_EDIT,
+                    includeDependenciesRecursively: false,
+                  },
+                  {
+                    name: 'admin-content',
+                    test: ADMIN_CONTENT,
                     includeDependenciesRecursively: false,
                   },
                 ],

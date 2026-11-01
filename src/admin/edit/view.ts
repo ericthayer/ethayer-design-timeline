@@ -19,3 +19,11 @@ export function dialogView(project: Project): DialogView {
     next: listed ? SEQUENCE[index + 1] : undefined,
   };
 }
+
+/** What identifies a control across renders: its focus key, else its field pointer. */
+export function focusKeyOf(node: HTMLElement): string | null {
+  const keyed = node.closest<HTMLElement>('[data-focus-key]')?.dataset['focusKey'];
+  return keyed ?? node.closest<HTMLElement>('[data-pointer]')?.dataset['pointer'] ?? null;
+}
+export const focusSelector = (key: string): string =>
+  `[data-focus-key="${CSS.escape(key)}"], [data-pointer="${CSS.escape(key)}"]`;

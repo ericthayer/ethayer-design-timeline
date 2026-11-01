@@ -4,6 +4,7 @@ import type { ProjectDialog } from '../../components/project-dialog/project-dial
 import type { AdminSession } from '../../core/auth/session.ts';
 import { DraftStore } from './draft-store.ts';
 import { EditLayer } from './edit-layer.ts';
+import { installInline } from './inline.ts';
 import { ToolbarController } from './toolbar-wiring.ts';
 import { Validation } from './validation.ts';
 
@@ -46,6 +47,7 @@ export async function attach(session: AdminSession): Promise<Editor> {
   });
   const validation = new Validation(layer);
   const toolbar = new ToolbarController(layer, validation);
+  installInline(layer, validation);
   if (modal.open) layer.sync();
   return { layer, validation, toolbar };
 }

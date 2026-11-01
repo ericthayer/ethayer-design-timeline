@@ -24,7 +24,7 @@ import type { Issue, RawContent } from '../../content/validate/index.ts';
 import { BUNDLED, EDITOR_CONTEXT } from './bundled.ts';
 import { DraftStore, type StoreProblem } from './draft-store.ts';
 import { BEHIND_NOTICE, type Snapshot, assembleRaw, draftFrom, takeSnapshot } from './snapshot.ts';
-import { dialogView } from './view.ts';
+import { dialogView, focusKeyOf, focusSelector } from './view.ts';
 
 type LoadError = Extract<Snapshot, { kind: 'failed' }>['error'];
 
@@ -131,7 +131,9 @@ export class EditLayer extends EventTarget {
     } catch {
       // The preference is a convenience only.
     }
-    this.#decorate();
+    // Off renders the clean preview; on decorates it again (FR-382).
+    if (this.draft !== null && this.modal.open) this.render();
+    else this.#decorate();
     this.#changed();
   }
 
@@ -197,18 +199,18 @@ export class EditLayer extends EventTarget {
     if (project === undefined) return;
     const active = document.activeElement;
     const kept = active instanceof HTMLElement && this.#isKept(active) ? active : null;
-    const pointer =
-      active instanceof HTMLElement ? active.closest<HTMLElement>('[data-pointer]') : null;
-    const pointerId = pointer?.dataset['pointer'] ?? null;
+    const key = this.focusNext ?? (active instanceof HTMLElement ? focusKeyOf(active) : null);
+    this.focusNext = null;
     this.host.show(dialogView(project));
     this.#reattach();
     this.#decorate();
     this.#observer.takeRecords();
     if (kept?.isConnected) kept.focus();
-    else if (pointerId !== null) {
-      this.modal.querySelector<HTMLElement>(`[data-pointer="${CSS.escape(pointerId)}"]`)?.focus();
-    }
+    else if (key !== null) this.modal.querySelector<HTMLElement>(focusSelector(key))?.focus();
   }
+
+  /** A focus key (`data-focus-key` or `data-pointer`) to focus after the next render. */
+  focusNext: string | null = null;
 
   #isKept(node: Node): boolean {
     return [...this.#kept].some((k) => k.contains(node));
