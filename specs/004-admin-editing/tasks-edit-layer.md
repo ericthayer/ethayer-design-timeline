@@ -32,7 +32,7 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). A task is done when its
   - Acceptance: all pass on Chromium, and the request bodies match the spec. · Verify: `npx playwright test tests/e2e/admin-edit.spec.ts` · Files: `tests/e2e/github-git-mock.ts`, `tests/e2e/admin-edit.spec.ts`
 - [ ] **T394** E2E create, delete, gallery, and axe: create bodies, delete with `sha: null` entries for media, upload via `setInputFiles` (blob preview, base64 body), keyboard-only reorder and focal, and axe on every FR-399 state. → US-E3–US-E5, FR-399
   - Acceptance: zero axe violations. Nothing in the flows needs a pointer device. · Verify: `npx playwright test tests/e2e/admin-create.spec.ts` · Files: `tests/e2e/admin-create.spec.ts`
-- [ ] **T395** Budgets and isolation evidence: public bytes identical, `admin-edit` ≤ 18 KB, admin JS ≤ 40 KB, and admin CSS reported (gated at ≤ 5 KB if the owner says yes to admin-auth Q2). Record it in the PR. → FR-380, spec §9.2
+- [x] **T395** Budgets and isolation evidence: public bytes identical, `admin-edit` ≤ 18 KB, admin JS ≤ 40 KB, and admin CSS reported (gated at ≤ 5 KB if the owner says yes to admin-auth Q2). Record it in the PR. → FR-380, spec §9.2
   - Acceptance: numbers recorded before and after, and no `src/admin` string in public chunks. · Verify: `npm run build && npm run budgets` · Files: `scripts/check-budgets.ts`
 - [ ] **T396** Owner smoke test on a deploy preview: a real token, one text edit and one image upload published to `main`, the badge reaching Live, and the result checked at `/work/<slug>`. → spec §9.3
   - Acceptance: both edits are live with no manual step, and the commit has the trailer. · Verify: the owner. Results noted in the PR · Files: none
