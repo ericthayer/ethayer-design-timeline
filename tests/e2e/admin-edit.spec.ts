@@ -71,7 +71,7 @@ test.describe('edit and publish (US-E1, US-E2)', () => {
   test('an error blocks Publish on its field', async ({ page }) => {
     const git = await openDmns(page);
     await button(page, 'Card settings').click();
-    await page.getByLabel('Size').selectOption('sm');
+    await page.getByRole('combobox', { name: /^Size/ }).selectOption('sm');
     await expect(toolbar(page).getByText(/\d+ errors?$/)).toBeVisible();
     const publish = button(page, 'Publish');
     await expect(publish).toHaveAttribute('aria-disabled', 'true');

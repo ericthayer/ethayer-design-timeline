@@ -112,7 +112,7 @@ test.describe('axe on every editor state (FR-399)', () => {
     await button(page, 'Card settings').click();
     await expectNoAxeViolations(page);
 
-    await page.getByLabel('Size').selectOption('sm');
+    await page.getByRole('combobox', { name: /^Size/ }).selectOption('sm');
     await toolbar(page)
       .getByRole('button', { name: /^Issues/ })
       .click();

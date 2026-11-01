@@ -155,9 +155,9 @@ function decorate(modal: HTMLDialogElement, layer: EditLayer): void {
       `Metric ${n} label`,
     );
   });
-  modal.querySelectorAll('.pd__tile').forEach((tile, i) => {
+  modal.querySelectorAll('.pd__figure').forEach((tile, i) => {
     field(
-      tile.querySelector('.pd__tile-label'),
+      tile.querySelector('.pd__caption-label'),
       `/gallery/${String(i)}/label`,
       `Tile ${String(i + 1)} caption`,
     );
