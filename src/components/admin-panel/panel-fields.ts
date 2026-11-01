@@ -20,6 +20,8 @@ export interface PanelContext {
   apply(op: EditOp): void;
   /** Danger zone: opens the Delete confirmation (T391). */
   requestDelete(): void;
+  /** A create draft's slug can change until its first publish; returns the problem, if any. */
+  readonly rename?: (slug: string) => string | null;
 }
 
 const ENGAGEMENTS: readonly (readonly [Engagement, string])[] = [
@@ -41,6 +43,21 @@ function randomSeed(): number {
   return (value[0] ?? 1) % 100_000;
 }
 
+/** A problem the validator can't see (a taken slug), shown on its field (FR-393, FR-395). */
+function showProblem(field: HTMLElement | undefined, problem: string | null): void {
+  const input = field?.querySelector('input');
+  if (!field || !input) return;
+  const old = field.nextElementSibling;
+  if (old?.matches('.ed-error') === true) old.remove();
+  input.removeAttribute('aria-invalid');
+  input.removeAttribute('aria-describedby');
+  if (problem === null) return;
+  const id = `${input.id}-problem`;
+  field.after(el('span', { id, class: 'ed-error' }, [problem]));
+  input.setAttribute('aria-invalid', 'true');
+  input.setAttribute('aria-describedby', id);
+}
+
 export function identity(ctx: PanelContext): HTMLFieldSetElement {
   const p = ctx.working;
   const set = (patch: Parameters<PanelContext['apply']>[0]): void => {
@@ -57,7 +74,18 @@ export function identity(ctx: PanelContext): HTMLFieldSetElement {
     'month',
   );
   endInput.querySelector('input')?.toggleAttribute('disabled', present);
+  const rename = ctx.rename;
+  const slug =
+    rename === undefined
+      ? []
+      : [
+          textInput('Slug (until the first publish)', p.slug, { key: 'slug' }, (v) => {
+            showProblem(slugField, rename(v.trim()));
+          }),
+        ];
+  const slugField = slug[0];
   return fieldset('Identity', 'identity', [
+    ...slug,
     textInput('Client', p.client, { key: 'client', pointer: '/client' }, (client) => {
       set({ kind: 'settings', patch: { client } });
     }),

@@ -6,7 +6,9 @@ import { loadBundled } from './bundled.ts';
 import { DraftStore } from './draft-store.ts';
 import { EditLayer } from './edit-layer.ts';
 import { installInline } from './inline.ts';
+import { Lifecycle } from './lifecycle.ts';
 import { installPanel } from './panel-wiring.ts';
+import { Publisher } from './publish-flow.ts';
 import { ToolbarController } from './toolbar-wiring.ts';
 import { Validation } from './validation.ts';
 
@@ -34,10 +36,18 @@ export interface Editor {
   readonly layer: EditLayer;
   readonly validation: Validation;
   readonly toolbar: ToolbarController;
+  readonly publisher: Publisher;
+  readonly lifecycle: Lifecycle;
 }
 
-/** The entry point admin-auth calls after the public app boots (FR-380). */
-export async function attach(session: AdminSession): Promise<Editor> {
+/**
+ * The entry point admin-auth calls after the public app boots (FR-380). `requested` is the path
+ * before the router ran, so a create draft's deep link can reopen (FR-393).
+ */
+export async function attach(
+  session: AdminSession,
+  requested: string = location.pathname,
+): Promise<Editor> {
   let layer: EditLayer | null = null;
   const store = await DraftStore.open({ onProblem: (p) => layer?.storeProblem(p) });
   const [{ host, modal }, bundled] = await Promise.all([findDialog(), loadBundled()]);
@@ -50,7 +60,10 @@ export async function attach(session: AdminSession): Promise<Editor> {
   const validation = new Validation(layer);
   const toolbar = new ToolbarController(layer, validation);
   installInline(layer, validation);
-  installPanel(layer, validation, toolbar);
+  const publisher = new Publisher(layer, toolbar);
+  const lifecycle = new Lifecycle(layer, toolbar, publisher);
+  installPanel(layer, validation, toolbar, (slug) => lifecycle.rename(slug));
   if (modal.open) layer.sync();
-  return { layer, validation, toolbar };
+  else await lifecycle.reopen(requested);
+  return { layer, validation, toolbar, publisher, lifecycle };
 }

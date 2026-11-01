@@ -21,6 +21,8 @@ declare global {
 
 const SETTINGS_KEY = 'settings';
 
+type Rename = (slug: string) => string | null;
+
 /** The open project's keys, sorted: manifest ∪ staged, filtered to `<slug>/` (FR-389). */
 function keysFor(layer: EditLayer, slug: string): { images: string[]; videos: string[] } {
   const draft = layer.draft;
@@ -30,7 +32,7 @@ function keysFor(layer: EditLayer, slug: string): { images: string[]; videos: st
   return { images: mine(vctx.mediaKeys), videos: mine(vctx.videoKeys) };
 }
 
-function contextOf(layer: EditLayer): PanelContext | null {
+function contextOf(layer: EditLayer, rename: Rename | null): PanelContext | null {
   const draft = layer.draft;
   if (draft === null || layer.readOnly !== null) return null;
   const { images, videos } = keysFor(layer, draft.slug);
@@ -44,6 +46,7 @@ function contextOf(layer: EditLayer): PanelContext | null {
       layer.dispatch(op);
       layer.endGroup();
     },
+    ...(draft.action === 'create' && rename !== null ? { rename } : {}),
     requestDelete() {
       layer.modal.dispatchEvent(new CustomEvent('editor:delete', { detail: draft.slug }));
     },
@@ -54,12 +57,13 @@ export function installPanel(
   layer: EditLayer,
   validation: Validation,
   toolbar: ToolbarController,
+  rename: Rename | null = null,
 ): AdminPanel {
   definePanel();
   const panel = new AdminPanel();
   layer.keepInDialog(panel);
   const refresh = (): void => {
-    panel.context = contextOf(layer);
+    panel.context = contextOf(layer, rename);
     panel.previewValid = layer.previewValid;
     panel.issues = validation.built?.issues ?? [];
     panel.file = layer.slug === null ? '' : projectFile(layer.slug);

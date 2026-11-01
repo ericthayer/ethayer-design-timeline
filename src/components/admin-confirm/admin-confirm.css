@@ -51,6 +51,9 @@
     background: #1d1d1f;
     color: var(--paper);
     font: inherit;
+  }
+  /* Slugs are typed exactly, so they read in monospace. */
+  .adc__input--mono {
     font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   }
   .adc__hint {

@@ -168,17 +168,18 @@ export class EditLayer extends EventTarget {
     if (h !== null) this.#setHistory(redo(h), true);
   }
 
-  /** Replaces the open project's draft (Discard, reload, publish), then renders. */
-  replaceDraft(draft: Draft, raw: RawContent | null = null): void {
+  /** Replaces the open project's draft (Discard, reload, publish), then renders. `show` opens
+   * the dialog for a draft the router can't (a create, FR-393). */
+  replaceDraft(draft: Draft, raw: RawContent | null = null, show = false): void {
     this.#slug = draft.slug;
     if (raw !== null) this.#raw.set(draft.slug, raw);
-    this.#setHistory(begin(draft), true);
+    this.#setHistory(begin(draft), true, show);
   }
 
-  #setHistory(h: History, rerender: boolean): void {
+  #setHistory(h: History, rerender: boolean, show = false): void {
     this.#histories.set(h.draft.slug, h);
     this.store.save(h.draft);
-    if (rerender) this.render();
+    if (rerender) this.render(show);
     this.#changed();
   }
 
@@ -187,9 +188,9 @@ export class EditLayer extends EventTarget {
   }
 
   /** Renders the draft into the real dialog and puts focus back where it was (FR-381). */
-  render(): void {
+  render(show = false): void {
     const draft = this.draft;
-    if (draft === null || !this.modal.open) return;
+    if (draft === null || (!this.modal.open && !show)) return;
     const valid = asProject(draft.working);
     this.previewValid = valid !== null;
     if (valid !== null) this.#lastValid.set(draft.slug, valid);

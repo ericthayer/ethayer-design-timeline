@@ -63,7 +63,7 @@ export class AdminConfirm extends HTMLElement {
         ? null
         : el('input', {
             id: TYPED_ID,
-            class: 'adc__input',
+            class: 'adc__input adc__input--mono',
             type: 'text',
             autocomplete: 'off',
             autocapitalize: 'off',

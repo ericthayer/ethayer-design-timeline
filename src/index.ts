@@ -68,3 +68,7 @@ export {
   discardConfirm,
   warningsConfirm,
 } from './core/editor/confirm.ts';
+export {
+  AdminCreate,
+  define as defineAdminCreate,
+} from './components/admin-create/admin-create.ts';
