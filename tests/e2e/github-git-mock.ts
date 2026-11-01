@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import type { Page } from '@playwright/test';
 import { SCENARIOS } from './github-mock.ts';
 
@@ -131,10 +131,13 @@ export async function mockGitHubGit(page: Page): Promise<GitMock> {
       });
     }
     if (/^\/git\/trees\/t[0-9a-f]+$/.test(path)) {
-      const listing = ['media-src/dmns/cover.png', 'media-src/dmns/shot.png'].map((p) => ({
-        path: p,
-        type: 'blob',
-      }));
+      // Project files from the working tree, plus two media files per slug in the dmns folder.
+      const projects = readdirSync('src/content/data/projects').map(
+        (f) => `src/content/data/projects/${f}`,
+      );
+      const listing = [...projects, 'media-src/dmns/cover.png', 'media-src/dmns/shot.png'].map(
+        (p) => ({ path: p, type: 'blob' }),
+      );
       return reply(200, { sha: path.slice(11), truncated: false, tree: listing });
     }
     if (path === '/git/blobs' && isRecord(body)) {
