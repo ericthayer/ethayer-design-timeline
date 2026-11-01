@@ -50,6 +50,8 @@ async function boot(session: AdminSession): Promise<void> {
   main?.replaceChildren();
   // FR-357: focus moves to <main>; a deep-linked dialog then takes it (US-A6).
   main?.focus();
+  // The router resets an unknown /work/ URL; a create draft's deep link reopens from this.
+  const requested = location.pathname;
   try {
     await import(/* @vite-ignore */ publicEntry());
   } catch {
@@ -59,6 +61,9 @@ async function boot(session: AdminSession): Promise<void> {
     return;
   }
   announceSignedIn(session);
+  // edit-layer FR-380: one dynamic import, so the editor is its own `admin-edit` chunk. If it
+  // fails to load, the signed-in site still works; Sign out stays in the island.
+  import('./edit/attach.ts').then((mod) => mod.attach(session, requested)).catch(() => undefined);
 }
 
 async function start(): Promise<void> {

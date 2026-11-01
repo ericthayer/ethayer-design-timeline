@@ -1,0 +1,21 @@
+/* Repeats the site's layer order: admin CSS may load before the site's (spec 004 admin-auth). */
+@layer reset, tokens, base, components, utilities;
+
+/* New project form (spec 004 edit-layer FR-393, FR-399). Shares the confirm dialog's look. */
+@layer components {
+  .adn__form {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .adn .adc__input[aria-invalid='true'] {
+    border-color: var(--coral);
+    border-width: 2px;
+  }
+  .adn__error {
+    color: var(--coral);
+    font-weight: var(--weight-meta);
+  }
+  .adn__error:empty {
+    display: none;
+  }
+}

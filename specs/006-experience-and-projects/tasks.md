@@ -28,7 +28,7 @@ Nothing below starts until CP6a is approved.
 
 **Admin**
 
-- [ ] **T511** Categories fieldset in the edit-layer form. It lands with T38x (edit-layer hasn't started), since there is no form to add it to yet. → FR-550
+- [x] **T511** Categories fieldset in the edit-layer form. It lands with T38x (edit-layer hasn't started), since there is no form to add it to yet. Landed on the edit-layer branch (PR #17): the panel's Categories fieldset, plus the primary category on New project. → FR-550
 
 **Verify**
 

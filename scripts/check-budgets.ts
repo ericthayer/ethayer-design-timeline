@@ -14,9 +14,11 @@ const BUDGETS = {
   totalJs: 50 * KB,
   css: 20 * KB,
   fonts: 60 * KB,
-  adminJs: 40 * KB,
+  adminJs: 48 * KB,
   adminCss: 5 * KB,
   githubModule: 5 * KB,
+  adminEditJs: 28 * KB,
+  adminEditCss: 3.5 * KB,
 } as const;
 /** Public initial JS in gzip bytes at 6240560, before admin-auth. FR-358 allows +0.3 KB. */
 const BASELINE_INITIAL_JS = 19_507;
@@ -27,6 +29,7 @@ const GITHUB_MODULE = 'src/core/github/index.ts';
 
 interface ManifestChunk {
   readonly file: string;
+  readonly name?: string;
   readonly imports?: readonly string[];
   readonly dynamicImports?: readonly string[];
   readonly css?: readonly string[];
@@ -98,11 +101,22 @@ const minus = (set: Set<string>, other: Set<string>): string[] =>
   [...set].filter((f) => !other.has(f));
 
 const publicGraph = walkGraph(readManifest('.vite/manifest.json'), 'index.html');
-const adminGraph = walkGraph(readManifest('.vite/admin-manifest.json'), 'admin.html');
+const adminManifest = readManifest('.vite/admin-manifest.json');
+const adminGraph = walkGraph(adminManifest, 'admin.html');
 const fonts = walk(DIST)
   .filter((f) => f.endsWith('.woff2'))
   .map((f) => f.slice(DIST.length + 1));
 const initialJs = sum(publicGraph.initialJs, gz);
+
+/** edit-layer FR-380: the chunk vite.config.ts's `ADMIN_EDIT_CHUNK` codeSplitting group emits. */
+const ADMIN_EDIT_CHUNK = 'admin-edit';
+const editChunks = Object.values(adminManifest).filter((c) => c.name === ADMIN_EDIT_CHUNK);
+if (editChunks.length === 0) {
+  process.exitCode = 1;
+  console.log(`FAIL  No "${ADMIN_EDIT_CHUNK}" chunk in the admin manifest`);
+}
+const editJs = new Set(editChunks.map((c) => c.file));
+const editCss = new Set(editChunks.flatMap((c) => c.css ?? []));
 
 const rows = [
   ['Initial JS (gzip)', initialJs, BUDGETS.initialJs],
@@ -112,6 +126,8 @@ const rows = [
   ['Admin JS (gzip)', sum(minus(adminGraph.js, publicGraph.js), gz), BUDGETS.adminJs],
   ['Admin CSS (gzip)', sum(minus(adminGraph.css, publicGraph.css), gz), BUDGETS.adminCss],
   ['GitHub module (gz)', await moduleGzip(GITHUB_MODULE), BUDGETS.githubModule],
+  ['Admin edit JS (gz)', sum(editJs, gz), BUDGETS.adminEditJs],
+  ['Admin edit CSS (gz)', sum(editCss, gz), BUDGETS.adminEditCss],
 ] as const;
 
 const report = (ok: boolean, message: string): void => {

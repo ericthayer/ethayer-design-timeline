@@ -11,14 +11,15 @@ updatedBy: claude
 - PR #8 (release-please and commitlint) was closed unmerged on purpose. Keep using Conventional Commit messages and squash merges. `v1.0.0` is tagged. A tag-on-merge release workflow (`.github/workflows/release.yml`, bump from the squash PR title) is in review, with a PR-title check.
 - PR #9, #10 and #11 are merged. #11 added `scripts/smoke-publish.ts`.
 - CP4d smoke publish passed on 2026-11-01 against `ericthayer/admin-sandbox`: create (JSON + image), update and delete each made one commit, JSON read-backs matched with UTF-8 intact, the `sha: null` delete worked, and deploy status read `queued → unknown: timeout`.
+- `edit-layer` is on draft PR #17 (branch `claude/project-thread-4ihu6o`): T380–T388 and T390–T395 are done (toolbar, inline editing, Card settings panel, confirm dialogs, create and delete, publish flow with deploy badge, e2e on a stateful Git Data API mock). Public `dist/` is byte-identical to main. The owner raised the admin lines on 2026-11-01: admin JS 42.9 / 48 KB, `admin-edit` 21.8 / 28 KB. Main (spec 006) is merged in, and 006 T511 (the categories fieldset, and the primary category on New project) is done here.
 - The PR #5 post-deploy smoke test passed on production on 2026-10-24 (steps 1–5). It turned up one console error, now follow-up 1.
 
-- Spec 006 (Experience and Projects views, categories, contact footer) is in PR #13. The owner approved CP6a on 2026-11-01 (Q1 five categories, Q2 Experience stays `/`, Q3 placeholder portrait, Q4 drop the early Education tile, Q5 Claude drafts the footer copy). The T078 prototype commits are reverted (T510). T501–T509 and T512 are built on the PR #13 branch: categories (rule `category-ref`), `/projects`, the header view switch, the prerendered Projects page and `og/projects.png`, the dialog Focus fact, and the contact footer with a placeholder portrait (`media-src/site/portrait.png`, 1440 × 1800). Also done here: 004 T312/T313 (migration and legacy TS modules removed), and `npm run og` works again. CP6b review fixes (T513–T517, 2026-11-01): the résumé fits at 320 px, category markers span the row below 900 px, the project dialog is split-screen with a resizable separator, and the gallery is an editorial grid with optional `note` captions. The owner approved CP6b on the deploy preview (2026-11-01), which locks the new visuals; PR #13 merges on green. T511 (editor categories fieldset) lands with edit-layer.
+- Spec 006 (Experience and Projects views, categories, contact footer) is in PR #13. The owner approved CP6a on 2026-11-01 (Q1 five categories, Q2 Experience stays `/`, Q3 placeholder portrait, Q4 drop the early Education tile, Q5 Claude drafts the footer copy). The T078 prototype commits are reverted (T510). T501–T509 and T512 are built on the PR #13 branch: categories (rule `category-ref`), `/projects`, the header view switch, the prerendered Projects page and `og/projects.png`, the dialog Focus fact, and the contact footer with a placeholder portrait (`media-src/site/portrait.png`, 1440 × 1800). Also done here: 004 T312/T313 (migration and legacy TS modules removed), and `npm run og` works again. CP6b review fixes (T513–T517, 2026-11-01): the résumé fits at 320 px, category markers span the row below 900 px, the project dialog is split-screen with a resizable separator, and the gallery is an editorial grid with optional `note` captions. The owner approved CP6b on the deploy preview (2026-11-01), which locks the new visuals; PR #13 merges on green. T511 (editor categories fieldset) is done on PR #17.
 
 ## Next step
 
 - The owner approved CP1–CP3, CP4a and CP4c on 2026-10-24. The current design is locked (constitution I).
-- The owner approved CP4d on 2026-11-01. `edit-layer` (T380+) can start, on a branch from `origin/main`.
+- The owner approved CP4d on 2026-11-01. `edit-layer` waits on the owner for T389 (after CP4b), T396 (smoke test on the deploy preview), and CP4e. T394's upload, tile-reorder, and focal-point e2e land with T389.
 - CP4b is still open, and T389 uploads wait for it.
 - Spec 005 (Ask) was approved on 2026-11-01 with all of AQ1–AQ9 answered (Claude Haiku 5.5, a $20 monthly cap, no question logging), and constitution amendments A1 and A2 are applied. Pure core T400–T403 is merged (#18). T399 content is drafted for the owner's review. Everything visible waits for CP4e.
 
@@ -74,7 +75,7 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 
 3. Owner sign-off on CP4b. (CP4a and CP4c were approved on 2026-10-24, CP4d on 2026-11-01.)
    - Open from CP4d: Netlify's commit status context on the real site (FR-375) and an image read-back in the smoke script. Verify both on the first real publish.
-4. `edit-layer` (T380–T396), on a branch from `origin/main`. T389 uploads also wait for CP4b.
+4. `edit-layer` (T380–T396) on PR #17. T380–T388 and T390–T395 done. T389 uploads wait for CP4b; T396 and CP4e need the owner.
 5. `content-json` T312 and T313: delete the old TS project modules once the migration test has passed in CI.
 6. Media T327–T329: collect the Netlify plugin cache and CI cache evidence.
 7. Per-module budget baselines. The admin isolation WARN reports +565 B against FR-358's +307 B.

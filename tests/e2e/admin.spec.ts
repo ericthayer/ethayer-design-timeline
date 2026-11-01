@@ -6,6 +6,8 @@ import { captureSession, mockGitHub, SCENARIOS, TOKEN, type Scenario } from './g
 
 const field = (page: Page): Locator => page.getByLabel('GitHub token');
 const island = (page: Page): Locator => page.getByRole('complementary', { name: 'Admin' });
+/** The session line: the island's first status; the editor toolbar adds its own after it. */
+const sessionStatus = (page: Page): Locator => island(page).getByRole('status').first();
 const wall = (page: Page): Locator => page.getByRole('region', { name: 'Career timeline' });
 
 async function signIn(page: Page, token = TOKEN): Promise<void> {
@@ -14,7 +16,7 @@ async function signIn(page: Page, token = TOKEN): Promise<void> {
 }
 
 async function expectSignedIn(page: Page): Promise<void> {
-  await expect(island(page).getByRole('status')).toHaveText('Signed in as ericthayer');
+  await expect(sessionStatus(page)).toHaveText('Signed in as ericthayer');
   await expect(wall(page)).toBeVisible();
 }
 
@@ -146,7 +148,7 @@ test.describe('/admin session (US-A2, US-A3, US-A5, US-A6)', () => {
     await mockGitHub(page);
     await page.goto('/admin/work/cobank-design-system');
     await signIn(page);
-    await expect(island(page).getByRole('status')).toHaveText('Signed in as ericthayer');
+    await expect(sessionStatus(page)).toHaveText('Signed in as ericthayer');
     // The project dialog stays open: a modal makes the rest of the page inert, so the island
     // has to follow it into the dialog for Sign out to work (bug, 2026-10-24).
     await expect(page.getByRole('dialog')).toBeVisible();
@@ -208,7 +210,7 @@ test.describe('/admin session (US-A2, US-A3, US-A5, US-A6)', () => {
     await reauth.getByLabel('GitHub token').fill(TOKEN);
     await reauth.getByRole('button', { name: 'Verify' }).click();
     await expect(reauth).toBeHidden();
-    await expect(island(page).getByRole('status')).toHaveText('Signed in as ericthayer');
+    await expect(sessionStatus(page)).toHaveText('Signed in as ericthayer');
     await expect(wall(page)).toBeVisible();
   });
 });

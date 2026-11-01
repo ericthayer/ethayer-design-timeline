@@ -40,6 +40,19 @@ function cspFloor(): Plugin {
   };
 }
 
+/** The editor's chunk name and the modules it holds (spec 004 edit-layer FR-380). */
+export const ADMIN_EDIT_CHUNK = 'admin-edit';
+const ADMIN_EDIT =
+  /[\\/]src[\\/](?:admin[\\/]edit|core[\\/]editor|components[\\/]admin-(?:toolbar|panel|gallery|confirm|create))[\\/]/;
+
+/**
+ * What the editor reads but doesn't own: content data and its validator, github-publish, and the
+ * media rules. Its own chunk, so `admin-edit` imports it and nothing imports back (a cycle would
+ * evaluate `admin-edit` before its data).
+ */
+const ADMIN_CONTENT =
+  /[\\/](?:src[\\/](?:content|core[\\/]github)[\\/]|src[\\/]core[\\/](?:media-rules|order)\.ts$|scripts[\\/]csp\.ts$)/;
+
 const ADMIN_PATH = /^\/admin(?:\/|$)/;
 
 /** `/admin` and `/admin/*` serve admin.html in dev and preview, as netlify.toml does (FR-340). */
@@ -129,7 +142,26 @@ function adminBuild(): Plugin {
           emptyOutDir: false,
           copyPublicDir: false,
           manifest: ADMIN_MANIFEST,
-          rolldownOptions: { input: { admin: resolve(root, 'admin.html') } },
+          rolldownOptions: {
+            input: { admin: resolve(root, 'admin.html') },
+            // edit-layer FR-380: every editor module in one lazy chunk, gated at 18 KB gzip.
+            output: {
+              codeSplitting: {
+                groups: [
+                  {
+                    name: ADMIN_EDIT_CHUNK,
+                    test: ADMIN_EDIT,
+                    includeDependenciesRecursively: false,
+                  },
+                  {
+                    name: 'admin-content',
+                    test: ADMIN_CONTENT,
+                    includeDependenciesRecursively: false,
+                  },
+                ],
+              },
+            },
+          },
         },
       });
     },

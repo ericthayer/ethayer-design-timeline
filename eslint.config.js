@@ -54,6 +54,11 @@ export default defineConfig(
     },
   },
   {
+    // Edit-layer reducers drop optional keys with rest destructuring (spec 004 edit-layer FR-383).
+    files: ['src/core/editor/**', 'src/components/admin-panel/**'],
+    rules: { '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }] },
+  },
+  {
     // The editor imports the frame-src list from here (spec 004 edit-layer X2).
     files: ['scripts/csp.ts'],
     rules: {

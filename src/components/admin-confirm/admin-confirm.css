@@ -1,0 +1,100 @@
+/* Repeats the site's layer order: admin CSS may load before the site's (spec 004 admin-auth). */
+@layer reset, tokens, base, components, utilities;
+
+/* Confirmation dialogs (spec 004 edit-layer FR-394, FR-395, FR-397, FR-399). Matches re-auth. */
+@layer components {
+  .adc {
+    inline-size: min(36rem, 100vw - 2rem);
+    max-block-size: calc(100dvh - 2rem);
+    padding: var(--space-6);
+    border: 1px solid var(--stone);
+    border-radius: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    overflow-y: auto;
+  }
+  .adc[open] {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .adc::backdrop {
+    background: rgb(18 18 18 / 0.8);
+  }
+  .adc__heading {
+    font-size: 1.5rem;
+    font-weight: var(--weight-display);
+    letter-spacing: var(--tracking-display);
+    line-height: 1.1;
+  }
+  .adc__text {
+    max-inline-size: 60ch;
+  }
+  .adc__list {
+    display: grid;
+    gap: var(--space-1);
+    padding-inline-start: 1.5rem;
+    list-style: disc;
+    overflow-wrap: anywhere;
+  }
+  .adc__field {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .adc__label {
+    font-weight: var(--weight-display);
+  }
+  .adc__input {
+    min-block-size: 44px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--stone);
+    border-radius: 6px;
+    background: #1d1d1f;
+    color: var(--paper);
+    font: inherit;
+  }
+  /* Slugs are typed exactly, so they read in monospace. */
+  .adc__input--mono {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+  .adc__hint {
+    color: #c7c7cc;
+    font-size: 0.875rem;
+  }
+  .adc__hint:empty {
+    display: none;
+  }
+  .adc__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-2);
+  }
+  .adc__btn {
+    min-block-size: 44px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--stone);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .adc__btn--primary {
+    border-color: var(--paper);
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: var(--weight-display);
+  }
+  .adc__btn[aria-disabled='true'] {
+    border-style: dashed;
+    background: transparent;
+    color: inherit;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  @media (forced-colors: active) {
+    .adc__btn--primary {
+      border-color: ButtonText;
+    }
+  }
+}

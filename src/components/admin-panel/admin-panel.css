@@ -1,0 +1,134 @@
+/* Repeats the site's layer order: admin CSS may load before the site's (spec 004 admin-auth). */
+@layer reset, tokens, base, components, utilities;
+
+/* Card settings inside the project dialog (spec 004 edit-layer FR-388, FR-399). */
+@layer components {
+  admin-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    grid-row: 2;
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--space-4);
+    /* Focus never hides under the admin island (SC 2.4.11). */
+    padding-block-end: calc(var(--admin-island-h, 4rem) + var(--space-4));
+    scroll-padding-block-end: calc(var(--admin-island-h, 4rem) + var(--space-4));
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.875rem;
+  }
+  admin-panel[hidden] {
+    display: none;
+  }
+  /* Wide: the dialog body narrows to make room. */
+  @media (min-width: 900px) {
+    dialog.pd[open]:has(> admin-panel:not([hidden])) {
+      grid-template-columns: minmax(0, 1fr) min(26rem, 38vw);
+    }
+    dialog.pd:has(> admin-panel:not([hidden])) > .pd__bar {
+      grid-column: 1 / -1;
+    }
+    admin-panel {
+      grid-column: 2;
+      border-inline-start: 1px solid var(--graphite);
+    }
+  }
+  /* Narrow: the panel replaces the body view, so nothing focusable hides under it (SC 2.4.11). */
+  @media (max-width: 899px) {
+    dialog.pd:has(> admin-panel:not([hidden])) > .pd__body {
+      display: none;
+    }
+  }
+  .edp__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  .edp__heading {
+    font-size: 1.125rem;
+    font-weight: var(--weight-display);
+  }
+  .edp__sections {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .edp__section,
+  .edp__radios {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: var(--space-3);
+    border: 1px solid var(--graphite);
+  }
+  .edp__section > legend,
+  .edp__radios > legend {
+    padding-inline: var(--space-1);
+    font-weight: var(--weight-display);
+  }
+  .edp__field {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .edp__label {
+    font-weight: var(--weight-meta);
+  }
+  .edp__field input,
+  .edp__field select {
+    min-block-size: 32px;
+    padding: 0 var(--space-2);
+    border: 1px solid var(--stone);
+    background: var(--ink);
+    color: var(--paper);
+    font: inherit;
+    color-scheme: dark;
+  }
+  .edp__check,
+  .edp__radio {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-block-size: 24px;
+  }
+  .edp__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .edp__group {
+    display: grid;
+    gap: var(--space-2);
+    padding-block-end: var(--space-2);
+    border-block-end: 1px solid var(--graphite);
+  }
+  .edp__note {
+    color: #c7c7cc;
+  }
+  .edp__btn {
+    justify-self: start;
+    min-block-size: 32px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--stone);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+  .edp__btn[aria-disabled='true'] {
+    border-style: dashed;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    admin-panel:not([hidden]) {
+      animation: edp-in var(--dur-2) var(--ease-out);
+    }
+  }
+  @keyframes edp-in {
+    from {
+      opacity: 0;
+    }
+  }
+}

@@ -58,3 +58,30 @@ export {
   buildIsland,
   define as defineAdminStatus,
 } from './components/admin-status/admin-status.ts';
+export {
+  AdminToolbar,
+  PANEL_ID,
+  define as defineAdminToolbar,
+  type ToolbarAction,
+} from './components/admin-toolbar/admin-toolbar.ts';
+export {
+  AdminPanel,
+  define as defineAdminPanel,
+  type PanelContext,
+} from './components/admin-panel/admin-panel.ts';
+export {
+  AdminConfirm,
+  confirmDialog,
+  define as defineAdminConfirm,
+} from './components/admin-confirm/admin-confirm.ts';
+export {
+  type ConfirmSpec,
+  conflictConfirm,
+  deleteConfirm,
+  discardConfirm,
+  warningsConfirm,
+} from './core/editor/confirm.ts';
+export {
+  AdminCreate,
+  define as defineAdminCreate,
+} from './components/admin-create/admin-create.ts';
