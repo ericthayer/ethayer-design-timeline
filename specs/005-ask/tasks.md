@@ -5,7 +5,8 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). A task is done when its
 The owner approved this spec on 2026-11-01 (spec §13). T400–T403 may run now on a branch (AQ6 = yes). T404 onward waits for CP4e. Phase 2 also waits for CP5b. Amendments A1 and A2 are approved and applied.
 
 ## Phase 0 · Content (owner)
-- [ ] **T399** Owner drafts `about.json` (process, values, how he works, and whatever personal topics he wants answerable) and 8–16 chips with answers. Claude can propose question wording and edit copy, but the facts are Eric's. → FR-410, FR-435
+- [x] **T399** Owner drafts `about.json` (process, values, how he works, and whatever personal topics he wants answerable) and 8–16 chips with answers. Claude can propose question wording and edit copy, but the facts are Eric's. → FR-410, FR-435
+  - Done 2026-11-01. `about.json` holds the owner's summary text in three sections. Claude drafted 13 chips from facts already in `resume.json`, `site.json`, `eras.json`, and the project files; the owner approves the wording by merging. `content:check` validates both files against the validated bundle's projects. Personal topics are still open: add them to `about.json` when the owner supplies them.
 
 ## Pure core
 - [x] **T400** Types and validator rules for `ask.json` and `about.json`, with fixtures. → FR-410, FR-435

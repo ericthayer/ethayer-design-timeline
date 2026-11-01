@@ -27,6 +27,24 @@ test.describe('project dialog', () => {
     await expect(page).toHaveURL(/\/$/);
   });
 
+  test('stays closed when Back lands while the dialog is still opening (FR-060)', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const link = page.getByRole('link', { name: 'Agentic Engineering Loop' });
+    await expect(link).toBeVisible();
+    // Click and Back in the same task: the close runs before the lazy dialog finishes opening.
+    await link.evaluate((el: HTMLElement) => {
+      el.click();
+      history.back();
+    });
+    await expect(page).toHaveURL(/\/$/);
+    // Give the late open (dialog chunk + view-transition frame) time to land if it is going to.
+    await page.waitForTimeout(500);
+    await expect(page.locator('dialog[open]')).toHaveCount(0);
+    await expect(page).toHaveTitle(/^(?!Agentic Engineering Loop)/);
+  });
+
   test('steps with Next/Previous without stacking history (FR-055)', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('link', { name: 'Agentic Engineering Loop' }).click();

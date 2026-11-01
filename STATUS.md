@@ -20,7 +20,7 @@ updatedBy: claude
 - The owner approved CP1–CP3, CP4a and CP4c on 2026-10-24. The current design is locked (constitution I).
 - The owner approved CP4d on 2026-11-01. `edit-layer` (T380+) can start, on a branch from `origin/main`.
 - CP4b is still open, and T389 uploads wait for it.
-- Spec 005 (Ask) was approved on 2026-11-01 with all of AQ1–AQ9 answered (Claude Haiku 5.5, a $20 monthly cap, no question logging), and constitution amendments A1 and A2 are applied. Pure core T400–T403 may run now. Everything visible waits for CP4e.
+- Spec 005 (Ask) was approved on 2026-11-01 with all of AQ1–AQ9 answered (Claude Haiku 5.5, a $20 monthly cap, no question logging), and constitution amendments A1 and A2 are applied. Pure core T400–T403 is merged (#18). T399 content is drafted for the owner's review. Everything visible waits for CP4e.
 
 ## Blockers
 
@@ -67,6 +67,7 @@ In the order I'd do them. Checked against the repo and production on 2026-10-24.
 Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its own title, canonical, `og:image` and `twitter:image`. (2) `/og/dmns.png` and `/og/home.png` are 1200×630 PNGs. (3) `sitemap.xml` (22 URLs) and `robots.txt` return 200, the seven drafts are absent from the sitemap, and `/work/workbench` is `noindex`. (4) `/work/not-a-project` falls back to the app and lands on `/`. (5) The deep link opens the dialog, and Escape restores the home title, the `/` URL, and focus on the card.
 
 1. An unhandled `InvalidStateError: Transition was aborted because of invalid state` appeared once on production around a deep-linked dialog. Chrome rejects `transition.ready` when it skips a View Transition (for example in a background tab), and `src/core/transition.ts` didn't handle that rejection. Nothing visible breaks. The fix and its unit test shipped in PR #9 (merged).
+1a. Back pressed while a project dialog was still opening left it open at `/` (or `/admin`): the late `show` in the view-transition update ran after the close. `src/main.ts` now drops a stale open after the dialog chunk loads and inside the morph update, with a regression e2e in `tests/e2e/dialog.spec.ts`. This was also the flake in `tests/e2e/admin.spec.ts:161` on PR #17. Fix PR is in review (2026-11-01).
 2. Paste a project URL into Slack, LinkedIn and iMessage, and try LinkedIn's Post Inspector. Use a URL they haven't cached. (Owner)
 
 **Spec 004**
@@ -102,8 +103,8 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 
 **Spec 005 (Ask)**
 
-- Owner: draft `about.json` and 8–16 suggestion chips with answers (T399). This can start any time.
-- T400–T403 (pure core) are done on `claude/project-thread-vg1394` (2026-11-01): content validators, corpus builder, answer parser, and stream protocol, with unit tests and no UI. They're in a draft PR, and no review is needed until CP4e. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
+- T399 (2026-11-01): `about.json` is the owner's own summary, and `ask.json` has 13 drafted chips built only from the résumé, `site.json`, and project files. Owner: check the wording, and add any personal topics you want answerable to `about.json` (only "How can I reach him?" is in the personal topic now). `npm run content:check` now validates both files.
+- T400–T403 (pure core) merged in #18 (2026-11-01): content validators, corpus builder, answer parser, and stream protocol, with unit tests and no UI. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
 
 **Housekeeping**
 

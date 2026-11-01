@@ -138,6 +138,8 @@ function loadResume(): Promise<ResumeDialog> {
   return resumePromise;
 }
 
+// Bumped by every open and close, so an open that resolves after a later Back bails (race fix).
+let navigation = 0;
 let resumeOpener: HTMLElement | null = null;
 
 async function openProject(slug: string): Promise<void> {
@@ -148,8 +150,10 @@ async function openProject(slug: string): Promise<void> {
     router.reset();
     return;
   }
+  const ticket = ++navigation;
   wall.renderThrough(itemIndexOf(items, slug));
   const dialog = await loadDialog();
+  if (ticket !== navigation) return;
   const view: DialogView = {
     project,
     index: index + 1,
@@ -165,6 +169,8 @@ async function openProject(slug: string): Promise<void> {
   if (firstOpen) {
     morph(
       () => {
+        // The view-transition update runs a frame later; a close may have landed in between.
+        if (openSlug !== slug) return;
         dialog.show(view);
       },
       wall.cardFor(slug)?.art,
@@ -177,6 +183,7 @@ async function openProject(slug: string): Promise<void> {
 }
 
 async function closeProject(): Promise<void> {
+  navigation++;
   if (!openSlug) return;
   const card = wall.cardFor(openSlug);
   openSlug = null;
