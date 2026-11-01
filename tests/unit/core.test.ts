@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { ERAS } from '../../src/content/eras.ts';
 import { PROJECTS } from '../../src/content/projects/index.ts';
 import { hashSeed, indexNumerals, pad2, periodText, yearRange } from '../../src/core/format.ts';
-import { buildWallItems, itemIndexOf, projectSequence } from '../../src/core/order.ts';
+import { CATEGORIES } from '../../src/content/categories.ts';
+import {
+  buildCategoryItems,
+  buildWallItems,
+  itemIndexOf,
+  projectSequence,
+} from '../../src/core/order.ts';
 import { cascade, toPoints } from '../../src/core/cascade.ts';
 import {
   isResumePath,
@@ -27,6 +33,43 @@ describe('format', () => {
   it('hashes seeds deterministically', () => {
     expect(hashSeed('dmns')).toBe(hashSeed('dmns'));
     expect(hashSeed('dmns')).not.toBe(hashSeed('sublist'));
+  });
+});
+
+describe('category order (spec 006, FR-510, FR-503)', () => {
+  const items = buildCategoryItems(PROJECTS, ERAS, CATEGORIES);
+  const experience = projectSequence(buildWallItems(PROJECTS, ERAS));
+
+  it('lists every project once, in its primary category', () => {
+    const sequence = projectSequence(items);
+    expect(sequence).toHaveLength(PROJECTS.length);
+    expect(new Set(sequence.map((p) => p.slug)).size).toBe(PROJECTS.length);
+    let current = '';
+    for (const item of items) {
+      if (item.type === 'category') current = item.category.id;
+      else if (item.type === 'project') expect(item.project.categories[0]).toBe(current);
+    }
+  });
+
+  it('orders sections by CATEGORIES, counts them, and keeps Experience order inside', () => {
+    const markers = items.flatMap((item) => (item.type === 'category' ? [item] : []));
+    expect(markers.map((m) => m.category.id)).toEqual(CATEGORIES.map((c) => c.id));
+    for (const marker of markers) {
+      const inSection = experience.filter((p) => p.categories[0] === marker.category.id);
+      expect(marker.count).toBe(inSection.length);
+      const start = items.indexOf(marker) + 1;
+      const rendered = items.slice(start, start + marker.count);
+      expect(rendered.map((i) => (i.type === 'project' ? i.project.slug : ''))).toEqual(
+        inSection.map((p) => p.slug),
+      );
+    }
+  });
+
+  it('starts with a marker, has no end-cap, and numbers projects 1…N', () => {
+    expect(items[0]?.type).toBe('category');
+    expect(items.some((item) => item.type === 'end-cap')).toBe(false);
+    const indexes = items.flatMap((item) => (item.type === 'project' ? [item.index] : []));
+    expect(indexes).toEqual(PROJECTS.map((_, i) => i + 1));
   });
 });
 

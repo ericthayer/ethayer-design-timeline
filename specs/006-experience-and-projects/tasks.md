@@ -9,13 +9,13 @@ Nothing below starts until CP6a is approved.
 
 **Data first (no visible change; lands before 004 edit-layer T380+)**
 
-- [ ] **T501** `categories.ts` (`CATEGORY_IDS`, `CategoryId`, `CATEGORIES`), `Project.categories` type, and the plan §3 assignment in every project JSON. → FR-500, FR-501, FR-503, FR-504
-- [ ] **T502** Validator rule `category-ref` and tests: missing, empty, unknown, duplicate, more than two. Fixtures updated. → FR-502
+- [x] **T501** `categories.ts` (`CATEGORY_IDS`, `CategoryId`, `CATEGORIES`), `Project.categories` type, and the plan §3 assignment in every project JSON. → FR-500, FR-501, FR-503, FR-504
+- [x] **T502** Validator rule `category-ref` and tests: missing, empty, unknown, duplicate, more than two. Fixtures updated. → FR-502
 
 **Projects view**
 
-- [ ] **T503** `buildCategoryItems()` in `core/order.ts`, plus unit tests (one card per project, section order, Experience order within a section, counts). → FR-510, FR-503
-- [ ] **T504** `renderCategory()` marker tile, `timeline-wall` `view` property, accessible names, section row starts. → FR-511–FR-513, plan §4
+- [x] **T503** `buildCategoryItems()` in `core/order.ts`, plus unit tests (one card per project, section order, Experience order within a section, counts). → FR-510, FR-503
+- [x] **T504** `renderCategory()` marker tile, `timeline-wall` `replaceItems()` and per-view `label`, accessible names. → FR-511–FR-513, plan §4
 - [ ] **T505** Router: `/projects` route, history state `{ view }`, dialog return-to-view, Prev/Next per view. → FR-521, FR-530, FR-531
 - [ ] **T506** `view-switch` component in the header, skip links per view, View Transition, focus handoff. → FR-520–FR-522
 - [ ] **T507** Prerender `/projects` (title, description, canonical, OG image, sitemap, `_redirects`). → FR-523, FR-514

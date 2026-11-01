@@ -71,7 +71,7 @@ Counts (published + drafts): design systems 7, agentic engineering 2, front-end 
 
 ## 4. Bento fit
 
-Category sections are short (2–10 cards), so dense packing could pull a card from one section into the gap left by the previous one, which would blur the section edges. Mitigation: in Projects mode, each category marker starts a new row (`grid-column-start: 1`) in vertical mode, and a new column in horizontal mode. That leaves at most one partial row per section, which is the Swiss "ragged edge" the wall already shows between eras. This is checked at CP6b at 390, 1280 and 1920 px.
+Category sections are short (2–10 cards), and `grid-auto-flow: dense` can pull a card into a gap left earlier, which softens section edges. The Experience wall has the same behavior between eras, and the owner approved it at CP1. *Amended at T504 (2026-11-01):* forcing each marker to start a new row was dropped. With dense packing it opens a hole before the marker that later cards backfill, so cards from the next section would land *before* its marker. Markers flow like era markers instead. This is checked at CP6b at 390, 1280 and 1920 px.
 
 ## 5. Risks
 

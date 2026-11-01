@@ -1,4 +1,4 @@
-import type { CategoryId } from './categories.ts';
+import type { Category, CategoryId } from './categories.ts';
 import type { ERA_IDS } from './era-ids.ts';
 import type { MOTIFS } from './motifs.ts';
 import type { THEMES } from './themes.ts';
@@ -148,6 +148,7 @@ export type ProjectOrder = { readonly [E in EraId]?: readonly string[] };
 /** Derived render list consumed by <timeline-wall>. */
 export type WallItem =
   | { readonly type: 'era'; readonly era: Era }
+  | { readonly type: 'category'; readonly category: Category; readonly count: number }
   | {
       readonly type: 'project';
       readonly project: Project;
