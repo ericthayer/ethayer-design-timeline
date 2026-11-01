@@ -8,7 +8,7 @@ updatedBy: claude
 
 - v1, the hero and résumé (spec 002), the Batch B artwork and gallery (spec 003), and the prerender and link previews (T070, T071) are merged to main.
 - Spec 004 (admin editing) parts 1 and 2 are merged to main: PR #6 (content as JSON, build-time media, `/admin` sign-in) and PR #7 (`github-publish`).
-- PR #8 (release-please and commitlint) was closed unmerged on purpose. Keep using Conventional Commit messages and squash merges. A small tag-on-merge release workflow is undecided (first tag `v1.0.0` or `v0.x`).
+- PR #8 (release-please and commitlint) was closed unmerged on purpose. Keep using Conventional Commit messages and squash merges. `v1.0.0` is tagged. A tag-on-merge release workflow (`.github/workflows/release.yml`, bump from the squash PR title) is in review, with a PR-title check.
 - PR #9, #10 and #11 are merged. #11 added `scripts/smoke-publish.ts`.
 - CP4d smoke publish passed on 2026-11-01 against `ericthayer/admin-sandbox`: create (JSON + image), update and delete each made one commit, JSON read-backs matched with UTF-8 intact, the `sha: null` delete worked, and deploy status read `queued → unknown: timeout`.
 - `edit-layer` is on draft PR #17 (branch `claude/project-thread-4ihu6o`): T380–T388 and T390–T395 are done (toolbar, inline editing, Card settings panel, confirm dialogs, create and delete, publish flow with deploy badge, e2e on a stateful Git Data API mock). Public `dist/` is byte-identical to main. The owner raised the admin lines on 2026-11-01: admin JS 42.9 / 48 KB, `admin-edit` 21.8 / 28 KB.
@@ -19,6 +19,7 @@ updatedBy: claude
 - The owner approved CP1–CP3, CP4a and CP4c on 2026-10-24. The current design is locked (constitution I).
 - The owner approved CP4d on 2026-11-01. `edit-layer` waits on the owner for T389 (after CP4b), T396 (smoke test on the deploy preview), and CP4e. T394's upload, tile-reorder, and focal-point e2e land with T389.
 - CP4b is still open, and T389 uploads wait for it.
+- Spec 005 (Ask) was approved on 2026-11-01 with all of AQ1–AQ9 answered (Claude Haiku 5.5, a $20 monthly cap, no question logging), and constitution amendments A1 and A2 are applied. Pure core T400–T403 may run now. Everything visible waits for CP4e.
 
 ## Blockers
 
@@ -63,6 +64,7 @@ In the order I'd do them. Checked against the repo and production on 2026-10-24.
 Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its own title, canonical, `og:image` and `twitter:image`. (2) `/og/dmns.png` and `/og/home.png` are 1200×630 PNGs. (3) `sitemap.xml` (22 URLs) and `robots.txt` return 200, the seven drafts are absent from the sitemap, and `/work/workbench` is `noindex`. (4) `/work/not-a-project` falls back to the app and lands on `/`. (5) The deep link opens the dialog, and Escape restores the home title, the `/` URL, and focus on the card.
 
 1. An unhandled `InvalidStateError: Transition was aborted because of invalid state` appeared once on production around a deep-linked dialog. Chrome rejects `transition.ready` when it skips a View Transition (for example in a background tab), and `src/core/transition.ts` didn't handle that rejection. Nothing visible breaks. The fix and its unit test shipped in PR #9 (merged).
+1a. Back pressed while a project dialog was still opening left it open at `/` (or `/admin`): the late `show` in the view-transition update ran after the close. `src/main.ts` now drops a stale open after the dialog chunk loads and inside the morph update, with a regression e2e in `tests/e2e/dialog.spec.ts`. This was also the flake in `tests/e2e/admin.spec.ts:161` on PR #17. Fix PR is in review (2026-11-01).
 2. Paste a project URL into Slack, LinkedIn and iMessage, and try LinkedIn's Post Inspector. Use a URL they haven't cached. (Owner)
 
 **Spec 004**
@@ -95,6 +97,11 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 18. Unity capture of the VR design system, and the motion-reel source for an 8-second loop.
 19. CoBank and Threecolts screenshots, if you're cleared to show them.
 20. Copy and dates for the seven drafts: `curiteva`, `madramps`, `motion-reel`, `qr-landing`, `map-course-launcher`, `safetyhive`, `workbench`. They stay `noindex` until `draft: true` is removed, which will be possible in `/admin` once `edit-layer` ships.
+
+**Spec 005 (Ask)**
+
+- Owner: draft `about.json` and 8–16 suggestion chips with answers (T399). This can start any time.
+- T400–T403 (pure core) are done on `claude/project-thread-vg1394` (2026-11-01): content validators, corpus builder, answer parser, and stream protocol, with unit tests and no UI. They're in a draft PR, and no review is needed until CP4e. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
 
 **Housekeeping**
 

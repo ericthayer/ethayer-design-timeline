@@ -1,0 +1,47 @@
+# Tag and release on every merge to main. The bump comes from the squash commit's Conventional
+# Commit subject (see scripts/next-version.ts): feat → minor, fix/perf → patch, `!` or a
+# BREAKING CHANGE footer → major. Everything else (docs, chore, ci, the editor's `content:`
+# publishes) makes no release. The version lives in tags, so nothing is committed back to main.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tag and release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          current=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
+          if [ -z "$current" ]; then
+            echo "No vX.Y.Z tag yet; create the first one by hand."
+            exit 0
+          fi
+          next=$(node scripts/next-version.ts "$current" "$COMMIT_MESSAGE")
+          if [ -z "$next" ]; then
+            echo "No release for: ${COMMIT_MESSAGE%%$'\n'*}"
+            exit 0
+          fi
+          if git rev-parse -q --verify "refs/tags/$next" >/dev/null; then
+            echo "$next already exists."
+            exit 0
+          fi
+          gh release create "$next" --target "$GITHUB_SHA" --title "$next" --generate-notes
