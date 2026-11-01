@@ -23,11 +23,21 @@
   <body>
     <header class="site-header">
       <a class="skip-link" href="#wall">Skip to projects</a>
-      <a class="skip-link" href="#timeline-end">Skip to end of timeline</a>
+      <a class="skip-link" href="#timeline-end" data-view-only="experience"
+        >Skip to end of timeline</a
+      >
       <p class="site-header__brand">
         <span class="site-header__name">Eric Thayer</span>
-        <span class="site-header__role">Principal Design Engineer · Career timeline</span>
+        <span class="site-header__role">Principal Design Engineer</span>
       </p>
+      <view-switch>
+        <nav class="site-header__views" aria-label="Views">
+          <ul class="view-switch">
+            <li><a href="/" data-view="experience" aria-current="page">Experience</a></li>
+            <li><a href="/projects" data-view="projects">Projects</a></li>
+          </ul>
+        </nav>
+      </view-switch>
       <nav class="site-header__nav" aria-label="Contact">
         <ul class="site-header__links">
           <li><a href="/resume">Résumé</a></li>

@@ -1,7 +1,8 @@
+import type { Category } from '../../content/categories.ts';
 import type { Era } from '../../content/types.ts';
 import { SITE } from '../../content/site.ts';
 import { el } from '../../core/dom.ts';
-import { indexNumerals, periodText } from '../../core/format.ts';
+import { indexNumerals, pad2, periodText } from '../../core/format.ts';
 import './wall-tiles.css';
 
 function numerals(period: Era['period']): HTMLElement {
@@ -18,6 +19,18 @@ export function renderEra(era: Era): HTMLElement {
   return el('section', { class: 'tile tile--era', 'aria-labelledby': `era-${era.id}` }, [
     numerals(era.period),
     el('h2', { class: 'tile__era-label', id: `era-${era.id}` }, [era.label]),
+  ]);
+}
+
+/** Section marker on the Projects view: era-marker styles, project count for numerals (spec 006, FR-511). */
+export function renderCategory(category: Category, count: number): HTMLElement {
+  const id = `category-${category.id}`;
+  return el('section', { class: 'tile tile--era tile--category', 'aria-labelledby': id }, [
+    el('p', { class: 'tile__index' }, [
+      el('span', { 'aria-hidden': 'true' }, [pad2(count)]),
+      el('span', { class: 'visually-hidden' }, [`${String(count)} projects`]),
+    ]),
+    el('h2', { class: 'tile__era-label', id }, [category.label]),
   ]);
 }
 

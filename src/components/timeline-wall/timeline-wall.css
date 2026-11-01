@@ -110,6 +110,20 @@
     grid-row: span 2;
   }
 
+  /* Spec 006 FR-515: on two and three columns a category marker is a full-row banner, one cell
+     tall, and Projects packs in order so no card lands above its section's marker. */
+  @container wall (max-width: 899px) {
+    .wall__grid:has(> [data-type='category']) {
+      grid-auto-flow: row;
+    }
+    .wall__item[data-type='category'] {
+      grid-column: 1 / -1;
+    }
+    .wall__item[data-type='category'] .tile {
+      --u: 1cqb;
+    }
+  }
+
   /* SC 2.4.11: focused cards scroll clear of the screen edge. In horizontal mode cards scroll
      inside the wall, and the page docks the wall flush to the top instead (wallOwnsWheel). */
   @media (max-width: 1800px) {

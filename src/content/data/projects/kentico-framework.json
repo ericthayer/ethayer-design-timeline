@@ -3,6 +3,10 @@
   "title": "Kentico UI Framework",
   "client": "The Navigators",
   "era": "navigators",
+  "categories": [
+    "front-end-platforms",
+    "design-systems"
+  ],
   "engagement": "full-time",
   "role": "UI Designer & Front-End Developer",
   "period": {

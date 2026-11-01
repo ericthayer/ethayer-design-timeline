@@ -37,6 +37,21 @@ test.describe('résumé dialog (spec 002)', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeFocused();
   });
 
+  test('fits at 320 px: no overflow, both bar actions on screen (spec 006 FR-533)', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto('/resume');
+    const close = page.getByRole('button', { name: 'Close' });
+    await expect(close).toBeVisible();
+    const box = await close.boundingBox();
+    expect(box && box.x + box.width).toBeLessThanOrEqual(320);
+    const overflow = await page
+      .locator('.rd__body')
+      .evaluate((el) => el.scrollWidth - el.clientWidth);
+    expect(overflow).toBe(0);
+  });
+
   test('has no axe violations while open', async ({ page }) => {
     await page.goto('/resume');
     await expect(page.getByRole('dialog')).toBeVisible();

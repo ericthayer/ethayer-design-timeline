@@ -4,7 +4,7 @@ import { getScheduler } from '../../core/media-scheduler.ts';
 import { isNavKey, nextIndex } from '../../core/spatial-nav.ts';
 import { attachWheelToHorizontal, wallOwnsWheel } from '../../core/wheel.ts';
 import { ProjectCard } from '../project-card/project-card.ts';
-import { renderEndCap, renderEra } from '../wall-tiles/wall-tiles.ts';
+import { renderCategory, renderEndCap, renderEra } from '../wall-tiles/wall-tiles.ts';
 import './timeline-wall.css';
 
 declare global {
@@ -25,6 +25,11 @@ export class TimelineWall extends HTMLElement {
   batchSize = 12;
   status: HTMLElement | null = null;
   private readonly grid = el('ol', { class: 'wall__grid', 'aria-label': 'Projects, newest first' });
+
+  /** The grid's accessible name: one per view (spec 006, FR-513). */
+  set label(value: string) {
+    this.grid.setAttribute('aria-label', value);
+  }
   private rendered = 0;
   private loader: IntersectionObserver | undefined;
   private horizontal = false;
@@ -59,6 +64,15 @@ export class TimelineWall extends HTMLElement {
 
   get isHorizontal(): boolean {
     return this.horizontal;
+  }
+
+  /** Swap the item list and start again from the first batch (view switch, spec 006 FR-521). */
+  replaceItems(items: readonly WallItem[]): void {
+    this.items = items;
+    this.loader?.disconnect();
+    this.grid.replaceChildren();
+    this.rendered = 0;
+    if (this.isConnected) this.renderCount(this.batchSize, false);
   }
 
   /** Render batches until `itemIndex` exists (deep links, FR-053). */
@@ -119,6 +133,10 @@ export class TimelineWall extends HTMLElement {
       case 'era':
         return el('li', { class: 'wall__item', 'data-size': 'sm', 'data-type': 'era' }, [
           renderEra(item.era),
+        ]);
+      case 'category':
+        return el('li', { class: 'wall__item', 'data-size': 'sm', 'data-type': 'category' }, [
+          renderCategory(item.category, item.count),
         ]);
       case 'end-cap':
         return el('li', { class: 'wall__item', 'data-size': 'tall', 'data-type': 'end-cap' }, [

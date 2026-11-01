@@ -3,6 +3,10 @@
   "title": "Denver Museum of Nature & Science",
   "client": "DMNS",
   "era": "independent",
+  "categories": [
+    "front-end-platforms",
+    "design-systems"
+  ],
   "engagement": "freelance",
   "role": "Front-end development",
   "period": {

@@ -1,3 +1,4 @@
+import type { Category, CategoryId } from './categories.ts';
 import type { ERA_IDS } from './era-ids.ts';
 import type { MOTIFS } from './motifs.ts';
 import type { THEMES } from './themes.ts';
@@ -66,11 +67,13 @@ export type GallerySpan = 'sm' | 'wide' | 'tall' | 'feature';
 /** Focal point as CSS percentages, e.g. '30% 40%' (spec 003, FR-213). */
 export type Focal = `${number}% ${number}%`;
 
-/** One tile in the dialog's bento gallery (spec 003, FR-210). Iframes are excluded (FR-211). */
+/** One figure in the dialog's editorial gallery (spec 003 FR-210, 006 FR-535). No iframes (FR-211). */
 export interface GalleryItem {
   readonly media: ImageMedia | VideoMedia | VimeoMedia | PlaceholderMedia;
   /** Visible caption, and the accessible name for decorative tiles. */
   readonly label: string;
+  /** Companion copy under the label, at most 240 characters (spec 006, FR-536). */
+  readonly note?: string;
   readonly span?: GallerySpan;
   readonly focal?: Focal;
 }
@@ -112,6 +115,8 @@ interface ProjectBase {
   readonly title: string;
   readonly client: string;
   readonly era: EraId;
+  /** Primary first, then an optional secondary (spec 006, FR-501). */
+  readonly categories: readonly [CategoryId] | readonly [CategoryId, CategoryId];
   readonly engagement: Engagement;
   readonly role: string;
   readonly period: Period;
@@ -145,6 +150,7 @@ export type ProjectOrder = { readonly [E in EraId]?: readonly string[] };
 /** Derived render list consumed by <timeline-wall>. */
 export type WallItem =
   | { readonly type: 'era'; readonly era: Era }
+  | { readonly type: 'category'; readonly category: Category; readonly count: number }
   | {
       readonly type: 'project';
       readonly project: Project;

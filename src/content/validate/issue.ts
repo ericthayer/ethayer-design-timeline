@@ -15,6 +15,7 @@ export const RULE_IDS = [
   'focal-format',
   'period',
   'era-ref',
+  'category-ref',
   'theme-name',
   'motif-name',
   'url',

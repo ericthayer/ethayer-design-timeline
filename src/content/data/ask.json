@@ -1,0 +1,145 @@
+{
+  "chips": [
+    {
+      "id": "what-does-eric-do",
+      "label": "What does Eric do?",
+      "topic": "work",
+      "answer": [
+        "Eric is a Principal Design Engineer in Denver. He works on design systems, agentic engineering workflows, and front-end platforms across React, Angular, and Vue.",
+        "He describes himself as a team-focused UI/UX creative who provides the design and development services an organization runs on day to day."
+      ],
+      "related": ["cobank-design-system"],
+      "followups": ["current-role", "design-process", "career-path"]
+    },
+    {
+      "id": "current-role",
+      "label": "What is he working on now?",
+      "topic": "work",
+      "answer": [
+        "Since December 2023 he has been a Senior UX Engineer at CoBank, where he leads the design system: the Figma UI kit and tokens, the React and Material UI component library, and the Storybook pipeline that connects them.",
+        "He also builds agentic tooling there, including an MCP server that turns Figma specs into token-wired React scaffolding and a CI/CD check that catches UI drift before merge."
+      ],
+      "related": ["cobank-design-system", "agentic-engineering-loop", "drift-detection"],
+      "followups": ["design-systems", "agentic-engineering"]
+    },
+    {
+      "id": "design-systems",
+      "label": "How does he build design systems?",
+      "topic": "work",
+      "answer": [
+        "He starts in Figma with the brand style guide, UI kit, and design tokens, then carries the same tokens into code so design and engineering share one source.",
+        "Examples: a React and Material UI system serving 120+ developers and designers at CoBank, a Vue.js component library in Storybook at Health Scholars, and a VR design system in Unity UI Toolkit."
+      ],
+      "related": ["cobank-design-system", "hs-vue-library", "vr-design-system"],
+      "followups": ["design-to-code", "accessibility"]
+    },
+    {
+      "id": "agentic-engineering",
+      "label": "How does he use AI agents in his work?",
+      "topic": "work",
+      "answer": [
+        "At CoBank he built an MCP server and agent toolkit that turns Figma specs into token-wired React scaffolding, cutting feature development time by 40 %.",
+        "He also added an agentic spec and drift detection step to CI/CD that catches UI inconsistencies before merge, cutting drift fixes by 33 %."
+      ],
+      "related": ["agentic-engineering-loop", "drift-detection"],
+      "followups": ["design-to-code", "current-role"]
+    },
+    {
+      "id": "accessibility",
+      "label": "How does he approach accessibility?",
+      "topic": "work",
+      "answer": [
+        "He builds accessibility into the components themselves. At CoBank he standardized component access and implementation guidelines, which dropped performance and accessibility errors by 37 %.",
+        "Earlier, he built an inclusive pattern library and front end for the Denver Museum of Nature & Science."
+      ],
+      "related": ["accessible-components", "dmns"],
+      "followups": ["design-systems"]
+    },
+    {
+      "id": "design-process",
+      "label": "What is his design process?",
+      "topic": "process",
+      "answer": [
+        "His work runs through design discovery, visual design, prototyping, and front-end development, so he can take an idea from research to working code.",
+        "He prototypes in Figma, Sketch, and HTML, and has led design sprints and interface workshops for engineering, VR, and product marketing teams."
+      ],
+      "related": ["design-sprints"],
+      "followups": ["collaboration", "design-to-code"]
+    },
+    {
+      "id": "design-to-code",
+      "label": "How does he get from Figma to code?",
+      "topic": "process",
+      "answer": [
+        "Through tokens. His pipeline syncs Figma variables to JSON tokens, then to Material UI themes and Storybook in one pass, so a design change reaches the component library without hand copying.",
+        "On top of that, his agent toolkit generates React scaffolding already wired to those tokens."
+      ],
+      "related": ["figma-token-pipeline", "agentic-engineering-loop"],
+      "followups": ["design-systems", "agentic-engineering"]
+    },
+    {
+      "id": "collaboration",
+      "label": "What is he like to work with?",
+      "topic": "process",
+      "answer": [
+        "He is team-focused. He works with cross-functional department leaders to identify and resolve issues, prioritize projects, and provide a high level of service.",
+        "At Health Scholars he led design sprints and VR interface training for the web, VR, and marketing teams."
+      ],
+      "related": ["design-sprints"],
+      "followups": ["design-process", "contact"]
+    },
+    {
+      "id": "career-path",
+      "label": "How long has he been doing this?",
+      "topic": "experience",
+      "answer": [
+        "Since 2003. He started in post-production and multimedia in San Diego and at the Defense Language Institute, then moved into UI design and front-end development at The Navigators.",
+        "From there he worked independently for startups and clients like the Denver Museum of Nature & Science, spent over five years at Health Scholars on web and VR products, consulted for Threecolts, and joined CoBank in 2023."
+      ],
+      "related": ["dli-training-media", "navigators-platforms", "hs-brand-systems"],
+      "followups": ["tech-stack", "education"]
+    },
+    {
+      "id": "tech-stack",
+      "label": "What tools and frameworks does he use?",
+      "topic": "experience",
+      "answer": [
+        "In code: HTML, SCSS, JavaScript, and TypeScript; React, Vue.js, and Angular; Storybook; Bootstrap, Foundation, and Tailwind; AWS, GraphQL, and Hasura; and Hugo, WordPress, and Kentico.",
+        "In design and delivery: Figma, Sketch, Adobe CC, Git, CodePen, Jira, and Trello."
+      ],
+      "related": ["cobank-design-system", "hs-vue-library"],
+      "followups": ["design-systems", "vr-work"]
+    },
+    {
+      "id": "vr-work",
+      "label": "Has he designed for VR?",
+      "topic": "experience",
+      "answer": [
+        "Yes. At Health Scholars he designed brand and UI systems for 6 web applications and 10 VR simulation products, including the Workbench developer platform.",
+        "He also set up a VR design system in Unity UI Toolkit that sped up 3D prototyping."
+      ],
+      "related": ["vr-design-system", "hs-brand-systems"],
+      "followups": ["design-systems", "career-path"]
+    },
+    {
+      "id": "education",
+      "label": "Where did he study?",
+      "topic": "experience",
+      "answer": [
+        "Platt College in San Diego: an A.A.S. in Graphic Design in 2003 and a B.S. in Media Arts in 2005."
+      ],
+      "related": [],
+      "followups": ["career-path"]
+    },
+    {
+      "id": "contact",
+      "label": "How can I reach him?",
+      "topic": "personal",
+      "answer": [
+        "Email is the best way. You can also find him on LinkedIn, GitHub, and CodePen, or read the full résumé."
+      ],
+      "related": [],
+      "followups": []
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 // Shared by `check-content.ts` and the unit tests. The validator itself never touches `node:*`.
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { CONTENT_FILES, PROJECTS_DIR } from '../src/content/paths.ts';
+import { ASK_FILES, CONTENT_FILES, PROJECTS_DIR } from '../src/content/paths.ts';
 import {
   type RawContent,
   type ValidationContext,
@@ -26,6 +26,15 @@ export function readRawContent(root: string): RawContent {
     raw[file] = parseJson(readText(root, file));
   }
   for (const file of Object.values(CONTENT_FILES)) {
+    if (existsSync(join(root, file))) raw[file] = parseJson(readText(root, file));
+  }
+  return raw;
+}
+
+/** The Ask files (spec 005, FR-410, FR-435), parsed and keyed by repo path. Missing files are left out. */
+export function readAskContent(root: string): RawContent {
+  const raw: Record<string, unknown> = {};
+  for (const file of Object.values(ASK_FILES)) {
     if (existsSync(join(root, file))) raw[file] = parseJson(readText(root, file));
   }
   return raw;

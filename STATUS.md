@@ -14,18 +14,22 @@ updatedBy: claude
 - `edit-layer` is on draft PR #17 (branch `claude/project-thread-4ihu6o`): T380–T388 and T390–T395 are done (toolbar, inline editing, Card settings panel, confirm dialogs, create and delete, publish flow with deploy badge, e2e on a stateful Git Data API mock). Public `dist/` is byte-identical to main. The owner raised the admin lines on 2026-11-01: admin JS 42.9 / 48 KB, `admin-edit` 21.8 / 28 KB.
 - The PR #5 post-deploy smoke test passed on production on 2026-10-24 (steps 1–5). It turned up one console error, now follow-up 1.
 
+- Spec 006 (Experience and Projects views, categories, contact footer) is in PR #13. The owner approved CP6a on 2026-11-01 (Q1 five categories, Q2 Experience stays `/`, Q3 placeholder portrait, Q4 drop the early Education tile, Q5 Claude drafts the footer copy). The T078 prototype commits are reverted (T510). T501–T509 and T512 are built on the PR #13 branch: categories (rule `category-ref`), `/projects`, the header view switch, the prerendered Projects page and `og/projects.png`, the dialog Focus fact, and the contact footer with a placeholder portrait (`media-src/site/portrait.png`, 1440 × 1800). Also done here: 004 T312/T313 (migration and legacy TS modules removed), and `npm run og` works again. CP6b review fixes (T513–T517, 2026-11-01): the résumé fits at 320 px, category markers span the row below 900 px, the project dialog is split-screen with a resizable separator, and the gallery is an editorial grid with optional `note` captions. The owner approved CP6b on the deploy preview (2026-11-01), which locks the new visuals; PR #13 merges on green. T511 (editor categories fieldset) lands with edit-layer.
+
 ## Next step
 
 - The owner approved CP1–CP3, CP4a and CP4c on 2026-10-24. The current design is locked (constitution I).
 - The owner approved CP4d on 2026-11-01. `edit-layer` waits on the owner for T389 (after CP4b), T396 (smoke test on the deploy preview), and CP4e. T394's upload, tile-reorder, and focal-point e2e land with T389.
 - CP4b is still open, and T389 uploads wait for it.
-- Spec 005 (Ask) was approved on 2026-11-01 with all of AQ1–AQ9 answered (Claude Haiku 5.5, a $20 monthly cap, no question logging), and constitution amendments A1 and A2 are applied. Pure core T400–T403 may run now. Everything visible waits for CP4e.
+- Spec 005 (Ask) was approved on 2026-11-01 with all of AQ1–AQ9 answered (Claude Haiku 5.5, a $20 monthly cap, no question logging), and constitution amendments A1 and A2 are applied. Pure core T400–T403 is merged (#18). T399 content is drafted for the owner's review. Everything visible waits for CP4e.
 
 ## Blockers
 
 - T389 uploads (edit-layer) are blocked until CP4b is approved.
 
 ## Waiting on
+
+- Owner: replace `media-src/site/portrait.png` with the final photo (1440 × 1800) and update `PORTRAIT_ALT` in `site-footer.ts`.
 
 - Owner: CP4b (review the media-pipeline deploy preview, the migration manifest diff and the timings, and answer MQ1–MQ4)
 - Owner: the original cover images for `media-src/<slug>/` (D5)
@@ -100,8 +104,8 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 
 **Spec 005 (Ask)**
 
-- Owner: draft `about.json` and 8–16 suggestion chips with answers (T399). This can start any time.
-- T400–T403 (pure core) are done on `claude/project-thread-vg1394` (2026-11-01): content validators, corpus builder, answer parser, and stream protocol, with unit tests and no UI. They're in a draft PR, and no review is needed until CP4e. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
+- T399 (2026-11-01): `about.json` is the owner's own summary, and `ask.json` has 13 drafted chips built only from the résumé, `site.json`, and project files. Owner: check the wording, and add any personal topics you want answerable to `about.json` (only "How can I reach him?" is in the personal topic now). `npm run content:check` now validates both files.
+- T400–T403 (pure core) merged in #18 (2026-11-01): content validators, corpus builder, answer parser, and stream protocol, with unit tests and no UI. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
 
 **Housekeeping**
 

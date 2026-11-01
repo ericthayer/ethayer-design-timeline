@@ -26,8 +26,8 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). A task is done when its
   - Acceptance: a delete removes the file and the `order.json` entry together; deleting a Swiss card gives a warning, not an error; a slug change is an error; an invalid plan yields no changes · Verify: `npm test -- changes` · Files: `src/content/changes.ts`, `tests/unit/changes.test.ts`
 - [x] **T311** Fold the overlapping assertions in `content.test.ts` and `gallery.test.ts` into "real content has zero validator errors". Keep the file-on-disk checks (FR-314). Drop the FR-220 snapshot. → FR-314, FR-316, FR-318
   - Acceptance: every removed assertion maps to a `RuleId` (listed in the commit body) · Verify: `npm run check` · Files: `tests/unit/content.test.ts`, `tests/unit/gallery.test.ts`
-- [ ] **T312** Remove the migration once `migration.test.ts` has passed in CI on this branch. → FR-315, FR-317
+- [x] **T312** Remove the migration once `migration.test.ts` has passed in CI on this branch. → FR-315, FR-317
   - Acceptance: no references remain (`grep -r migrate-content`) · Verify: `npm run check` · Files: `scripts/migrate-content.ts` (delete), `tests/unit/migration.test.ts` (delete)
-- [ ] **T313** Delete the TS data modules. `projects/index.ts` is the only file left in `src/content/projects/`. → spec §9.5
+- [x] **T313** Delete the TS data modules. `projects/index.ts` is the only file left in `src/content/projects/`. → spec §9.5
   - Acceptance: spec success criteria 1–5 · Verify: `npm run check && npm run build && npm run budgets && npm run e2e` · Files: `src/content/projects/{cobank,threecolts,health-scholars,independent,early-career}.ts` (delete)
 - [x] **CP4a** (approved by the owner, 2026-10-24) Owner reviews the running build (it should look identical), the error versus warning policy (FR-312), the JSON layout and paths (FR-300, FR-308), and spec §10 open questions. `github-publish` and `edit-layer` start only after approval.
