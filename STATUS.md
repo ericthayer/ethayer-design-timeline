@@ -63,6 +63,7 @@ In the order I'd do them. Checked against the repo and production on 2026-10-24.
 Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its own title, canonical, `og:image` and `twitter:image`. (2) `/og/dmns.png` and `/og/home.png` are 1200×630 PNGs. (3) `sitemap.xml` (22 URLs) and `robots.txt` return 200, the seven drafts are absent from the sitemap, and `/work/workbench` is `noindex`. (4) `/work/not-a-project` falls back to the app and lands on `/`. (5) The deep link opens the dialog, and Escape restores the home title, the `/` URL, and focus on the card.
 
 1. An unhandled `InvalidStateError: Transition was aborted because of invalid state` appeared once on production around a deep-linked dialog. Chrome rejects `transition.ready` when it skips a View Transition (for example in a background tab), and `src/core/transition.ts` didn't handle that rejection. Nothing visible breaks. The fix and its unit test shipped in PR #9 (merged).
+1a. Back pressed while a project dialog was still opening left it open at `/` (or `/admin`): the late `show` in the view-transition update ran after the close. `src/main.ts` now drops a stale open after the dialog chunk loads and inside the morph update, with a regression e2e in `tests/e2e/dialog.spec.ts`. This was also the flake in `tests/e2e/admin.spec.ts:161` on PR #17. Fix PR is in review (2026-11-01).
 2. Paste a project URL into Slack, LinkedIn and iMessage, and try LinkedIn's Post Inspector. Use a URL they haven't cached. (Owner)
 
 **Spec 004**
