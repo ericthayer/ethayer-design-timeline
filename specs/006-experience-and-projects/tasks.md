@@ -33,4 +33,12 @@ Nothing below starts until CP6a is approved.
 **Verify**
 
 - [x] **T512** e2e over `/` and `/projects`: switch, deep link, return-to-view, keyboard, axe; budgets. → §4
+**CP6b review fixes (owner, 2026-11-01)**
+
+- [ ] **T513** Résumé dialog fits at 320 px: `minmax(0, 1fr)` column, bar title hidden below 480 px. → FR-533
+- [ ] **T514** Full-width category markers and in-order packing below 900 px. → FR-515
+- [ ] **T515** Split-screen dialog: independent pane scrolling and a resizable separator. → FR-534
+- [ ] **T516** Editorial gallery with figcaptions, and the optional gallery `note`. → FR-535, FR-536
+- [ ] **T517** Unit and e2e tests for T513–T516; budgets. → §4
+
 - [ ] **CP6b** Owner reviews the running build (Projects grid, view switch, footer) at 390, 1280 and 1920 px. Approval locks the new visuals. Baselines need the owner's written OK.

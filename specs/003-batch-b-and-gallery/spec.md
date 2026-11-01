@@ -67,6 +67,7 @@ interface GalleryItem {
 - **FR-214** Layout (CSS grid, `grid-auto-flow: dense`):
   - Desktop (≥ 900 px container): 4 columns, rows `clamp(6rem, 14vw, 11rem)`. `wide` = 2×1, `tall` = 1×2, `feature` = 2×2.
   - Below 600 px: 2 columns. `feature` and `wide` span both columns.
+  - *Amended by spec 006 FR-535 (2026-11-01):* the bento is replaced by an editorial two-column grid of `<figure>`s with captions under the media. FR-212's `<p>` caption becomes a `<figcaption>`.
 - **FR-215** Placeholder tiles zoom 1.35× on their focal point. Tiles clip overflow, and the zoom never reveals a blank edge.
 - **FR-216** Video tiles use `preload="none"` and native controls. They never autoplay, and the motion gate and the dialog gate (FR-034) apply. Vimeo keeps its click-to-load facade (NFR-06).
 - **FR-217** Gallery tiles follow focus rules (FR-016): a visible focus ring on any focusable child (video controls and the Vimeo button).

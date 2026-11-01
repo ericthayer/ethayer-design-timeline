@@ -80,6 +80,13 @@ The project dialog (`/work/:slug`) is shared by both views.
 - **FR-542** The footer uses the existing tokens only (paper panel, ink background, vermilion title). Its layout is new, so it's reviewed at CP6b.
 - **FR-543** The Experience end-cap stays exactly as it is on `main` (001 FR-072, unamended). PR #13's early Education tile is dropped: Education stays in the end-cap and in the résumé (Q4).
 
+### CP6b review fixes (owner, 2026-11-01)
+- **FR-515** Below a 900 px wall width (two and three columns), a category marker spans the whole row and stays one cell tall. Its numerals and padding scale with the cell height (`cqb`), so the tile reads like the square marker stretched into a banner. On those widths the Projects grid packs rows in order (`grid-auto-flow: row`, not `dense`), so no card is pulled above its section's marker. Era markers and the Experience wall are unchanged.
+- **FR-533** Bug fix for the résumé dialog (002 FR-122): nothing overflows at 320 px. The dialog's single column is `minmax(0, 1fr)`, so the bar's buttons can't widen the page, and below 480 px the bar title is hidden (the masthead names Eric right below), so "Print / Save PDF" and "Close" fit.
+- **FR-534** Split-screen project dialog at 900 px and up (amends 001 FR-050): the overview pane and the details pane scroll independently. A vertical separator between them resizes the split by pointer drag or keyboard (`role="separator"`, ←/→ by 4 %, Home/End to the limits). The overview takes 28–60 % of the width, 40 % by default, and the chosen split holds while moving between projects until the page reloads. ←/→ on the separator resize; they don't change project. Below 900 px the panes stack in one scroll, without a separator.
+- **FR-535** Editorial gallery (amends 003 FR-212–FR-217): the dense bento is replaced by a two-column grid of figures in content order. Captions sit under the media as a `figcaption`, never overlaid: the label in bold, then the optional note. `feature` and `wide` take the full row (3:2 and 16:9), `tall` and `sm` take half a row (4:5 and 4:3). Below 600 px it is one column. Focal points still set the crop (`--focal`).
+- **FR-536** Gallery items gain an optional `note` (companion copy, at most 240 characters, rule `text-length`). It explains what the image shows, so the label can stay short.
+
 ### Admin (amends 004 edit-layer)
 - **FR-550** The project form gets a "Categories" fieldset: a required primary `<select>` and an optional secondary `<select>` (which can't equal the primary). It's validated by the shared validator (FR-502).
 - **FR-551** Adding or renaming categories (`src/content/categories.ts`) stays code-only in this spec.
