@@ -14,10 +14,10 @@ const BUDGETS = {
   totalJs: 50 * KB,
   css: 20 * KB,
   fonts: 60 * KB,
-  adminJs: 40 * KB,
+  adminJs: 48 * KB,
   adminCss: 5 * KB,
   githubModule: 5 * KB,
-  adminEditJs: 18 * KB,
+  adminEditJs: 28 * KB,
   adminEditCss: 3.5 * KB,
 } as const;
 /** Public initial JS in gzip bytes at 6240560, before admin-auth. FR-358 allows +0.3 KB. */

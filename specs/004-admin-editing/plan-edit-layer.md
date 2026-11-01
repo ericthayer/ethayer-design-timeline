@@ -49,7 +49,7 @@ Publish ─▶ gate ─▶ publish({ changes, message, expectedHeadSha: base.sha
 ## 3. Order
 
 1. Pure core (T380–T383): draft, media naming, changes builder, issues, copy, preview guard. All unit tested and no DOM.
-2. Plumbing (T384–T385): snapshot and draft store, then `attach()`, re-parenting, the render loop, the chunk rule, and the 18 KB gate. The first visible result is a draft re-rendering the real dialog.
+2. Plumbing (T384–T385): snapshot and draft store, then `attach()`, re-parenting, the render loop, the chunk rule, and the `admin-edit` gate (28 KB since 2026-11-01). The first visible result is a draft re-rendering the real dialog.
 3. Surfaces (T386–T390): toolbar, inline fields, panel, gallery editor, confirm dialogs.
 4. Flows (T391–T392): create and delete, then publish and deploy.
 5. Proof (T393–T396): e2e with the mocked Git Data API, axe, budgets and isolation, and an owner smoke test on a deploy preview → **CP4e**.
@@ -67,7 +67,7 @@ Publish ─▶ gate ─▶ publish({ changes, message, expectedHeadSha: base.sha
 | A same-key replace leaves the old extension behind | Candidate deletes, which github-publish drops when the file is missing. X1 and EQ6 for the clean fix |
 | Draft loss: quota, private mode, two tabs | try/catch, a memory fallback with a warning and `beforeunload`, and the `savedAt` guard against overwriting another tab |
 | A deploy fails after the commit lands on `main` | Clear copy and the log link. The draft base is already the commit, so the owner fixes and publishes again. Revert is EQ7 |
-| Budget creep (five components plus inline editing) | The `admin-edit` chunk is gated at 18 KB from T385 onward and measured in each PR. Shared helpers (`el`, `defineOnce`) are reused |
+| Budget creep (five components plus inline editing) | The `admin-edit` chunk is gated (18 KB from T385, raised to 28 KB by the owner on 2026-11-01) and measured in each PR. Shared helpers (`el`, `defineOnce`) are reused |
 | A 401 in the middle of a publish | The `unauthorized` copy, admin-auth's re-auth dialog, the new session adopted on `admin:signed-in`, the draft kept, and a manual retry |
 
 ## 5. Checkpoints
