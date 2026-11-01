@@ -51,3 +51,8 @@ export {
   define as defineAdminToolbar,
   type ToolbarAction,
 } from './components/admin-toolbar/admin-toolbar.ts';
+export {
+  AdminPanel,
+  define as defineAdminPanel,
+  type PanelContext,
+} from './components/admin-panel/admin-panel.ts';
