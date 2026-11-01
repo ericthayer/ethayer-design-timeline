@@ -20,10 +20,14 @@
       overscroll-behavior: contain;
       scrollbar-width: thin;
     }
+    /* A column, not a grid: grid rows mis-size the aspect-ratio hero in a scroll container */
     .pd .pd__content {
+      display: flex;
+      flex-direction: column;
       max-inline-size: none;
     }
     .pd .pd__content > * {
+      flex-shrink: 0;
       max-inline-size: 72rem;
     }
 

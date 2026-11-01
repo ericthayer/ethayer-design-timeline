@@ -81,6 +81,9 @@ test.describe('split-screen dialog (spec 006, FR-534)', () => {
     await page.goto('/work/cobank-design-system');
     const details = page.getByRole('region', { name: 'Details' });
     const overview = page.getByRole('region', { name: 'Overview' });
+    const hero = await details.locator('.pd__hero').boundingBox();
+    const summary = await details.locator('.pd__summary').boundingBox();
+    expect(hero && summary && summary.y >= hero.y + hero.height).toBe(true);
     await details.evaluate((el) => {
       el.scrollBy(0, 600);
     });
