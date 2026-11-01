@@ -1,0 +1,80 @@
+@layer components {
+  /* Split-screen dialog (spec 006, FR-534): two panes that scroll on their own, and a
+     separator that resizes the overview pane. Below 900 px the panes stack in one scroll. */
+  .pd[open] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pd__split {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .pd .pd__body {
+      grid-template-columns: var(--pd-split, 40%) 0 minmax(0, 1fr);
+      overflow: hidden;
+    }
+    .pd .pd__poster,
+    .pd .pd__content {
+      min-block-size: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+    .pd .pd__content {
+      max-inline-size: none;
+    }
+    .pd .pd__content > * {
+      max-inline-size: 72rem;
+    }
+
+    /* A 24 px hit area centred on the seam (SC 2.5.8), with a grip in the middle */
+    .pd__split {
+      position: relative;
+      z-index: 1;
+      display: block;
+      inline-size: 24px;
+      margin-inline: -12px;
+      cursor: col-resize;
+      touch-action: none;
+    }
+    .pd__split::before {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: calc(50% - 1px);
+      inline-size: 2px;
+      background: var(--ink);
+      opacity: 0.16;
+      transition: opacity var(--dur-2) var(--ease-out);
+    }
+    .pd__split::after {
+      content: '';
+      position: absolute;
+      inset-block-start: calc(50% - 1.5rem);
+      inset-inline-start: calc(50% - 4px);
+      inline-size: 8px;
+      block-size: 3rem;
+      border-radius: 999px;
+      background: var(--ink);
+      box-shadow: 0 0 0 2px var(--paper);
+    }
+    .pd__split:hover::before,
+    .pd__split[data-dragging]::before,
+    .pd__split:focus-visible::before {
+      opacity: 1;
+    }
+    .pd__split:focus-visible {
+      outline: none;
+    }
+    .pd__split:focus-visible::after {
+      background: var(--vermilion-deep);
+      box-shadow:
+        0 0 0 2px var(--paper),
+        0 0 0 4px var(--ink);
+    }
+    .pd__body:has(.pd__split[data-dragging]) {
+      cursor: col-resize;
+      user-select: none;
+    }
+  }
+}
