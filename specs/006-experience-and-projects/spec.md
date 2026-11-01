@@ -118,4 +118,4 @@ The project dialog (`/work/:slug`) is shared by both views.
 ## 7. Checkpoints
 
 - **CP6a**: the owner approves this spec, the category list, and the initial assignment.
-- **CP6b**: the owner reviews the running build (Projects grid, view switch, footer). Approval locks the new visuals. Baselines need the owner's written OK.
+- **CP6b** (approved, 2026-11-01): the owner reviews the running build (Projects grid, view switch, footer). Approval locks the new visuals. Baselines need the owner's written OK.

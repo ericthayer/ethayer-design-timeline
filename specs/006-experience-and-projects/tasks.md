@@ -41,4 +41,4 @@ Nothing below starts until CP6a is approved.
 - [x] **T516** Editorial gallery with figcaptions, and the optional gallery `note`. → FR-535, FR-536
 - [x] **T517** Unit and e2e tests for T513–T516; budgets. → §4
 
-- [ ] **CP6b** Owner reviews the running build (Projects grid, view switch, footer) at 390, 1280 and 1920 px. Approval locks the new visuals. Baselines need the owner's written OK.
+- [x] **CP6b** (approved by the owner on the deploy preview, 2026-11-01, including T513–T517) Owner reviews the running build (Projects grid, view switch, footer) at 390, 1280 and 1920 px. Approval locks the new visuals. Baselines need the owner's written OK.
