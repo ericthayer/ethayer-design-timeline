@@ -5,7 +5,7 @@
 | Status | **Draft (2026-10-25)** |
 | Owner | Eric Thayer |
 | Companions | [spec.md](./spec.md) · [tasks.md](./tasks.md) · [constitution](../constitution.md) |
-| Starts after | Phase 0 any time (AQ6). Phase 1 after CP4e. Phase 2 after CP5b and amendments A1/A2 |
+| Starts after | Phase 0 and T400–T403 now (AQ6 = yes). Phase 1 after CP4e. Phase 2 after CP5b (A1 and A2 approved 2026-11-01) |
 
 ## 1. Components
 
@@ -35,7 +35,7 @@ chip ─▶ ask.json answer ─▶ log (no network)
 typed question ─▶ composer ─▶ POST /api/ask {v, question, history≤6}
    function: rateLimit (Netlify edge) ─▶ origin + caps + sig check ─▶ messages.stream(
        system: [rules, corpus⟨cache_control⟩], messages: history + question,
-       claude-opus-5-5, effort low, max_tokens 2048, fallbacks 'default')
+       claude-haiku-5-5, effort low, max_tokens 2048, text-only history)
    ─▶ NDJSON {text}* {end, reason, sig} | {error, code}
 client: decode ─▶ append textContent to <article aria-busy> ─▶ on end: render.ts segments ─▶ replace with parsed DOM ─▶ status "Answer ready"
 ```
@@ -75,7 +75,7 @@ Mid-conversation system messages aren't needed: the rules don't change per turn.
 4. Phase 3 (T430–T432): WebMCP tools, tests → **CP5d**.
 
 ## 5. Eval set (CP5c)
-`tests/ask-eval/cases.json`, about 40 cases, run by `scripts/ask-eval.ts` against a deploy preview with a real key. Every run spends money (≈ $1 on Opus 5.5), so it runs only when the owner asks.
+`tests/ask-eval/cases.json`, about 40 cases, run by `scripts/ask-eval.ts` against a deploy preview with a real key. Every run spends real money, though only cents on Haiku 5.5, so it still runs only when the owner asks.
 
 | Set | Count | Pass rule (scripted) |
 | --- | --- | --- |
@@ -99,7 +99,7 @@ Eric reads every transcript as well. Scripted checks catch regressions, and his 
 | Prompt cache misses | Deterministic corpus (sorted keys, no timestamps). T427 logs `cache_read_input_tokens` counts to confirm hits |
 
 ## 7. Checkpoints
-- **CP5a** (after T408): the owner reviews the header item and the dialog with chips on a deploy preview at 390, 1280, and 1920 px, and answers AQ5 and AQ9. Visual baselines for the dialog are taken only with the owner's written approval.
+- **CP5a** (after T408): the owner reviews the header item and the dialog with chips on a deploy preview at 390, 1280, and 1920 px, with the header-only entry (AQ5) and the "Ask" label (AQ9) already decided. Visual baselines for the dialog are taken only with the owner's written approval.
 - **CP5b** (after T410): Phase 1 ships to production with chips only.
-- **CP5c** (after T428): the owner approves A1 and A2, sets the workspace spend limit (AQ2), picks the model (AQ1) from the eval transcripts, and turns on `ASK_ENABLED` in production.
+- **CP5c** (after T428): the owner sets the $20 workspace spend limit (AQ2), reads the Claude Haiku 5.5 eval transcripts (AQ1), and turns on `ASK_ENABLED` in production. If Haiku fails the unanswerable or adversarial sets, the owner decides whether to step up to Claude Sonnet 5.5.
 - **CP5d** (after T432): the owner tries the tools with the Model Context Tool Inspector and decides on the origin-trial token (AQ8).

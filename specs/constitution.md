@@ -13,6 +13,7 @@ These rules apply to every spec, plan, task, and commit in this repo. If a spec 
 
 1. Use vanilla TypeScript and Custom Elements in the **light DOM**, shipped as native ES modules. No UI framework runtime.
 2. **Runtime dependencies: zero.** Dev dependencies (build, test, lint, media tooling) are fine.
+   - **Amendment (owner-approved 2026-11-01, spec 005 A1):** the **browser** bundle has zero runtime dependencies. Server functions under `netlify/functions/` may depend on the official `@anthropic-ai/sdk`, pinned to an exact version. Nothing a function imports may reach a browser chunk.
 3. Build DOM with `document.createElement`, `<template>` cloning, and `textContent`. **`innerHTML` is banned**, including for trusted content.
 4. Load heavy, non-critical code (dialog, router) with dynamic `import()`.
 
@@ -52,6 +53,8 @@ TypeScript runs in `strict` mode with `noUncheckedIndexedAccess` and `exactOptio
 ## VII. Security and privacy
 
 A strict CSP with no `unsafe-inline`. Every iframe is sandboxed with minimal `allow`, and `frame-src` is generated from the content data. No third-party trackers. Third-party players (Vimeo) load behind a click-to-load facade.
+
+- **Amendment (owner-approved 2026-11-01, spec 005 A2):** visitor-typed text may be sent to a third party only from a server function, only on an explicit submit, behind a visible notice (005 FR-440), and is never logged by this site (005 FR-441).
 
 ## VIII. Spec-driven workflow
 

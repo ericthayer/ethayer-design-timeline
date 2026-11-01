@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Status | **Draft (2026-10-25)**: plan only, from the owner's request. Awaiting owner review of this spec and the amendments in §9 |
+| Status | **Approved (2026-11-01)**: the owner approved the three-phase plan, amendments A1 and A2, and answered AQ1–AQ9 (§13). Phase 0 and the pure core (T400–T403) may start |
 | Owner | Eric Thayer |
 | Companions | [plan.md](./plan.md) · [tasks.md](./tasks.md) · [002 spec](../002-hero-and-resume/spec.md) (résumé dialog, `/resume` route) · [004 spec-content-json](../004-admin-editing/spec-content-json.md) (validator) · [constitution](../constitution.md) |
-| Sequencing | After 004 `edit-layer` (CP4e) for anything visible. Phase 0 content and the pure core (T400–T403) may run earlier (§10, AQ6) |
+| Sequencing | After 004 `edit-layer` (CP4e) for anything visible. Phase 0 content and the pure core (T400–T403) may run earlier (§10, AQ6 = yes) |
 
 ## 1. Objective
 
@@ -33,14 +33,14 @@ So: one quiet entry point, **Ask**, opens a full-screen dialog in the existing r
 | Option | Verdict | Velocity | Risk | Ongoing cost | Notes |
 | --- | --- | --- | --- | --- | --- |
 | **Static chips** (curated Q&A, no AI) | **Phase 1** | High: content plus one dialog | None: Eric's words only | $0 | Also the fallback and the no-JS `/ask` page |
-| **Netlify Function proxy → Claude API** | **Phase 2** | Medium: one function, one stream protocol | Hallucination, abuse, injection, all bounded by §4–§6 | ≈ $0.02 per answer on Claude Opus 5.5 (§7) | Key stays server-side. Same origin, so CSP is unchanged |
+| **Netlify Function proxy → Claude API** | **Phase 2** | Medium: one function, one stream protocol | Hallucination, abuse, injection, all bounded by §4–§6 | ≈ $0.0006 per answer on Claude Haiku 5.5 (§7, AQ1) | Key stays server-side. Same origin, so CSP is unchanged |
 | **WebMCP** (`document.modelContext`) | **Phase 3, optional** | High: ≈ 1.5 KB of lazy tool glue | Low: read-only tools over public data | $0 (the visitor's agent pays) | Draft spec and Chrome origin trial only (§8). Almost no visitor has an agent calling it today. It's on-brand for "agentic engineering", not a replacement for Phase 2 |
 | **Bring your own key** | **Rejected** | — | Visitors pasting secrets into a portfolio, plus the key would sit in page memory next to third-party iframes | — | No recruiter has a key, or would paste one. It also needs `connect-src https://api.anthropic.com` on the public CSP |
 
 ## 3. Functional requirements
 
 ### Entry point and dialog
-- **FR-400** Entry. One new item, **Ask**, in the header's Contact nav, styled exactly like the existing links (no new color, size, or weight). It is a real link to `/ask`. With JS, the router intercepts it and opens the dialog, like `/resume` (002 FR-122). This is the only change to a locked surface and needs owner approval at **CP5a** (constitution I.1).
+- **FR-400** Entry. One new item, **Ask** (AQ9), in the header's Contact nav, styled exactly like the existing links (no new color, size, or weight). It is a real link to `/ask`. With JS, the router intercepts it and opens the dialog, like `/resume` (002 FR-122). This is the only change to a locked surface and needs owner approval at **CP5a** (constitution I.1).
 - **FR-401** Route. `/ask` is a router route (pattern as `RESUME` in `src/core/router.ts`) and a Netlify rewrite. Closing restores the previous URL, title, and focus on the opener. Deep links open the dialog.
 - **FR-402** Dialog. `<ask-dialog>` is a lazy-loaded, full-screen native modal `<dialog>` that reuses the résumé dialog's bar, type scale, spacing, and theme tokens. It introduces **no new tokens**. It is labeled by a visible `<h2>` ("Ask about Eric").
 - **FR-403** Layout inside the dialog, top to bottom: a one-line notice (FR-440), the conversation log (FR-420), the chip row (FR-410), and the composer (FR-415). The composer stays visible. When it is sticky, the log gets `scroll-padding-block-end` equal to its height so focused content is never hidden under it (SC 2.4.11).
@@ -72,25 +72,25 @@ So: one quiet entry point, **Ask**, opens a full-screen dialog in the existing r
 
 ### Server function (Phase 2)
 - **FR-436** `netlify/functions/ask.ts`, mounted at `/api/ask` through its exported `config.path`. `GET` returns `{ enabled }`. `POST` validates the body (FR-417 shape, ≤ 8 KB, UTF-8, caps per turn: user ≤ 500 chars, assistant ≤ 2,000), checks `Origin` against the site's own origins, builds the request server-side, and streams FR-418 events. The client never sends a system prompt, model, or parameter.
-- **FR-437** Model call (verified against the Claude API docs on 2026-10-25): the official `@anthropic-ai/sdk`, `messages.stream`, model `claude-opus-5-5` (AQ1), `output_config: { effort: 'low' }`, thinking left at its adaptive default (it can't be disabled on this model), `max_tokens: 2048`, and no sampling parameters (they return a 400 since 2026-10-21). The system prompt is two blocks, rules then corpus, with `cache_control: { type: 'ephemeral' }` on the corpus block. Server-side refusal fallback is on (`fallbacks: 'default'`, beta `server-side-fallback-2026-07-01`). `stop_reason: 'refusal'` maps to `error: declined`, and `max_tokens` maps to `end: truncated`.
+- **FR-437** Model call (verified against the Claude API docs on 2026-10-25): the official `@anthropic-ai/sdk`, `messages.stream`, model **`claude-haiku-5-5`** (AQ1, owner decision 2026-11-01), `output_config: { effort: 'low' }`, thinking left at its adaptive default (on by default for this model, and it counts toward `max_tokens`), `max_tokens: 2048`, no sampling parameters (they return a 400), and no assistant prefill (the last message is always the visitor's question). The system prompt is two blocks, rules then corpus, with `cache_control: { type: 'ephemeral' }` on the corpus block. History is sent as plain text turns only, never thinking blocks, so preserved thinking's history-editing check never applies. Content blocks are read by `type`, never by position, because a response can start with a `thinking` block. Haiku 5.5 has **no server-side refusal fallback**, so `stop_reason: 'refusal'` maps to `error: declined` (the client shows the chips), and `max_tokens` maps to `end: truncated`.
 - **FR-438** Signed history. Each `end` event carries `sig = HMAC-SHA256(ASK_SIGNING_KEY, text)` (`node:crypto`). The function drops any assistant turn in `history` whose `sig` doesn't verify, so a client can't forge "previous answers" to steer the model. Chip answers are verified against `ask.json` instead.
 - **FR-439** Secrets and switches, as Netlify environment variables: `ANTHROPIC_API_KEY` (a key in a dedicated workspace, §6), `ASK_SIGNING_KEY`, and `ASK_ENABLED` (`'true'` to serve; anything else makes `GET` return `{ enabled: false }` and `POST` return 503). None is ever exposed to the client or the build output.
 
 ### Privacy and disclosure
 - **FR-440** Notice. Above the composer: "Typed questions are answered by Claude (Anthropic) from this site's content. Answers can be wrong. Don't include personal information." It links to a short privacy note on the static `/ask` page.
-- **FR-441** Logging. The function logs only: timestamp, outcome (`complete | truncated | declined | error code`), input, output, and cache token counts, and latency. **No question text, no answer text, no IP, and no history** are logged or stored by this site (AQ3). Anthropic's API retention applies to the request itself, and the privacy note says so.
+- **FR-441** Logging. The function logs only: timestamp, outcome (`complete | truncated | declined | error code`), input, output, and cache token counts, and latency. **No question text, no answer text, no IP, and no history** are logged or stored by this site (AQ3: no, owner decision 2026-11-01). Anthropic's API retention applies to the request itself, and the privacy note says so.
 - **FR-442** No third-party request leaves the browser. The only new browser request is same-origin `/api/ask`, so `connect-src 'self'` is unchanged.
 
 ### Abuse and cost controls
 - **FR-445** Rate limits, as code-based Netlify rules in the function's `config.rateLimit` (available on every plan; rules can't be set in `netlify.toml` for functions): **8 requests per 60 s per IP and domain** (`aggregateBy: ['ip', 'domain']`). Over the limit, Netlify returns 429, which the client maps to "You're asking quickly. Try again in a minute." Netlify notes enforcement can lag about 10 s.
-- **FR-446** Hard spend cap: a **monthly spend limit on a dedicated Anthropic workspace** set in the Claude Console (AQ2, default $20). When it is hit, the API errors until the 1st of next month, and the function maps that to `over-budget`, after which the client hides the composer for the session.
+- **FR-446** Hard spend cap: a **monthly spend limit on a dedicated Anthropic workspace** set in the Claude Console (AQ2: **$20**, owner decision 2026-11-01). When it is hit, the API errors until the 1st of next month, and the function maps that to `over-budget`, after which the client hides the composer for the session.
 - **FR-447** Per-request bounds: FR-436 input caps, ≤ 6 history turns, `max_tokens` 2048, one model call per request (no tools, no loops). The worst case per request is about 2.1 K output tokens plus a ≈ 15 K token prefix.
 - **FR-448** Kill switch: `ASK_ENABLED=false` takes effect on the next request without a deploy (Netlify env vars are read at invocation).
 
 ### WebMCP (Phase 3)
 - **FR-450** Feature detection. Only when `'modelContext' in document` does main dynamically import `src/webmcp/tools.ts`. Otherwise no bytes load. `navigator.modelContext` (the pre-Chrome-150 name) is not used.
 - **FR-451** Tools registered with `document.modelContext.registerTool`: `list_projects({ era?, topic? })`, `get_project({ slug })`, `get_resume()`, `get_about({ topic? })` (all `annotations.readOnlyHint: true`), and `open_project({ slug })`, which routes to `/work/<slug>`. Data comes from the same bundled content and `about.json` as the corpus, drafts excluded. Inputs are validated against their `inputSchema` before running, and an unknown slug returns an error result.
-- **FR-452** Production use in Chrome needs an origin-trial token, sent as an `Origin-Trial` response header from `netlify.toml` (AQ8). Without one, the tools work only behind `chrome://flags/#enable-webmcp-testing`.
+- **FR-452** Production use in Chrome needs an origin-trial token, sent as an `Origin-Trial` response header from `netlify.toml` (AQ8: flag-only until Phase 3 starts, then decide). Without one, the tools work only behind `chrome://flags/#enable-webmcp-testing`.
 
 ## 4. Grounding strategy
 - **Full-context, not retrieval.** The public corpus is small: 21 public projects plus résumé, site, and eras come to about 7 K tokens today, and `about.json` adds ≤ 3 K. Sending all of it every time (cached) is simpler, cheaper to build, and more accurate than embeddings or search, and it needs no vector store or tools.
@@ -112,19 +112,21 @@ So: one quiet entry point, **Ask**, opens a full-screen dialog in the existing r
 - A **dedicated Anthropic workspace** ("ethayer-site-ask") holds the only key, so the spend limit, rate limits, and usage reports cover this feature alone. The Console doesn't allow a spend limit on the Default workspace, which is another reason for a separate one.
 - Rotation: a new key goes into Netlify's env var, then the old one is revoked in the Console. No deploy needed.
 
-## 7. Cost model (Claude API list prices, 2026-10-25)
+## 7. Cost model (Claude API list prices, 2026-11-01)
 
-| Item | Claude Opus 5.5 ($4 in / $20 out, cache read $0.20, 5-min write $5 per MTok) | Claude Haiku 5.5 ($0.10 / $0.50) |
-| --- | --- | --- |
-| Cached prefix (≈ 12 K tokens), per hit | $0.0024 | ≈ $0.0001 |
-| Cache write (first question in a 5-min window) | $0.060 | ≈ $0.0015 |
-| Question plus history (≈ 1 K tokens) | $0.004 | $0.0001 |
-| Output plus thinking at `low` effort (≈ 650 tokens) | $0.013 | $0.0003 |
-| **Typical answer, warm cache** | **≈ $0.02** | **≈ $0.0005** |
-| A 4-question visit (one write) | ≈ $0.12 | ≈ $0.003 |
-| $20 monthly cap covers | ≈ 160 visits / ≈ 1,000 answers | far more than traffic |
+**Decision (AQ1, 2026-11-01): Claude Haiku 5.5.** Rates for prompts of 100 K tokens or fewer: $0.10 in and $0.50 out per MTok. Cache reads are 0.1× input ($0.01) and 5-minute cache writes 1.25× ($0.125). Haiku 5.5's tokenizer counts about 30% more tokens than older models, so the ≈ 12 K token prefix is budgeted as ≈ 15 K.
 
-The 5-minute cache fits how visitors behave (a few questions in a row). A 1-hour TTL doubles the write price and only pays off above about two questions an hour. Haiku 5.5 is roughly 40× cheaper. The default stays Opus 5.5 because a wrong or ungraceful answer costs Eric more than the API does. AQ1 is Eric's call, and the eval (CP5c) should run on both.
+| Item | Claude Haiku 5.5 |
+| --- | --- |
+| Cached prefix (≈ 15 K tokens), per hit | ≈ $0.00015 |
+| Cache write (first question in a 5-minute window) | ≈ $0.0019 |
+| Question plus history (≈ 1.3 K tokens) | ≈ $0.00013 |
+| Output plus thinking at `low` effort (≈ 650 tokens) | ≈ $0.00033 |
+| **Typical answer, warm cache** | **≈ $0.0006** |
+| A 4-question visit (one write) | ≈ $0.004 |
+| $20 monthly cap covers | ≈ 30,000 answers |
+
+At this price the rate limit (FR-445), not the spend cap, is what bounds abuse. The cap stays as the global stop. The 5-minute cache fits how visitors behave (a few questions in a row). Quality is what Haiku risks, not cost, so the CP5c eval (plan §5) gates launch on Haiku. If it fails the unanswerable or adversarial sets, a step up to Claude Sonnet 5.5 is an owner decision at CP5c.
 
 ## 8. WebMCP status (verified 2026-10-25 from primary sources)
 - The spec is a **Draft Community Group Report of the W3C Web Machine Learning CG, dated 2026-10-20**. It is not a W3C Standard and not on the Standards Track.
@@ -133,8 +135,8 @@ The 5-minute cache fits how visitors behave (a few questions in a row). A 1-hour
 - Conclusion: build it last, keep it small and read-only, and expect the API to change before it ships by default. Sources: [WebMCP draft](https://webmachinelearning.github.io/webmcp/), [Chrome for Developers: WebMCP](https://developer.chrome.com/docs/ai/webmcp).
 
 ## 9. Constitution impact (needs owner approval)
-- **A1 · II.2 "Runtime dependencies: zero."** The function needs `@anthropic-ai/sdk` at runtime on Netlify. Proposed wording: "The **browser** bundle has zero runtime dependencies. Server functions under `netlify/functions/` may depend on the official `@anthropic-ai/sdk`, pinned to an exact version. Nothing a function imports may reach a browser chunk." The alternative, raw `fetch` to the Messages API with a hand-written SSE parser and error typing, is more code to maintain and is what the SDK exists to avoid. **Recommended: approve A1.**
-- **A2 · VII "No third-party trackers."** Sending visitor text to Anthropic is a data processor, not a tracker, but it is a new third-party data flow. Proposed addition: "Visitor-typed text may be sent to a third party only from a server function, only on an explicit submit, behind a visible notice (005 FR-440), and is never logged by this site (FR-441)." **Recommended: approve A2.**
+- **A1 · II.2 "Runtime dependencies: zero."** **Approved and applied to the constitution on 2026-11-01.** The function needs `@anthropic-ai/sdk` at runtime on Netlify. Proposed wording: "The **browser** bundle has zero runtime dependencies. Server functions under `netlify/functions/` may depend on the official `@anthropic-ai/sdk`, pinned to an exact version. Nothing a function imports may reach a browser chunk." The alternative, raw `fetch` to the Messages API with a hand-written SSE parser and error typing, is more code to maintain and is what the SDK exists to avoid. 
+- **A2 · VII "No third-party trackers."** **Approved and applied to the constitution on 2026-11-01.** Sending visitor text to Anthropic is a data processor, not a tracker, but it is a new third-party data flow. Proposed addition: "Visitor-typed text may be sent to a third party only from a server function, only on an explicit submit, behind a visible notice (005 FR-440), and is never logged by this site (FR-441)." 
 - **No CSP change.** `/api/ask` is same-origin (`connect-src 'self'`). The WebMCP origin-trial token is a response header, not a CSP source.
 - **Design lock.** No amendment needed: FR-400 (the header item) and the new dialog go through a normal checkpoint, **CP5a**. The wall, hero, cards, and project dialog are untouched.
 - **Budgets.** Initial JS grows only by the route entry (≤ 0.4 KB gzip). `<ask-dialog>` is a lazy chunk with a ≤ 8 KB gzip gate, inside the 50 KB total. Its CSS is ≤ 2 KB gzip, inside the 20 KB CSS budget. WebMCP is a separate lazy chunk ≤ 2 KB. `T404` records today's headroom first.
@@ -145,9 +147,9 @@ Goal #1 (finish 004 `edit-layer`) stays first. `edit-layer` is blocked on CP4d, 
 | Phase | Content | Starts | Gate |
 | --- | --- | --- | --- |
 | 0 · Content (Eric) | `about.json` draft, 8–16 chips with answers | Any time | Eric's own review |
-| 0 · Pure core | Types, validator rules, corpus builder, render parser, stream protocol (T400–T403) | During the CP4d wait if AQ6 = yes. On a branch, no review asked until CP4e | none |
+| 0 · Pure core | Types, validator rules, corpus builder, render parser, stream protocol (T400–T403) | Now (AQ6 = yes). On a branch, no review asked until CP4e | none |
 | 1 · Ask, static | Header item, `/ask` route, `<ask-dialog>` with chips, static `/ask` page | After CP4e | **CP5a** design, **CP5b** ship |
-| 2 · Ask, Claude | Function, composer, streaming, controls, eval | After CP5b and A1/A2 | **CP5c** eval and ops review before `ASK_ENABLED=true` on production |
+| 2 · Ask, Claude | Function, composer, streaming, controls, eval | After CP5b (A1 and A2 approved 2026-11-01) | **CP5c** eval and ops review before `ASK_ENABLED=true` on production |
 | 3 · WebMCP | Read-only tools, `open_project` | After CP5c, optional | **CP5d** |
 
 Later, the edit-layer can edit `ask.json` and `about.json` from `/admin` (004 lists site and résumé editing as v2). Keeping both in the shared validator now makes that cheap.
@@ -163,13 +165,17 @@ Later, the edit-layer can edit `ask.json` and `about.json` from `/admin` (004 li
 3. The CP5c eval shows zero invented facts on the unanswerable set and zero rendered off-site URLs, and Eric signs off on the transcripts.
 4. With `ASK_ENABLED=false`, or the API failing, the chips still work, and no error reaches the console.
 
-## 13. Open questions
-- **AQ1** Model: Claude Opus 5.5 (default, ≈ $0.02 per answer) or Claude Haiku 5.5 (≈ $0.0005)? Run the eval on both before deciding.
-- **AQ2** Monthly spend limit on the dedicated workspace. Default $20.
-- **AQ3** Log question text (for example 30 days, to improve chips)? Default no.
-- **AQ4** Personal scope: only what is in `about.json` (default), or also an explicit "don't discuss" list in the rules?
-- **AQ5** Entry: the header item only (default), or also a line in the hero footer? The hero is locked under CP2, so that would be a separate approval.
-- **AQ6** Run the pure-core tasks T400–T403 on a branch during the CP4d wait? Default yes. They need no review until CP4e.
-- **AQ7** Approve amendments A1 and A2 (§9)?
-- **AQ8** Register a WebMCP origin-trial token for the production domain, or stay flag-only? Default: flag-only until Phase 3 starts.
-- **AQ9** Label: "Ask" (default) or "Ask about Eric"?
+## 13. Owner decisions (2026-11-01)
+All resolved by the owner on 2026-11-01. The three-phase plan is approved, and bring-your-own-key stays rejected.
+
+| # | Question | Decision |
+| --- | --- | --- |
+| AQ1 | Model | **Claude Haiku 5.5** (`claude-haiku-5-5`). The CP5c eval gates it (§7) |
+| AQ2 | Monthly spend limit on the dedicated workspace | **$20** |
+| AQ3 | Log question text? | **No** (FR-441) |
+| AQ4 | Personal scope | **Default**: only what is in `about.json` |
+| AQ5 | Entry point | **Default**: the header item only. The hero stays untouched |
+| AQ6 | Pure core T400–T403 before CP4e | **Yes**, on a branch, no review asked until CP4e |
+| AQ7 | Amendments A1 and A2 | **Approved**, and applied to the constitution |
+| AQ8 | WebMCP origin-trial token | **Default**: flag-only until Phase 3 starts |
+| AQ9 | Label | **Default**: "Ask" |
