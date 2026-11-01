@@ -56,3 +56,15 @@ export {
   define as defineAdminPanel,
   type PanelContext,
 } from './components/admin-panel/admin-panel.ts';
+export {
+  AdminConfirm,
+  confirmDialog,
+  define as defineAdminConfirm,
+} from './components/admin-confirm/admin-confirm.ts';
+export {
+  type ConfirmSpec,
+  conflictConfirm,
+  deleteConfirm,
+  discardConfirm,
+  warningsConfirm,
+} from './core/editor/confirm.ts';
