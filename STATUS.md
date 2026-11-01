@@ -1,6 +1,6 @@
 ---
 state: active
-updated: 2026-10-27
+updated: 2026-11-01
 updatedBy: claude
 ---
 
@@ -11,12 +11,13 @@ updatedBy: claude
 - PR #8 (release-please and commitlint) was closed unmerged on purpose. Keep using Conventional Commit messages and squash merges. A small tag-on-merge release workflow is undecided (first tag `v1.0.0` or `v0.x`).
 - PR #9, #10 and #11 are merged. #11 added `scripts/smoke-publish.ts`.
 - CP4d smoke publish passed on 2026-11-01 against `ericthayer/admin-sandbox`: create (JSON + image), update and delete each made one commit, JSON read-backs matched with UTF-8 intact, the `sha: null` delete worked, and deploy status read `queued → unknown: timeout`.
+- `edit-layer` is in progress on draft PR #17 (branch `claude/project-thread-4ihu6o`): T380–T385 are done (pure core, snapshot and draft store, `attach()` and the `admin-edit` chunk). Public `dist/` is byte-identical to main; admin JS is 27.0 / 40 KB, `admin-edit` 5.9 / 18 KB.
 - The PR #5 post-deploy smoke test passed on production on 2026-10-24 (steps 1–5). It turned up one console error, now follow-up 1.
 
 ## Next step
 
 - The owner approved CP1–CP3, CP4a and CP4c on 2026-10-24. The current design is locked (constitution I).
-- The owner approved CP4d on 2026-11-01. `edit-layer` (T380+) can start, on a branch from `origin/main`.
+- The owner approved CP4d on 2026-11-01. `edit-layer` continues at T386 (`<admin-toolbar>`) on PR #17, then T387, T388, T390–T395. T396 and CP4e need the owner.
 - CP4b is still open, and T389 uploads wait for it.
 
 ## Blockers
@@ -68,7 +69,7 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 
 3. Owner sign-off on CP4b. (CP4a and CP4c were approved on 2026-10-24, CP4d on 2026-11-01.)
    - Open from CP4d: Netlify's commit status context on the real site (FR-375) and an image read-back in the smoke script. Verify both on the first real publish.
-4. `edit-layer` (T380–T396), on a branch from `origin/main`. T389 uploads also wait for CP4b.
+4. `edit-layer` (T380–T396) on PR #17. T380–T385 done. T389 uploads wait for CP4b.
 5. `content-json` T312 and T313: delete the old TS project modules once the migration test has passed in CI.
 6. Media T327–T329: collect the Netlify plugin cache and CI cache evidence.
 7. Per-module budget baselines. The admin isolation WARN reports +565 B against FR-358's +307 B.
