@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | **Draft (2026-10-25)**: from the owner's request. Awaiting the owner's review (CP6a). No code until it's approved |
+| Status | **Approved (CP6a, 2026-11-01)**: the owner answered Q1–Q5 (§6) |
 | Owner | Eric Thayer |
 | Amends | [001 spec](../001-timeline-wall/spec.md) FR-072 (end-cap stays as is, contact moves to a footer) · [004 content-json](../004-admin-editing/spec-content-json.md) (new `categories` field) · [004 edit-layer](../004-admin-editing/spec-edit-layer.md) (the editor gets a categories control) |
 | Supersedes | T078 / PR #13 (Education tile near the start and a contact end-cap). It's on hold, and its portrait work moves into the footer here |
@@ -76,7 +76,7 @@ The project dialog (`/work/:slug`) is shared by both views.
 
 ### Contact footer
 - **FR-540** A new `<site-footer>` component, rendered once after `<main>` on both views (not a grid item). On the left: an `h2` "Let's talk", one line of copy, and the links Résumé, LinkedIn, GitHub, and Email from `site.json`. On the right: Eric's portrait.
-- **FR-541** The portrait goes through the media pipeline (`media-src/site/portrait.<ext>`): AVIF and WebP, `loading="lazy"`, intrinsic size, descriptive alt text. Which photo is Q3.
+- **FR-541** The portrait goes through the media pipeline (`media-src/site/portrait.png`): AVIF and WebP, `loading="lazy"`, intrinsic size, descriptive alt text. It ships as a **placeholder** at the recommended source size, 1440 × 1800 px (4:5), so the pipeline emits all three widths (480, 960, 1440). The owner replaces the file with the final photo later, and only the alt text (`PORTRAIT_ALT` in `site-footer`) changes with it (Q3).
 - **FR-542** The footer uses the existing tokens only (paper panel, ink background, vermilion title). Its layout is new, so it's reviewed at CP6b.
 - **FR-543** The Experience end-cap stays exactly as it is on `main` (001 FR-072, unamended). PR #13's early Education tile is dropped: Education stays in the end-cap and in the résumé (Q4).
 
@@ -98,15 +98,15 @@ The project dialog (`/work/:slug`) is shared by both views.
 - New Swiss motifs or new themes.
 - Editing `categories.json` from `/admin`.
 
-## 6. Open questions for the owner
+## 6. Owner decisions (2026-11-01)
 
-| # | Question | Default if unanswered |
+| # | Question | Answer |
 | --- | --- | --- |
-| Q1 | Are these five categories and labels right? | The five in FR-500 |
-| Q2 | Should `/` stay Experience, or should Projects become the home page? | Experience stays `/` until CP6b |
-| Q3 | Which portrait goes in the footer: the B&W boat photo or the balloon photo? The balloon file is a 640×480 GIF, so a full-size original would be needed to look sharp. | The boat photo |
-| Q4 | Drop the early Education tile from PR #13? | Drop it |
-| Q5 | Should the footer copy be "Let's talk" plus one line, or do you want to write it? | Draft copy at CP6b, marked as a draft |
+| Q1 | Are these five categories and labels right? | Yes, the five in FR-500 |
+| Q2 | Should `/` stay Experience, or should Projects become the home page? | Experience stays `/` |
+| Q3 | Which portrait goes in the footer? | A placeholder at the recommended size. The owner uploads the final photo later |
+| Q4 | Drop the early Education tile from PR #13? | Yes, drop it |
+| Q5 | Who writes the footer copy? | Claude drafts it, reviewed at CP6b |
 
 ## 7. Checkpoints
 

@@ -3,7 +3,7 @@
 Legend as in [001 tasks](../001-timeline-wall/tasks.md). Each task is done when `npm run check` passes. UI tasks also need `npm run budgets` and `npm run e2e`.
 
 - [x] **T500** Spec 006, plan and tasks written from the owner's 2026-10-25 request. → §1–§7
-- [ ] **CP6a** Owner approves the spec, the category list (Q1) and the initial assignment (plan §3), and answers Q2–Q5.
+- [x] **CP6a** (approved by the owner, 2026-11-01) Owner approves the spec, the category list (Q1) and the initial assignment (plan §3), and answers Q2–Q5.
 
 Nothing below starts until CP6a is approved.
 
@@ -23,8 +23,8 @@ Nothing below starts until CP6a is approved.
 
 **Footer**
 
-- [ ] **T509** `site-footer` component, portrait through the media pipeline, draft copy, on both views. → FR-540–FR-542
-- [ ] **T510** Close PR #13 and remove its T078 changes from the branch history it shares, so the Experience end-cap is unchanged (FR-543).
+- [ ] **T509** `site-footer` component, portrait through the media pipeline, draft copy, placeholder portrait at 1440 × 1800, on both views. → FR-540–FR-542
+- [x] **T510** Revert the T078 prototype commits on the PR #13 branch, so the Experience end-cap is unchanged (FR-543). PR #13 carries spec 006 instead.
 
 **Admin**
 
