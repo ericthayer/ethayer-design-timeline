@@ -4,6 +4,8 @@ import type { ProjectDialog } from '../../components/project-dialog/project-dial
 import type { AdminSession } from '../../core/auth/session.ts';
 import { DraftStore } from './draft-store.ts';
 import { EditLayer } from './edit-layer.ts';
+import { ToolbarController } from './toolbar-wiring.ts';
+import { Validation } from './validation.ts';
 
 /** main's instance comes from the public graph, so it is checked by shape, not `instanceof`. */
 const isDialogHost = (node: HTMLElement): node is ProjectDialog =>
@@ -24,8 +26,15 @@ async function findDialog(): Promise<{ host: ProjectDialog; modal: HTMLDialogEle
   return { host, modal };
 }
 
+/** The editor's parts, so later surfaces (panel, dialogs, publish) can reach each other. */
+export interface Editor {
+  readonly layer: EditLayer;
+  readonly validation: Validation;
+  readonly toolbar: ToolbarController;
+}
+
 /** The entry point admin-auth calls after the public app boots (FR-380). */
-export async function attach(session: AdminSession): Promise<EditLayer> {
+export async function attach(session: AdminSession): Promise<Editor> {
   let layer: EditLayer | null = null;
   const store = await DraftStore.open({ onProblem: (p) => layer?.storeProblem(p) });
   const { host, modal } = await findDialog();
@@ -35,6 +44,8 @@ export async function attach(session: AdminSession): Promise<EditLayer> {
   document.addEventListener('admin:signed-in', (event) => {
     attached.session = event.detail;
   });
+  const validation = new Validation(layer);
+  const toolbar = new ToolbarController(layer, validation);
   if (modal.open) layer.sync();
-  return layer;
+  return { layer, validation, toolbar };
 }

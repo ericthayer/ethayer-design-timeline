@@ -1,0 +1,92 @@
+/* Repeats the site's layer order: admin CSS may load before the site's (spec 004 admin-auth). */
+@layer reset, tokens, base, components, utilities;
+
+/* <admin-toolbar> inside the island (spec 004 edit-layer FR-396, FR-399). Theme tokens only. */
+@layer components {
+  admin-toolbar {
+    display: flex;
+    flex: 1 1 100%;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .atb__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .atb__line {
+    flex: 1 1 12rem;
+    font-weight: var(--weight-meta);
+  }
+  .atb__btn {
+    min-block-size: 32px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--stone);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  .atb__btn:hover {
+    border-color: var(--paper);
+  }
+  .atb__btn[aria-pressed='true'],
+  .atb__btn--primary {
+    border-color: var(--paper);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .atb__btn[aria-disabled='true'] {
+    border-style: dashed;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  .atb__deploy,
+  .atb__drafts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+  }
+  .atb__deploy[hidden],
+  .atb__drafts[hidden],
+  .atb__issues[hidden] {
+    display: none;
+  }
+  .atb__badge {
+    padding: 0 var(--space-2);
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-weight: var(--weight-meta);
+  }
+  .atb__deploy a,
+  .atb__drafts a {
+    color: inherit;
+  }
+  .atb__issues {
+    max-block-size: 40vh;
+    overflow: auto;
+  }
+  .atb__issues ul {
+    display: grid;
+    gap: var(--space-1);
+    padding: 0;
+    list-style: none;
+  }
+  .atb__issue {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  .atb__alert:empty {
+    display: none;
+  }
+  .atb__alert {
+    font-weight: var(--weight-meta);
+  }
+}

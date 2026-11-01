@@ -45,3 +45,9 @@ export {
   buildIsland,
   define as defineAdminStatus,
 } from './components/admin-status/admin-status.ts';
+export {
+  AdminToolbar,
+  PANEL_ID,
+  define as defineAdminToolbar,
+  type ToolbarAction,
+} from './components/admin-toolbar/admin-toolbar.ts';
