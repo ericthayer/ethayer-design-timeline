@@ -2,6 +2,7 @@ import type { Issue } from '../../content/validate/index.ts';
 import { defineOnce, el } from '../../core/dom.ts';
 import { placeIssues } from '../../core/editor/issues.ts';
 import { type PanelContext, card, danger, identity, notice, order } from './panel-fields.ts';
+import { categories } from './panel-categories.ts';
 import { links, metrics } from './panel-lists.ts';
 import { cardMedia } from './panel-media.ts';
 import { tileSection } from './panel-tile.ts';
@@ -90,6 +91,7 @@ export class AdminPanel extends HTMLElement {
       ...(tile ? [tile] : []),
       cardMedia(ctx, this.previewValid),
       identity(ctx),
+      categories(ctx),
       card(ctx),
       order(ctx),
       links(ctx),

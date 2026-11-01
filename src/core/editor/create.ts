@@ -1,6 +1,7 @@
 // New project defaults and slug checks (spec 004 edit-layer FR-393). Pure.
 import { CONTENT_FILES, projectFile } from '../../content/paths.ts';
 import { MOTIFS } from '../../content/motifs.ts';
+import type { CategoryId } from '../../content/categories.ts';
 import type { Era, EraId, Project, ProjectOrder, YearMonth } from '../../content/types.ts';
 import type { Draft, EditableProject } from './draft.ts';
 
@@ -11,6 +12,8 @@ export interface CreateFields {
   readonly slug: string;
   readonly title: string;
   readonly era: Era;
+  /** The primary category (006 FR-501); a secondary is set in the panel. */
+  readonly category: CategoryId;
   readonly client: string;
   readonly role: string;
 }
@@ -52,6 +55,7 @@ export function newProject(
     client: fields.client,
     era: fields.era.id,
     engagement: fields.era.engagement,
+    categories: [fields.category],
     role: fields.role,
     period: { start: thisMonth(now), end: 'present' },
     size: 'sm',

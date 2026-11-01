@@ -58,6 +58,23 @@ describe('card settings panel (FR-388)', () => {
     expect(document.activeElement).toBe(after);
   });
 
+  it('sets the primary and secondary categories, never the same one twice (006 FR-550)', () => {
+    const { panel, layer } = mount();
+    const pick = (key: string, value: string): void => {
+      const select = control(panel, key, HTMLSelectElement);
+      select.value = value;
+      select.dispatchEvent(new Event('change'));
+    };
+    pick('cat-2', 'motion-media');
+    expect(layer.draft?.working.categories).toEqual(['design-systems', 'motion-media']);
+    const secondary = control(panel, 'cat-2', HTMLSelectElement);
+    expect([...secondary.options].map((o) => o.value)).not.toContain('design-systems');
+    pick('cat-1', 'motion-media');
+    expect(layer.draft?.working.categories).toEqual(['motion-media']);
+    pick('cat-2', 'none');
+    expect(layer.draft?.working.categories).toEqual(['motion-media']);
+  });
+
   it('keeps the last valid preview and shows the error for an invalid size × media', () => {
     const { panel, layer, modal } = mount();
     const title = modal.querySelector('#pd-title')?.textContent;

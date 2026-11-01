@@ -10,6 +10,7 @@ export function demoProject(overrides: Partial<EditableProject> = {}): EditableP
     client: 'Demo Co',
     era: 'cobank',
     engagement: 'full-time',
+    categories: ['design-systems'],
     role: 'Engineer',
     period: { start: '2024-01', end: 'present' },
     theme: 'paper-ink',

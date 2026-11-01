@@ -7,6 +7,7 @@ import type {
   Layout,
   MotifName,
   Period,
+  Project,
   ProjectOrder,
   Size,
   ThemeName,
@@ -52,6 +53,8 @@ export interface SettingsPatch {
   readonly motif?: MotifName;
   readonly seed?: number | null;
   readonly media?: AnyCardMedia;
+  /** Primary first, then an optional secondary (006 FR-501). */
+  readonly categories?: Project['categories'];
   /** The content `draft` flag ("Show the Draft copy notice"). */
   readonly draft?: boolean;
 }

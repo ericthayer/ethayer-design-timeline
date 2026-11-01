@@ -18,7 +18,14 @@ import { SHA } from './fixtures.ts';
 
 const CTX: EditorContext = { frameOrigins: [], images: {}, videoKeys: new Set() };
 const cobank = ERAS.find((e) => e.id === 'cobank') ?? ERAS[0];
-const fields = { slug: 'acme', title: 'Acme portal', era: cobank, client: 'Acme', role: 'Lead' };
+const fields = {
+  slug: 'acme',
+  title: 'Acme portal',
+  era: cobank,
+  category: 'product-design',
+  client: 'Acme',
+  role: 'Lead',
+} as const;
 const ORDER = { cobank: ['demo', 'swiss-one', 'p2', 'p3'] };
 
 describe('slugProblem (FR-393)', () => {
@@ -43,6 +50,7 @@ describe('newProject defaults (FR-393)', () => {
     expect(p).toMatchObject({
       slug: 'acme',
       engagement: cobank.engagement,
+      categories: ['product-design'],
       period: { start: '2026-11', end: 'present' },
       size: 'sm',
       treatment: 'standard',

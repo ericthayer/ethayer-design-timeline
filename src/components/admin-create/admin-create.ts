@@ -1,3 +1,4 @@
+import { CATEGORIES } from '../../content/categories.ts';
 import type { Era } from '../../content/types.ts';
 import { defineOnce, el } from '../../core/dom.ts';
 import type { CreateFields } from '../../core/editor/create.ts';
@@ -92,6 +93,8 @@ export class AdminCreate extends HTMLElement {
     };
     const era = el('select');
     for (const e of this.eras) era.append(el('option', { value: e.id }, [e.label]));
+    const category = el('select');
+    for (const c of CATEGORIES) category.append(el('option', { value: c.id }, [c.label]));
     const cancel = el('button', { type: 'button', class: 'adc__btn' }, ['Cancel']);
     cancel.addEventListener('click', () => {
       this.dialog.close();
@@ -101,6 +104,7 @@ export class AdminCreate extends HTMLElement {
       this.field('slug', 'Slug', mono(text()), 'Its URL: lowercase words joined by hyphens.'),
       this.field('title', 'Title', text()),
       this.field('era', 'Era', era, 'The engagement comes from the era.'),
+      this.field('category', 'Category', category, 'Its section on Projects.'),
       this.field('client', 'Client', text()),
       this.field('role', 'Role', text()),
       el('div', { class: 'adc__actions' }, [
@@ -139,11 +143,13 @@ export class AdminCreate extends HTMLElement {
       return;
     }
     const era = this.eras.find((e) => e.id === this.value('era'));
-    if (!era) return;
+    const category = CATEGORIES.find((c) => c.id === this.value('category'));
+    if (!era || !category) return;
     const detail: CreateFields = {
       slug: this.value('slug'),
       title: this.value('title'),
       era,
+      category: category.id,
       client: this.value('client'),
       role: this.value('role'),
     };
