@@ -3,7 +3,12 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ERAS } from '../../src/content/eras.ts';
 import { PROJECTS } from '../../src/content/projects/index.ts';
-import { HOME_DESCRIPTION, HOME_TITLE, projectTitle } from '../../src/content/site.ts';
+import {
+  HOME_DESCRIPTION,
+  HOME_TITLE,
+  PROJECTS_TITLE,
+  projectTitle,
+} from '../../src/content/site.ts';
 import type { Project } from '../../src/content/types.ts';
 import { Raw, esc, html } from '../../scripts/lib/html.ts';
 import { FALLBACK_ORIGIN, resolveOrigin } from '../../scripts/lib/origin.ts';
@@ -75,10 +80,15 @@ describe('site origin (FR-132)', () => {
 });
 
 describe('page model', () => {
-  it('builds the home page and one page per project, in timeline order', () => {
-    expect(pages).toHaveLength(PROJECTS.length + 1);
+  it('builds the home page, the Projects page, and one page per project, in timeline order', () => {
+    expect(pages).toHaveLength(PROJECTS.length + 2);
     expect(home.route).toBe('/');
     expect(home.file).toBe('index.html');
+    expect(pages[1]).toMatchObject({
+      route: '/projects',
+      file: 'projects.html',
+      meta: { title: PROJECTS_TITLE, image: '/og/projects.png', noindex: false },
+    });
     expect(new Set(pages.map((p) => p.route)).size).toBe(pages.length);
     for (const project of PROJECTS) {
       const page = pageFor(project.slug);
@@ -158,9 +168,18 @@ describe('head tags (FR-131)', () => {
       summary: 'A $& B',
     };
     const trickyPages = buildPages({ projects: [tricky], eras: ERAS, manifest });
-    const out2 = applyPage(shell, trickyPages[1] as Page, ORIGIN);
+    const out2 = applyPage(shell, trickyPages[2] as Page, ORIGIN);
     expect(out2).toContain('<title>Cost $&amp; $1 $&#39; $$ — Eric Thayer</title>');
     expect(out2).toContain('content="A $&amp; B"');
+  });
+
+  it('marks Projects as the current view on its page only (spec 006 FR-520, FR-522)', () => {
+    const out = applyPage(shell, pages[1] as Page, ORIGIN);
+    expect(out).toContain('data-view="projects" aria-current="page"');
+    expect(out).not.toContain('data-view="experience" aria-current="page"');
+    expect(out).toContain('data-view-only="experience" hidden');
+    expect(out).toContain('id="static-category-design-systems"');
+    expect(applyPage(shell, home, ORIGIN)).toContain('data-view="experience" aria-current="page"');
   });
 
   it('fails loudly when the shell changes shape', () => {
@@ -237,7 +256,8 @@ describe('sitemap, robots, redirects (FR-130)', () => {
     const xml = renderSitemap(pages, ORIGIN);
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(locs).toContain('https://example.test/');
-    expect(locs).toHaveLength(1 + PROJECTS.filter((p) => !p.draft).length);
+    expect(locs).toContain('https://example.test/projects');
+    expect(locs).toHaveLength(2 + PROJECTS.filter((p) => !p.draft).length);
     for (const project of PROJECTS) {
       expect(locs.includes(`https://example.test/work/${project.slug}`), project.slug).toBe(
         !project.draft,
@@ -249,8 +269,9 @@ describe('sitemap, robots, redirects (FR-130)', () => {
     expect(renderRobots(ORIGIN)).toContain('Sitemap: https://example.test/sitemap.xml');
   });
 
-  it('forces one rewrite per project page', () => {
-    const lines = renderRedirects(pages).trim().split('\n');
+  it('forces one rewrite for Projects and one per project page', () => {
+    const [projects, ...lines] = renderRedirects(pages).trim().split('\n');
+    expect(projects).toBe('/projects /projects.html 200!');
     expect(lines).toHaveLength(PROJECTS.length);
     for (const line of lines) {
       expect(line).toMatch(/^\/work\/([a-z0-9-]+) \/work\/\1\.html 200!$/);

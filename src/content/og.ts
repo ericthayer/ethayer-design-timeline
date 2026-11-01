@@ -4,6 +4,7 @@
  * this without a compiler, so no enums or parameter properties.
  */
 import { hashSeed, indexNumerals, yearRange } from '../core/format.ts';
+import { CATEGORIES } from './categories.ts';
 import { SITE } from './site.ts';
 import type { Layout, MotifName, Project, ThemeName } from './types.ts';
 
@@ -13,6 +14,7 @@ export const OG_SIZE = { width: 1200, height: 630 } as const;
 export const OG_VERSION = 1;
 
 export const HOME_OG_SLUG = 'home';
+export const PROJECTS_OG_SLUG = 'projects';
 
 /** A project poster draws a Swiss motif; the home card draws the hero's triangle cascade. */
 export type OgArt =
@@ -50,6 +52,19 @@ export function homeOgCard(): OgCard {
   };
 }
 
+/** The Projects view's card (spec 006, FR-523): the home poster, titled by view. */
+export function projectsOgCard(): OgCard {
+  const home = homeOgCard();
+  return {
+    ...home,
+    slug: PROJECTS_OG_SLUG,
+    kicker: SITE.name,
+    title: 'Projects',
+    tracks: CATEGORIES.slice(0, 3).map((category) => category.label),
+    alt: `Projects by ${SITE.name}, grouped by kind of work. Poster with a cascade of overlapping triangles.`,
+  };
+}
+
 export function ogCardFor(project: Project): OgCard {
   const [first, second] = indexNumerals(project.period);
   const years = yearRange(project.period);
@@ -73,9 +88,9 @@ export function ogCardFor(project: Project): OgCard {
   };
 }
 
-/** The home card first, then one per project. */
+/** The home and Projects cards first, then one per project. */
 export function ogCards(projects: readonly Project[]): OgCard[] {
-  return [homeOgCard(), ...projects.map(ogCardFor)];
+  return [homeOgCard(), projectsOgCard(), ...projects.map(ogCardFor)];
 }
 
 /** Change detector for committed images: an 8-digit hex digest of everything the card renders. */

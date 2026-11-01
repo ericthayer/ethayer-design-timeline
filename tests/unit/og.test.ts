@@ -19,9 +19,10 @@ const cards = ogCards(PROJECTS);
 const fileFor = (slug: string): string => `public${ogImagePath(slug)}`;
 
 describe('card data', () => {
-  it('has the home card first, then one card per project, with unique slugs', () => {
-    expect(cards).toHaveLength(PROJECTS.length + 1);
+  it('has the home and Projects cards first, then one card per project, with unique slugs', () => {
+    expect(cards).toHaveLength(PROJECTS.length + 2);
     expect(cards[0]?.slug).toBe(HOME_OG_SLUG);
+    expect(cards[1]?.slug).toBe('projects');
     expect(new Set(cards.map((card) => card.slug)).size).toBe(cards.length);
   });
 

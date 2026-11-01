@@ -25,13 +25,25 @@ export {
   TimelineWall,
   define as defineTimelineWall,
 } from './components/timeline-wall/timeline-wall.ts';
-export { renderEndCap, renderEra } from './components/wall-tiles/wall-tiles.ts';
+export {
+  ViewSwitch,
+  define as defineViewSwitch,
+} from './components/view-switch/view-switch.ts';
+export { renderCategory, renderEndCap, renderEra } from './components/wall-tiles/wall-tiles.ts';
 export { renderHero, renderHeroArt } from './components/site-hero/site-hero.ts';
 export { renderPlaceholder } from './components/card-media/placeholder.ts';
 export { MediaScheduler, getScheduler, type MediaLease } from './core/media-scheduler.ts';
 export { Motion, getMotion } from './core/motion.ts';
-export { buildWallItems, projectSequence } from './core/order.ts';
-export { Router, isResumePath, parseSlug } from './core/router.ts';
+export { buildCategoryItems, buildWallItems, projectSequence } from './core/order.ts';
+export {
+  Router,
+  VIEW_PATHS,
+  isResumePath,
+  parseSlug,
+  viewOfPath,
+  type ViewId,
+} from './core/router.ts';
+export { CATEGORIES, CATEGORY_IDS, type Category, type CategoryId } from './content/categories.ts';
 export { cascade } from './core/cascade.ts';
 export { RESUME } from './content/resume.ts';
 export type * from './content/types.ts';

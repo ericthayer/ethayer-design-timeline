@@ -6,8 +6,10 @@ import { HOME_OG_SLUG, OG_SIZE, homeOgCard, ogCardFor, ogImagePath } from '../..
 import { HOME_DESCRIPTION, HOME_TITLE, SITE, projectTitle } from '../../src/content/site.ts';
 import type { Era, ImageMedia, Project, WallItem } from '../../src/content/types.ts';
 import { yearRange } from '../../src/core/format.ts';
-import { buildWallItems, projectSequence } from '../../src/core/order.ts';
+import { CATEGORIES } from '../../src/content/categories.ts';
+import { buildCategoryItems, buildWallItems, projectSequence } from '../../src/core/order.ts';
 import { Raw, esc, html } from './html.ts';
+import { projectsPage } from './projects-page.ts';
 
 export interface MediaManifestEntry {
   readonly width: number;
@@ -200,7 +202,7 @@ function projectBody(project: Project, near: Neighbors, manifest: MediaManifest)
   </div>`.value;
 }
 
-/** Home first, then one page per project in timeline order. */
+/** Home, then Projects (spec 006), then one page per project in timeline order. */
 export function buildPages(input: BuildInput): Page[] {
   const items = buildWallItems(input.projects, input.eras);
   const sequence = projectSequence(items);
@@ -232,7 +234,11 @@ export function buildPages(input: BuildInput): Page[] {
       input.manifest,
     ),
   }));
-  return [home, ...projects];
+  const byCategory = projectsPage(
+    buildCategoryItems(input.projects, input.eras, CATEGORIES),
+    NOTE.replace('timeline', 'projects page'),
+  );
+  return [home, byCategory, ...projects];
 }
 
 /** Canonical, robots, Open Graph, and Twitter tags for one page (FR-131). */
@@ -288,7 +294,29 @@ export function applyPage(shell: string, page: Page, origin: string): string {
     '<noscript>',
   );
   out = swapOnce(out, /\s*<\/head>/, `\n${renderHeadTags(page, origin)}\n  </head>`, '</head>');
-  return out;
+  return page.route === '/projects' ? markProjectsView(out) : out;
+}
+
+/** The static header names Experience as current; the Projects page names itself (FR-520, FR-522). */
+function markProjectsView(shell: string): string {
+  let out = swapOnce(
+    shell,
+    /data-view="experience" aria-current="page"/,
+    'data-view="experience"',
+    'current Experience link',
+  );
+  out = swapOnce(
+    out,
+    /data-view="projects"/,
+    'data-view="projects" aria-current="page"',
+    'Projects link',
+  );
+  return swapOnce(
+    out,
+    /data-view-only="experience"/,
+    'data-view-only="experience" hidden',
+    'end skip link',
+  );
 }
 
 const loc = (page: Page, origin: string): string => `${origin}${page.route}`;

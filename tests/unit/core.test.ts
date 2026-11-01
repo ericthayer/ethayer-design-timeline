@@ -16,6 +16,7 @@ import {
   Router,
   routerBase,
   type RouterHandlers,
+  viewOfPath,
 } from '../../src/core/router.ts';
 import { nextIndex, type Box } from '../../src/core/spatial-nav.ts';
 import { normalizeWheelDelta, shouldRemap, wallOwnsWheel } from '../../src/core/wheel.ts';
@@ -123,6 +124,7 @@ describe('router', () => {
 describe('router /admin base (spec 004 FR-342)', () => {
   const calls: string[] = [];
   const handlers: RouterHandlers = {
+    onView: () => undefined,
     onOpen: (slug) => calls.push(`open:${slug}`),
     onResume: () => calls.push('resume'),
     onClose: () => calls.push('close'),
@@ -182,6 +184,60 @@ describe('router /admin base (spec 004 FR-342)', () => {
     at('/admin/work/dmns');
     router.sync();
     expect(calls).toEqual(['close']);
+  });
+});
+
+describe('router views (spec 006 FR-521, FR-530)', () => {
+  const calls: string[] = [];
+  const handlers: RouterHandlers = {
+    onView: (view) => calls.push(`view:${view}`),
+    onOpen: (slug) => calls.push(`open:${slug}`),
+    onResume: () => calls.push('resume'),
+    onClose: () => calls.push('close'),
+  };
+  const at = (path: string, state: unknown = null): void => {
+    history.replaceState(state, '', path);
+    calls.length = 0;
+  };
+
+  it('maps paths to views; dialog routes keep the current one', () => {
+    expect(viewOfPath('/')).toBe('experience');
+    expect(viewOfPath('/projects')).toBe('projects');
+    expect(viewOfPath('/projects/')).toBe('projects');
+    expect(viewOfPath('/work/dmns')).toBeNull();
+    expect(viewOfPath('/projectsx')).toBeNull();
+  });
+
+  it('syncs the view before the dialog, from the URL or the history state', () => {
+    const router = new Router(handlers, '');
+    at('/projects');
+    router.sync();
+    expect(calls).toEqual(['view:projects', 'close']);
+    at('/work/dmns', { path: '/work/dmns', pushedByApp: true, view: 'projects' });
+    router.sync();
+    expect(calls).toEqual(['view:projects', 'open:dmns']);
+    at('/work/dmns');
+    router.sync();
+    expect(calls).toEqual(['view:experience', 'open:dmns']);
+  });
+
+  it('navigates between views and closes a deep link back to the current view', () => {
+    const router = new Router(handlers, '');
+    at('/');
+    router.sync();
+    router.navigate('projects');
+    expect(location.pathname).toBe('/projects');
+    expect(router.view).toBe('projects');
+    router.open('dmns');
+    expect(history.state).toMatchObject({ view: 'projects' });
+    at('/work/dmns');
+    router.close();
+    expect(location.pathname).toBe('/projects');
+    const admin = new Router(handlers, '/admin');
+    at('/admin');
+    admin.sync();
+    admin.navigate('projects');
+    expect(location.pathname).toBe('/admin/projects');
   });
 });
 

@@ -13,7 +13,14 @@ import {
   define as defineArtwork,
   SwissArtwork,
 } from '../src/components/swiss-artwork/swiss-artwork.ts';
-import { HOME_OG_SLUG, homeOgCard, ogCardFor, type OgCard } from '../src/content/og.ts';
+import {
+  HOME_OG_SLUG,
+  PROJECTS_OG_SLUG,
+  homeOgCard,
+  ogCardFor,
+  projectsOgCard,
+  type OgCard,
+} from '../src/content/og.ts';
 import { PROJECTS } from '../src/content/projects/index.ts';
 import { el } from '../src/core/dom.ts';
 
@@ -22,6 +29,7 @@ const MIN_TITLE_PX = 56;
 
 function cardFor(slug: string | null): OgCard {
   if (slug === HOME_OG_SLUG) return homeOgCard();
+  if (slug === PROJECTS_OG_SLUG) return projectsOgCard();
   const project = PROJECTS.find((p) => p.slug === slug);
   if (!project) throw new Error(`No project with slug "${String(slug)}"`);
   return ogCardFor(project);

@@ -64,7 +64,7 @@ The project dialog (`/work/:slug`) is shared by both views.
 - **FR-514** Drafts follow the same rule as on Experience: they show in development and `/admin` previews, and are excluded from the sitemap and `noindex`.
 
 ### View switch
-- **FR-520** The header gets a `<nav aria-label="Views">` with two links: "Experience" (`/`) and "Projects" (`/projects`). The active one gets `aria-current="page"`. It sits with the brand on the left, separate from the contact nav. The role line under the name stays "Principal Design Engineer", without "· Career timeline".
+- **FR-520** The header gets a `<nav aria-label="Views">` with two links: "Experience" (`/`) and "Projects" (`/projects`). The active one gets `aria-current="page"`. It sits with the brand on the left, separate from the contact nav. The role line under the name stays "Principal Design Engineer", without "· Career timeline". *Added at T506:* below 720 px the brand is hidden (the hero names Eric right below), and below 480 px the motion toggle shows its icon only, keeping "Pause motion" as its accessible name, so the switch, Résumé and the toggle fit on one line down to 320 px.
 - **FR-521** With JavaScript, switching is client-side: the router rebuilds the wall's items, resets the batches, scrolls to the wall, and moves focus to it. It uses a View Transition when one is available and motion is not paused (core `transition.ts`).
 - **FR-522** The skip links follow the view: "Skip to projects" goes to the wall, and "Skip to end of timeline" shows on Experience only.
 - **FR-523** Titles: Experience keeps `HOME_TITLE`. Projects is "Projects — Eric Thayer", with its own description, canonical, and OG image (`/og/projects.png`), prerendered like the home page (001 FR-130–FR-136).
