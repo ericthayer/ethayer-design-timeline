@@ -31,6 +31,7 @@ export {
 } from './components/view-switch/view-switch.ts';
 export { renderCategory, renderEndCap, renderEra } from './components/wall-tiles/wall-tiles.ts';
 export { renderHero, renderHeroArt } from './components/site-hero/site-hero.ts';
+export { renderFooter } from './components/site-footer/site-footer.ts';
 export { renderPlaceholder } from './components/card-media/placeholder.ts';
 export { MediaScheduler, getScheduler, type MediaLease } from './core/media-scheduler.ts';
 export { Motion, getMotion } from './core/motion.ts';

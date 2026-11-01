@@ -8,6 +8,7 @@ import { define as defineToggle } from './components/motion-toggle/motion-toggle
 import type { DialogView, ProjectDialog } from './components/project-dialog/project-dialog.ts';
 import { define as defineCard } from './components/project-card/project-card.ts';
 import type { ResumeDialog } from './components/resume-dialog/resume-dialog.ts';
+import { renderFooter } from './components/site-footer/site-footer.ts';
 import { renderHero } from './components/site-hero/site-hero.ts';
 import { define as defineArtwork } from './components/swiss-artwork/swiss-artwork.ts';
 import { define as defineWall, TimelineWall } from './components/timeline-wall/timeline-wall.ts';
@@ -79,6 +80,7 @@ wall.setAttribute('role', 'region');
 wall.setAttribute('aria-label', VIEWS[view].label);
 wall.tabIndex = -1;
 document.getElementById('main')?.append(hero, wall);
+document.getElementById('main')?.after(renderFooter());
 
 const viewSwitch = document.querySelector('view-switch');
 if (viewSwitch instanceof ViewSwitch) viewSwitch.base = base;

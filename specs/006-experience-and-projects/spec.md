@@ -75,7 +75,7 @@ The project dialog (`/work/:slug`) is shared by both views.
 - **FR-532** The dialog shows the project's categories in its facts list as a "Focus" row (labels joined by " · ", primary first), using the existing facts styles.
 
 ### Contact footer
-- **FR-540** A new `<site-footer>` component, rendered once after `<main>` on both views (not a grid item). On the left: an `h2` "Let's talk", one line of copy, and the links Résumé, LinkedIn, GitHub, and Email from `site.json`. On the right: Eric's portrait.
+- **FR-540** A new `site-footer` component (a render function, like `site-hero`), rendered once as a `<footer>` after `<main>` on both views (not a grid item). On the left: an `h2` "Let's talk", one line of copy, and the links Résumé, LinkedIn, GitHub, and Email from `site.json`. On the right: Eric's portrait.
 - **FR-541** The portrait goes through the media pipeline (`media-src/site/portrait.png`): AVIF and WebP, `loading="lazy"`, intrinsic size, descriptive alt text. It ships as a **placeholder** at the recommended source size, 1440 × 1800 px (4:5), so the pipeline emits all three widths (480, 960, 1440). The owner replaces the file with the final photo later, and only the alt text (`PORTRAIT_ALT` in `site-footer`) changes with it (Q3).
 - **FR-542** The footer uses the existing tokens only (paper panel, ink background, vermilion title). Its layout is new, so it's reviewed at CP6b.
 - **FR-543** The Experience end-cap stays exactly as it is on `main` (001 FR-072, unamended). PR #13's early Education tile is dropped: Education stays in the end-cap and in the résumé (Q4).
