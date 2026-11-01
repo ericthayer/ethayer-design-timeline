@@ -3,20 +3,22 @@
 import type { DialogView } from '../../components/project-dialog/project-dialog.ts';
 import { buildWallItems, projectSequence } from '../../core/order.ts';
 import type { Project } from '../../content/types.ts';
-import { BUNDLED, ERAS } from './bundled.ts';
+import { ERAS } from './bundled.ts';
 
-const SEQUENCE = projectSequence(buildWallItems(BUNDLED.projects, ERAS));
+/** The wall's project sequence, as Prev and Next walk it. */
+export const sequenceOf = (projects: readonly Project[]): readonly Project[] =>
+  projectSequence(buildWallItems(projects, ERAS));
 
-export function dialogView(project: Project): DialogView {
-  const index = SEQUENCE.findIndex((p) => p.slug === project.slug);
+export function dialogView(project: Project, sequence: readonly Project[]): DialogView {
+  const index = sequence.findIndex((p) => p.slug === project.slug);
   const listed = index >= 0;
   return {
     project,
     index: listed ? index + 1 : 1,
-    total: SEQUENCE.length + (listed ? 0 : 1),
+    total: sequence.length + (listed ? 0 : 1),
     era: ERAS.find((era) => era.id === project.era),
-    prev: listed ? SEQUENCE[index - 1] : undefined,
-    next: listed ? SEQUENCE[index + 1] : undefined,
+    prev: listed ? sequence[index - 1] : undefined,
+    next: listed ? sequence[index + 1] : undefined,
   };
 }
 
@@ -27,3 +29,23 @@ export function focusKeyOf(node: HTMLElement): string | null {
 }
 export const focusSelector = (key: string): string =>
   `[data-focus-key="${CSS.escape(key)}"], [data-pointer="${CSS.escape(key)}"]`;
+
+const EDIT_KEY = 'timeline:admin-edit';
+
+/** Edit mode survives reloads (FR-382); storage is a convenience only. */
+export function readEditing(): boolean {
+  try {
+    return localStorage.getItem(EDIT_KEY) !== 'off';
+  } catch {
+    return true;
+  }
+}
+
+export function writeEditing(on: boolean): void {
+  document.documentElement.dataset['adminEdit'] = on ? 'on' : 'off';
+  try {
+    localStorage.setItem(EDIT_KEY, on ? 'on' : 'off');
+  } catch {
+    // The preference is a convenience only.
+  }
+}

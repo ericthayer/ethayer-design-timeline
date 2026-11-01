@@ -21,31 +21,31 @@ import { readFile, readHead } from '../../core/github/index.ts';
 import { parseSlug, routerBase } from '../../core/router.ts';
 import type { Project } from '../../content/types.ts';
 import type { Issue, RawContent } from '../../content/validate/index.ts';
-import { BUNDLED, EDITOR_CONTEXT } from './bundled.ts';
+import { EDITOR_CONTEXT } from './bundled.ts';
 import { DraftStore, type StoreProblem } from './draft-store.ts';
+import type { Bundled } from './snapshot.ts';
 import { BEHIND_NOTICE, type Snapshot, assembleRaw, draftFrom, takeSnapshot } from './snapshot.ts';
-import { dialogView, focusKeyOf, focusSelector } from './view.ts';
+import {
+  dialogView,
+  focusKeyOf,
+  focusSelector,
+  readEditing,
+  sequenceOf,
+  writeEditing,
+} from './view.ts';
 
 type LoadError = Extract<Snapshot, { kind: 'failed' }>['error'];
 
-const EDIT_KEY = 'timeline:admin-edit';
-
 /** Runs after every render, router-driven or the layer's own, to decorate the dialog. */
 export type Decorator = (modal: HTMLDialogElement, layer: EditLayer) => void;
-
-function readEditing(): boolean {
-  try {
-    return localStorage.getItem(EDIT_KEY) !== 'off';
-  } catch {
-    return true;
-  }
-}
 
 export class EditLayer extends EventTarget {
   session: AdminSession;
   readonly store: DraftStore;
   readonly host: ProjectDialog;
   readonly modal: HTMLDialogElement;
+  readonly bundled: Bundled;
+  readonly #sequence: readonly Project[];
   /** Text for the toolbar: behind-the-repo notice, storage warnings, load failures. */
   notice: string | null = null;
   /** Repo-file issues when the open project is read-only (FR-384). */
@@ -70,8 +70,11 @@ export class EditLayer extends EventTarget {
     store: DraftStore,
     host: ProjectDialog,
     modal: HTMLDialogElement,
+    bundled: Bundled,
   ) {
     super();
+    this.bundled = bundled;
+    this.#sequence = sequenceOf(bundled.projects);
     this.session = session;
     this.store = store;
     this.host = host;
@@ -125,12 +128,7 @@ export class EditLayer extends EventTarget {
   /** Edit mode (FR-382). Off, the dialog still renders the draft: a clean preview. */
   set editing(on: boolean) {
     this.#editing = on;
-    document.documentElement.dataset['adminEdit'] = on ? 'on' : 'off';
-    try {
-      localStorage.setItem(EDIT_KEY, on ? 'on' : 'off');
-    } catch {
-      // The preference is a convenience only.
-    }
+    writeEditing(on);
     // Off renders the clean preview; on decorates it again (FR-382).
     if (this.draft !== null && this.modal.open) this.render();
     else this.#decorate();
@@ -201,7 +199,7 @@ export class EditLayer extends EventTarget {
     const kept = active instanceof HTMLElement && this.#isKept(active) ? active : null;
     const key = this.focusNext ?? (active instanceof HTMLElement ? focusKeyOf(active) : null);
     this.focusNext = null;
-    this.host.show(dialogView(project));
+    this.host.show(dialogView(project, this.#sequence));
     this.#reattach();
     this.#decorate();
     this.#observer.takeRecords();
@@ -258,7 +256,7 @@ export class EditLayer extends EventTarget {
       const stored = await this.store.load(slug);
       if (stored !== null) {
         this.#histories.set(slug, begin(stored));
-        this.#raw.set(slug, assembleRaw(slug, stored.base.files, BUNDLED));
+        this.#raw.set(slug, assembleRaw(slug, stored.base.files, this.bundled));
       } else {
         await this.#snapshot(slug);
       }
@@ -270,7 +268,7 @@ export class EditLayer extends EventTarget {
 
   async #snapshot(slug: string): Promise<void> {
     const ctx = validationContext(EDITOR_CONTEXT, []);
-    const snap = await takeSnapshot(this.session, slug, BUNDLED, ctx, { readHead, readFile });
+    const snap = await takeSnapshot(this.session, slug, this.bundled, ctx, { readHead, readFile });
     if (snap.kind === 'failed') {
       this.loadError = snap.error;
       return;

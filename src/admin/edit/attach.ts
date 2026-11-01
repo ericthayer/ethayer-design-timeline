@@ -2,6 +2,7 @@
 // reaches this file through one dynamic import, so all of it lands in the `admin-edit` chunk.
 import type { ProjectDialog } from '../../components/project-dialog/project-dialog.ts';
 import type { AdminSession } from '../../core/auth/session.ts';
+import { loadBundled } from './bundled.ts';
 import { DraftStore } from './draft-store.ts';
 import { EditLayer } from './edit-layer.ts';
 import { installInline } from './inline.ts';
@@ -39,8 +40,8 @@ export interface Editor {
 export async function attach(session: AdminSession): Promise<Editor> {
   let layer: EditLayer | null = null;
   const store = await DraftStore.open({ onProblem: (p) => layer?.storeProblem(p) });
-  const { host, modal } = await findDialog();
-  layer = new EditLayer(session, store, host, modal);
+  const [{ host, modal }, bundled] = await Promise.all([findDialog(), loadBundled()]);
+  layer = new EditLayer(session, store, host, modal, bundled);
   if (!store.persistent) layer.storeProblem('fallback');
   const attached = layer;
   document.addEventListener('admin:signed-in', (event) => {
