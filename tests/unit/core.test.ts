@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { ERAS } from '../../src/content/eras.ts';
 import { PROJECTS } from '../../src/content/projects/index.ts';
 import { hashSeed, indexNumerals, pad2, periodText, yearRange } from '../../src/core/format.ts';
-import { buildWallItems, itemIndexOf, projectSequence } from '../../src/core/order.ts';
+import { CATEGORIES } from '../../src/content/categories.ts';
+import {
+  buildCategoryItems,
+  buildWallItems,
+  itemIndexOf,
+  projectSequence,
+} from '../../src/core/order.ts';
 import { cascade, toPoints } from '../../src/core/cascade.ts';
 import {
   isResumePath,
@@ -10,6 +16,7 @@ import {
   Router,
   routerBase,
   type RouterHandlers,
+  viewOfPath,
 } from '../../src/core/router.ts';
 import { nextIndex, type Box } from '../../src/core/spatial-nav.ts';
 import { normalizeWheelDelta, shouldRemap, wallOwnsWheel } from '../../src/core/wheel.ts';
@@ -27,6 +34,43 @@ describe('format', () => {
   it('hashes seeds deterministically', () => {
     expect(hashSeed('dmns')).toBe(hashSeed('dmns'));
     expect(hashSeed('dmns')).not.toBe(hashSeed('sublist'));
+  });
+});
+
+describe('category order (spec 006, FR-510, FR-503)', () => {
+  const items = buildCategoryItems(PROJECTS, ERAS, CATEGORIES);
+  const experience = projectSequence(buildWallItems(PROJECTS, ERAS));
+
+  it('lists every project once, in its primary category', () => {
+    const sequence = projectSequence(items);
+    expect(sequence).toHaveLength(PROJECTS.length);
+    expect(new Set(sequence.map((p) => p.slug)).size).toBe(PROJECTS.length);
+    let current = '';
+    for (const item of items) {
+      if (item.type === 'category') current = item.category.id;
+      else if (item.type === 'project') expect(item.project.categories[0]).toBe(current);
+    }
+  });
+
+  it('orders sections by CATEGORIES, counts them, and keeps Experience order inside', () => {
+    const markers = items.flatMap((item) => (item.type === 'category' ? [item] : []));
+    expect(markers.map((m) => m.category.id)).toEqual(CATEGORIES.map((c) => c.id));
+    for (const marker of markers) {
+      const inSection = experience.filter((p) => p.categories[0] === marker.category.id);
+      expect(marker.count).toBe(inSection.length);
+      const start = items.indexOf(marker) + 1;
+      const rendered = items.slice(start, start + marker.count);
+      expect(rendered.map((i) => (i.type === 'project' ? i.project.slug : ''))).toEqual(
+        inSection.map((p) => p.slug),
+      );
+    }
+  });
+
+  it('starts with a marker, has no end-cap, and numbers projects 1…N', () => {
+    expect(items[0]?.type).toBe('category');
+    expect(items.some((item) => item.type === 'end-cap')).toBe(false);
+    const indexes = items.flatMap((item) => (item.type === 'project' ? [item.index] : []));
+    expect(indexes).toEqual(PROJECTS.map((_, i) => i + 1));
   });
 });
 
@@ -80,6 +124,7 @@ describe('router', () => {
 describe('router /admin base (spec 004 FR-342)', () => {
   const calls: string[] = [];
   const handlers: RouterHandlers = {
+    onView: () => undefined,
     onOpen: (slug) => calls.push(`open:${slug}`),
     onResume: () => calls.push('resume'),
     onClose: () => calls.push('close'),
@@ -139,6 +184,60 @@ describe('router /admin base (spec 004 FR-342)', () => {
     at('/admin/work/dmns');
     router.sync();
     expect(calls).toEqual(['close']);
+  });
+});
+
+describe('router views (spec 006 FR-521, FR-530)', () => {
+  const calls: string[] = [];
+  const handlers: RouterHandlers = {
+    onView: (view) => calls.push(`view:${view}`),
+    onOpen: (slug) => calls.push(`open:${slug}`),
+    onResume: () => calls.push('resume'),
+    onClose: () => calls.push('close'),
+  };
+  const at = (path: string, state: unknown = null): void => {
+    history.replaceState(state, '', path);
+    calls.length = 0;
+  };
+
+  it('maps paths to views; dialog routes keep the current one', () => {
+    expect(viewOfPath('/')).toBe('experience');
+    expect(viewOfPath('/projects')).toBe('projects');
+    expect(viewOfPath('/projects/')).toBe('projects');
+    expect(viewOfPath('/work/dmns')).toBeNull();
+    expect(viewOfPath('/projectsx')).toBeNull();
+  });
+
+  it('syncs the view before the dialog, from the URL or the history state', () => {
+    const router = new Router(handlers, '');
+    at('/projects');
+    router.sync();
+    expect(calls).toEqual(['view:projects', 'close']);
+    at('/work/dmns', { path: '/work/dmns', pushedByApp: true, view: 'projects' });
+    router.sync();
+    expect(calls).toEqual(['view:projects', 'open:dmns']);
+    at('/work/dmns');
+    router.sync();
+    expect(calls).toEqual(['view:experience', 'open:dmns']);
+  });
+
+  it('navigates between views and closes a deep link back to the current view', () => {
+    const router = new Router(handlers, '');
+    at('/');
+    router.sync();
+    router.navigate('projects');
+    expect(location.pathname).toBe('/projects');
+    expect(router.view).toBe('projects');
+    router.open('dmns');
+    expect(history.state).toMatchObject({ view: 'projects' });
+    at('/work/dmns');
+    router.close();
+    expect(location.pathname).toBe('/projects');
+    const admin = new Router(handlers, '/admin');
+    at('/admin');
+    admin.sync();
+    admin.navigate('projects');
+    expect(location.pathname).toBe('/admin/projects');
   });
 });
 

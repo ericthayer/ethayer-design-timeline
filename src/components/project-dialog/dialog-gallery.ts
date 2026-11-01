@@ -33,7 +33,7 @@ function tileMedia(item: GalleryItem): HTMLElement {
   switch (media.kind) {
     case 'image':
       return renderPicture(media, {
-        sizes: '(min-width: 900px) 30vw, 60vw',
+        sizes: '(min-width: 900px) 40vw, 100vw',
         className: 'pd__tile-media',
       });
     case 'video':
@@ -50,20 +50,24 @@ function tileMedia(item: GalleryItem): HTMLElement {
 }
 
 /**
- * Bento gallery (spec 003, FR-212–FR-215): tiles of four sizes on a dense grid. Each tile's
- * focal point becomes `--focal` (FR-213); captions carry the text (FR-212).
+ * Editorial gallery (spec 006 FR-535, amends 003 FR-212–FR-217): figures in content order on a
+ * two-column grid, each captioned underneath with its label and optional note (FR-536). Each
+ * figure's focal point becomes `--focal` (FR-213).
  */
 export function buildGallery(items: readonly GalleryItem[]): HTMLElement {
   return el(
     'ul',
-    { class: 'pd__bento', 'aria-label': 'Project gallery' },
+    { class: 'pd__gallery', 'aria-label': 'Project gallery' },
     items.map((item) => {
-      const tile = el('li', { class: 'pd__tile', 'data-span': item.span ?? 'sm' }, [
-        tileMedia(item),
-        el('p', { class: 'pd__tile-label' }, [item.label]),
+      const caption = el('figcaption', { class: 'pd__caption' }, [
+        el('strong', { class: 'pd__caption-label' }, [item.label]),
+        ...(item.note ? [el('span', { class: 'pd__caption-note' }, [item.note])] : []),
       ]);
-      if (item.focal) tile.style.setProperty('--focal', item.focal);
-      return tile;
+      const entry = el('li', { class: 'pd__figure', 'data-span': item.span ?? 'sm' }, [
+        el('figure', {}, [el('div', { class: 'pd__frame' }, [tileMedia(item)]), caption]),
+      ]);
+      if (item.focal) entry.style.setProperty('--focal', item.focal);
+      return entry;
     }),
   );
 }

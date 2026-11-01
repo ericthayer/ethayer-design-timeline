@@ -8,25 +8,50 @@ import { define as defineToggle } from './components/motion-toggle/motion-toggle
 import type { DialogView, ProjectDialog } from './components/project-dialog/project-dialog.ts';
 import { define as defineCard } from './components/project-card/project-card.ts';
 import type { ResumeDialog } from './components/resume-dialog/resume-dialog.ts';
+import { renderFooter } from './components/site-footer/site-footer.ts';
 import { renderHero } from './components/site-hero/site-hero.ts';
 import { define as defineArtwork } from './components/swiss-artwork/swiss-artwork.ts';
 import { define as defineWall, TimelineWall } from './components/timeline-wall/timeline-wall.ts';
+import { define as defineViewSwitch, ViewSwitch } from './components/view-switch/view-switch.ts';
+import { CATEGORIES } from './content/categories.ts';
 import { ERAS } from './content/eras.ts';
 import { PROJECTS } from './content/projects/index.ts';
-import { HOME_TITLE, projectTitle } from './content/site.ts';
+import { HOME_TITLE, PROJECTS_TITLE, projectTitle } from './content/site.ts';
 import { getScheduler } from './core/media-scheduler.ts';
 import { getMotion } from './core/motion.ts';
-import { buildWallItems, itemIndexOf, projectSequence } from './core/order.ts';
-import { RESUME_PATH, Router } from './core/router.ts';
+import { buildCategoryItems, buildWallItems, itemIndexOf, projectSequence } from './core/order.ts';
+import { RESUME_PATH, Router, routerBase, viewOfPath, type ViewId } from './core/router.ts';
 import { morph } from './core/transition.ts';
 
 defineArtwork();
 defineCard();
 defineToggle();
 defineWall();
+defineViewSwitch();
 
-const items = buildWallItems(PROJECTS, ERAS);
-const sequence = projectSequence(items);
+// Two views of one content set (spec 006): items, wall label, and page title per view.
+const VIEWS = {
+  experience: {
+    items: buildWallItems(PROJECTS, ERAS),
+    label: 'Career timeline',
+    title: HOME_TITLE,
+  },
+  projects: {
+    items: buildCategoryItems(PROJECTS, ERAS, CATEGORIES),
+    label: 'Projects by category',
+    title: PROJECTS_TITLE,
+  },
+} as const;
+const GRID_LABELS: Readonly<Record<ViewId, string>> = {
+  experience: 'Projects, newest first',
+  projects: 'Projects by category',
+};
+const base = routerBase(location.pathname);
+let view: ViewId = viewOfPath(location.pathname.slice(base.length) || '/') ?? 'experience';
+let items = VIEWS[view].items;
+let sequence = projectSequence(items);
+const viewTitle = (): string => VIEWS[view].title;
+let openSlug: string | null = null;
 const status = document.getElementById('wall-status');
 const motion = getMotion();
 const scheduler = getScheduler();
@@ -48,12 +73,33 @@ scheduler.setGate('save-data', connection?.saveData === true);
 const hero = renderHero(sequence.length);
 const wall = new TimelineWall();
 wall.items = items;
+wall.label = GRID_LABELS[view];
 wall.status = status;
 wall.id = 'wall';
 wall.setAttribute('role', 'region');
-wall.setAttribute('aria-label', 'Career timeline');
+wall.setAttribute('aria-label', VIEWS[view].label);
 wall.tabIndex = -1;
 document.getElementById('main')?.append(hero, wall);
+document.getElementById('main')?.after(renderFooter());
+
+const viewSwitch = document.querySelector('view-switch');
+if (viewSwitch instanceof ViewSwitch) viewSwitch.base = base;
+
+/** Swap the wall to another view (spec 006, FR-521, FR-522). */
+function showView(next: ViewId): void {
+  if (viewSwitch instanceof ViewSwitch) viewSwitch.current = next;
+  for (const link of document.querySelectorAll<HTMLElement>('[data-view-only]')) {
+    link.hidden = link.dataset['viewOnly'] !== next;
+  }
+  if (next === view) return;
+  view = next;
+  items = VIEWS[next].items;
+  sequence = projectSequence(items);
+  wall.label = GRID_LABELS[next];
+  wall.setAttribute('aria-label', VIEWS[next].label);
+  wall.replaceItems(items);
+  if (!openSlug) document.title = viewTitle();
+}
 
 // Dialog: loaded on first intent or open (FR-057)
 let dialogPromise: Promise<ProjectDialog> | undefined;
@@ -92,7 +138,6 @@ function loadResume(): Promise<ResumeDialog> {
   return resumePromise;
 }
 
-let openSlug: string | null = null;
 // Bumped by every open and close, so an open that resolves after a later Back bails (race fix).
 let navigation = 0;
 let resumeOpener: HTMLElement | null = null;
@@ -153,7 +198,7 @@ async function closeProject(): Promise<void> {
     !motion.paused,
   );
   scheduler.setGate('dialog', false);
-  document.title = HOME_TITLE;
+  document.title = viewTitle();
 }
 
 async function openResume(): Promise<void> {
@@ -172,7 +217,7 @@ async function closeResume(): Promise<void> {
   (resumeOpener?.isConnected ? resumeOpener : document.getElementById('site-name'))?.focus();
   resumeOpener = null;
   scheduler.setGate('dialog', false);
-  document.title = HOME_TITLE;
+  document.title = viewTitle();
 }
 
 function step(direction: -1 | 1): void {
@@ -181,6 +226,7 @@ function step(direction: -1 | 1): void {
 }
 
 const router = new Router({
+  onView: showView,
   onOpen: (slug) => void openProject(slug),
   onResume: () => void openResume(),
   onClose: () => {
@@ -201,6 +247,19 @@ document.addEventListener('click', (event) => {
   const link = event.target instanceof Element ? event.target.closest('a') : null;
   const href = link?.getAttribute('href');
   if (!link || !plainClick(event)) return;
+  // View switch: client-side, then hand the new wall focus (spec 006, FR-521)
+  const target = ViewSwitch.viewOf(link);
+  if (target) {
+    event.preventDefault();
+    const swap = (): void => {
+      router.navigate(target);
+    };
+    if (!motion.paused && 'startViewTransition' in document) {
+      document.startViewTransition(swap).ready.catch(() => undefined);
+    } else swap();
+    wall.scrollIntoView({ block: 'start' });
+    wall.focus({ preventScroll: true });
+  }
   // "Skip to end of timeline" renders the remaining batches first (FR-083)
   if (href === '#timeline-end') {
     event.preventDefault();

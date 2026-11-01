@@ -1,3 +1,4 @@
+import { CATEGORIES } from '../../content/categories.ts';
 import type { Era, Project } from '../../content/types.ts';
 import { el } from '../../core/dom.ts';
 import { indexNumerals, pad2, periodText, yearRange } from '../../core/format.ts';
@@ -125,6 +126,12 @@ function links(project: Project): HTMLElement[] {
   ];
 }
 
+/** Category labels, primary first (spec 006, FR-532). */
+const focusOf = (project: Project): string =>
+  project.categories
+    .map((id) => CATEGORIES.find((category) => category.id === id)?.label ?? id)
+    .join(' · ');
+
 export function buildBody(
   view: DialogView,
   hero: HTMLElement,
@@ -136,10 +143,17 @@ export function buildBody(
     ['Role', project.role],
     ['Period', yearRange(project.period)],
     ['Type', ENGAGEMENT[project.engagement]],
+    ['Focus', focusOf(project)],
   ];
   const poster = el(
     'section',
-    { class: 'pd__poster', 'data-theme': project.theme, 'aria-label': 'Overview' },
+    {
+      class: 'pd__poster',
+      id: 'pd-poster',
+      'data-theme': project.theme,
+      'aria-label': 'Overview',
+      tabindex: 0,
+    },
     [
       el('header', { class: 'pd__head' }, [
         el('p', { class: 'pd__client' }, [project.client]),
@@ -177,7 +191,7 @@ export function buildBody(
     ['Contribution', project.body.contribution],
     ['Outcome', project.body.outcome],
   ];
-  const content = el('section', { class: 'pd__content', 'aria-label': 'Details' }, [
+  const content = el('section', { class: 'pd__content', 'aria-label': 'Details', tabindex: 0 }, [
     hero,
     el('p', { class: 'pd__summary' }, [project.summary]),
     el(

@@ -9,13 +9,18 @@ import { chromium } from '@playwright/test';
 import sharp from 'sharp';
 import { createServer } from 'vite';
 import { OG_SIZE, ogCards, ogHash } from '../src/content/og.ts';
-import { PROJECTS } from '../src/content/projects/index.ts';
+import { validateContent } from '../src/content/validate/index.ts';
+import { readContext, readRawContent } from './content-fs.ts';
 import { ogTemplateHash, type OgManifest } from './lib/og-template.ts';
 
 const OUT_DIR = 'public/og';
 const MANIFEST = 'src/content/og-manifest.json';
 
-const cards = ogCards(PROJECTS);
+// Read content through the validator, like the prerender: projects/index.ts uses
+// import.meta.glob, which only Vite's transform understands.
+const content = validateContent(readRawContent('.'), readContext('.'));
+if (!content.ok) throw new Error('og: content is invalid; run npm run content:check');
+const cards = ogCards(content.value.projects);
 const only = new Set(process.argv.slice(2));
 const unknown = [...only].filter((slug) => !cards.some((card) => card.slug === slug));
 if (unknown.length > 0) {

@@ -1,5 +1,6 @@
 import { defineOnce, el } from '../../core/dom.ts';
 import { buildBar, buildBody, buildHero, type DialogView } from './dialog-content.ts';
+import { buildResizer } from './split-resizer.ts';
 import './project-dialog.css';
 
 export type { DialogView } from './dialog-content.ts';
@@ -47,6 +48,7 @@ export class ProjectDialog extends HTMLElement {
     const hero = buildHero(view.project);
     const { body, title } = buildBody(view, hero);
     this.heroElement = hero;
+    body.insertBefore(buildResizer(body, 'pd-poster'), body.lastElementChild);
     this.dialog.replaceChildren(buildBar(view), body);
     if (!this.dialog.open) this.dialog.showModal();
     title.focus();

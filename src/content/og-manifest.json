@@ -1,7 +1,8 @@
 {
-  "template": "ba8d22bfb572",
+  "template": "2426d294f5b6",
   "cards": {
     "home": "32b7172a",
+    "projects": "c2ac074d",
     "agentic-engineering-loop": "a1543486",
     "cobank-design-system": "c9ed0f60",
     "figma-token-pipeline": "d1c07817",

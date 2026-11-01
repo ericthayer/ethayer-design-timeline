@@ -1,3 +1,4 @@
+import type { Category } from '../content/categories.ts';
 import type { Era, Project, WallItem } from '../content/types.ts';
 
 /**
@@ -20,6 +21,32 @@ export function buildWallItems(projects: readonly Project[], eras: readonly Era[
     }
   }
   items.push({ type: 'end-cap' });
+  return items;
+}
+
+/**
+ * Projects view (spec 006, FR-510, FR-503): a marker per category, then the projects whose
+ * primary category it is, in Experience order. Every project appears once. Empty categories
+ * are skipped, and there is no end-cap (FR-512).
+ */
+export function buildCategoryItems(
+  projects: readonly Project[],
+  eras: readonly Era[],
+  categories: readonly Category[],
+): WallItem[] {
+  const sequence = projectSequence(buildWallItems(projects, eras));
+  const total = sequence.length;
+  const items: WallItem[] = [];
+  let index = 0;
+  for (const category of categories) {
+    const inCategory = sequence.filter((p) => p.categories[0] === category.id);
+    if (inCategory.length === 0) continue;
+    items.push({ type: 'category', category, count: inCategory.length });
+    for (const project of inCategory) {
+      index += 1;
+      items.push({ type: 'project', project, index, total });
+    }
+  }
   return items;
 }
 

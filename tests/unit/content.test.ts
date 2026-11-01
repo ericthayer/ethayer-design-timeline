@@ -1,10 +1,11 @@
 // Content checks. The content rules live in the shared validator (spec 004 content-json); the
 // media-source checks belong to media-pipeline (FR-339).
-import { readdirSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { readContext, readRawContent } from '../../scripts/content-fs.ts';
 import { MEDIA_MANIFEST } from '../../src/components/card-media/image.ts';
 import { ERAS } from '../../src/content/eras.ts';
+import { serialize } from '../../src/content/paths.ts';
 import { PROJECTS } from '../../src/content/projects/index.ts';
 import { RESUME } from '../../src/content/resume.ts';
 import { SITE } from '../../src/content/site.ts';
@@ -59,7 +60,15 @@ describe('content', () => {
 
 // Spec 004 content-json (FR-303, FR-316): the shared validator on the real content files.
 describe('content files (shared validator)', () => {
-  const result = validateContent(readRawContent('.'), readContext('.'));
+  const raw = readRawContent('.');
+  const result = validateContent(raw, readContext('.'));
+
+  // Kept from the deleted migration test (T312): files are exactly what the editor writes (FR-308).
+  it('are byte-identical to `serialize` of their parsed value', () => {
+    for (const [file, value] of Object.entries(raw)) {
+      expect(readFileSync(file, 'utf8'), file).toBe(serialize(value));
+    }
+  });
 
   it('have 0 errors and 0 warnings', () => {
     expect(result.ok ? [] : result.errors).toEqual([]);

@@ -3,6 +3,10 @@
   "title": "A11y Standards",
   "client": "CoBank",
   "era": "cobank",
+  "categories": [
+    "design-systems",
+    "front-end-platforms"
+  ],
   "engagement": "full-time",
   "role": "Senior UX Engineer / Systems Lead",
   "period": {

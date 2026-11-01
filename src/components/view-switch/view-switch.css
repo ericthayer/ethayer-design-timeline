@@ -1,0 +1,24 @@
+@layer components {
+  view-switch {
+    display: contents;
+  }
+  .view-switch {
+    display: flex;
+    gap: var(--space-4);
+    list-style: none;
+  }
+  .view-switch a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 24px;
+    color: var(--stone);
+    text-decoration: none;
+  }
+  .view-switch a:hover {
+    color: var(--paper);
+  }
+  .view-switch a[aria-current='page'] {
+    color: var(--paper);
+    box-shadow: inset 0 -2px 0 currentColor;
+  }
+}
