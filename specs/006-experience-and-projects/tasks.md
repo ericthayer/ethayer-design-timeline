@@ -19,7 +19,7 @@ Nothing below starts until CP6a is approved.
 - [x] **T505** Router: `/projects` route, history state `{ view }`, dialog return-to-view, Prev/Next per view. → FR-521, FR-530, FR-531
 - [x] **T506** `view-switch` component in the header, skip links per view, View Transition, focus handoff. → FR-520–FR-522
 - [x] **T507** Prerender `/projects` (title, description, canonical, OG image, sitemap, `_redirects`). → FR-523, FR-514
-- [ ] **T508** Dialog category tags. → FR-532
+- [x] **T508** Dialog "Focus" fact with the category labels. → FR-532
 
 **Footer**
 

@@ -1,3 +1,4 @@
+import { CATEGORIES } from '../../content/categories.ts';
 import type { Era, Project } from '../../content/types.ts';
 import { el } from '../../core/dom.ts';
 import { indexNumerals, pad2, periodText, yearRange } from '../../core/format.ts';
@@ -125,6 +126,12 @@ function links(project: Project): HTMLElement[] {
   ];
 }
 
+/** Category labels, primary first (spec 006, FR-532). */
+const focusOf = (project: Project): string =>
+  project.categories
+    .map((id) => CATEGORIES.find((category) => category.id === id)?.label ?? id)
+    .join(' · ');
+
 export function buildBody(
   view: DialogView,
   hero: HTMLElement,
@@ -136,6 +143,7 @@ export function buildBody(
     ['Role', project.role],
     ['Period', yearRange(project.period)],
     ['Type', ENGAGEMENT[project.engagement]],
+    ['Focus', focusOf(project)],
   ];
   const poster = el(
     'section',

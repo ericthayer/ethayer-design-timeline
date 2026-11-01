@@ -72,7 +72,7 @@ The project dialog (`/work/:slug`) is shared by both views.
 ### Dialog
 - **FR-530** `/work/:slug` keeps one URL for both views. The history state records the view the dialog opened from. Closing returns to that view. A cold deep link opens over Experience (unchanged behavior).
 - **FR-531** Prev/Next follow the order of the view the dialog was opened from.
-- **FR-532** The dialog shows the project's categories as text tags in its meta row.
+- **FR-532** The dialog shows the project's categories in its facts list as a "Focus" row (labels joined by " · ", primary first), using the existing facts styles.
 
 ### Contact footer
 - **FR-540** A new `<site-footer>` component, rendered once after `<main>` on both views (not a grid item). On the left: an `h2` "Let's talk", one line of copy, and the links Résumé, LinkedIn, GitHub, and Email from `site.json`. On the right: Eric's portrait.
