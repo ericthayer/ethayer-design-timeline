@@ -14,6 +14,7 @@
   }
   .rd[open] {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
     animation: rd-in var(--dur-3) var(--ease-spring);
   }
@@ -288,6 +289,16 @@
     .rd__role {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-1);
+    }
+  }
+  /* FR-533: the masthead names Eric right below, so the bar keeps only its actions */
+  @media (max-width: 479px) {
+    .rd__bar {
+      justify-content: flex-end;
+      padding-inline: var(--space-3);
+    }
+    .rd__bar-title {
+      display: none;
     }
   }
 
