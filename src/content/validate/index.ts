@@ -3,7 +3,14 @@
 // gate, and the admin chunk only.
 export { validateContent, type ContentBundle } from './composition.ts';
 export { validateProject } from './project.ts';
-export { ASK_LIMITS, validateAbout, validateAsk, type AskProjects } from './ask.ts';
+export {
+  ASK_LIMITS,
+  askProjectsOf,
+  validateAbout,
+  validateAsk,
+  validateAskContent,
+  type AskProjects,
+} from './ask.ts';
 export {
   JsonParseFailure,
   RULE_IDS,

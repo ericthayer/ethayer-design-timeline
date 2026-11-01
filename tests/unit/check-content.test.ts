@@ -1,11 +1,11 @@
 // Build gate (spec 004 content-json, FR-310, FR-311): `run(root)` prints issues, exit 1 on errors.
 // @vitest-environment node
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 import { run } from '../../scripts/check-content.ts';
-import { serialize } from '../../src/content/paths.ts';
+import { ASK_FILES, serialize } from '../../src/content/paths.ts';
 import { RULE_FIXTURES } from '../fixtures/content/bundle.ts';
 
 function capture(root: string): { code: number; lines: string[] } {
@@ -44,6 +44,21 @@ describe('check-content run(root)', () => {
     expect(code).toBe(0);
     expect(lines).toContainEqual(
       expect.stringMatching(/^warning src\/content\/data\/order\.json \(root\) swiss-share: /),
+    );
+  });
+
+  it('checks ask.json against the real projects (spec 005)', () => {
+    const root = join(temp, 'ask');
+    cpSync('src/content', join(root, 'src/content'), { recursive: true });
+    cpSync('netlify.toml', join(root, 'netlify.toml'));
+    const file = join(root, ASK_FILES.ask);
+    const ask = JSON.parse(readFileSync(file, 'utf8')) as { chips: { related: string[] }[] };
+    ask.chips[0]?.related.push('curiteva');
+    writeFileSync(file, serialize(ask));
+    const { code, lines } = capture(root);
+    expect(code).toBe(1);
+    expect(lines).toContainEqual(
+      expect.stringMatching(/^error src\/content\/data\/ask\.json \/chips\/0\/related\/\d+ slug: /),
     );
   });
 

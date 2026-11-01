@@ -2,7 +2,15 @@
 // Reuses the shared rule ids: `slug` for ids and references, `text-length` for limits.
 import { ASK_TOPICS, type About, type AboutSection, type AskChip, type AskChips } from '../ask.ts';
 import { ASK_FILES } from '../paths.ts';
-import { type Validated, finish } from './issue.ts';
+import type { Project } from '../types.ts';
+import {
+  type Issue,
+  JsonParseFailure,
+  type RawContent,
+  type Validated,
+  finish,
+  issue,
+} from './issue.ts';
 import { Reader, Sink, each, isString, show } from './read.ts';
 
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -180,4 +188,33 @@ export function validateAbout(raw: unknown): Validated<About> {
     }
   }
   return finish(value, sink.issues);
+}
+
+/** The `AskProjects` facts for a validated project list: every slug, and the drafts. */
+export function askProjectsOf(projects: readonly Project[]): AskProjects {
+  return {
+    slugs: new Set(projects.map((p) => p.slug)),
+    drafts: new Set(projects.filter((p) => p.draft === true).map((p) => p.slug)),
+  };
+}
+
+/**
+ * Both Ask files in `raw` (FR-410, FR-435). A file that is absent is skipped, so content sets
+ * without Ask still pass; one that doesn't parse is a `json-parse` error.
+ */
+export function validateAskContent(raw: RawContent, projects: AskProjects): Issue[] {
+  const issues: Issue[] = [];
+  const check = (file: string, run: (value: unknown) => Validated<unknown>): void => {
+    if (!Object.hasOwn(raw, file)) return;
+    const value = raw[file];
+    if (value instanceof JsonParseFailure) {
+      issues.push(issue('json-parse', file, '', null, `${file} is not valid JSON: ${value.reason}`));
+      return;
+    }
+    const result = run(value);
+    issues.push(...(result.ok ? [] : result.errors), ...result.warnings);
+  };
+  check(ASK_FILES.ask, (v) => validateAsk(v, projects));
+  check(ASK_FILES.about, validateAbout);
+  return issues;
 }

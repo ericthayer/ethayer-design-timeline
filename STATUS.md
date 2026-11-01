@@ -18,7 +18,7 @@ updatedBy: claude
 - The owner approved CP1–CP3, CP4a and CP4c on 2026-10-24. The current design is locked (constitution I).
 - The owner approved CP4d on 2026-11-01. `edit-layer` (T380+) can start, on a branch from `origin/main`.
 - CP4b is still open, and T389 uploads wait for it.
-- Spec 005 (Ask) was approved on 2026-11-01 with all of AQ1–AQ9 answered (Claude Haiku 5.5, a $20 monthly cap, no question logging), and constitution amendments A1 and A2 are applied. Pure core T400–T403 may run now. Everything visible waits for CP4e.
+- Spec 005 (Ask) was approved on 2026-11-01 with all of AQ1–AQ9 answered (Claude Haiku 5.5, a $20 monthly cap, no question logging), and constitution amendments A1 and A2 are applied. Pure core T400–T403 is merged (#18). T399 content is drafted for the owner's review. Everything visible waits for CP4e.
 
 ## Blockers
 
@@ -98,8 +98,8 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 
 **Spec 005 (Ask)**
 
-- Owner: draft `about.json` and 8–16 suggestion chips with answers (T399). This can start any time.
-- T400–T403 (pure core) are done on `claude/project-thread-vg1394` (2026-11-01): content validators, corpus builder, answer parser, and stream protocol, with unit tests and no UI. They're in a draft PR, and no review is needed until CP4e. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
+- T399 (2026-11-01): `about.json` is the owner's own summary, and `ask.json` has 13 drafted chips built only from the résumé, `site.json`, and project files. Owner: check the wording, and add any personal topics you want answerable to `about.json` (only "How can I reach him?" is in the personal topic now). `npm run content:check` now validates both files.
+- T400–T403 (pure core) merged in #18 (2026-11-01): content validators, corpus builder, answer parser, and stream protocol, with unit tests and no UI. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
 
 **Housekeeping**
 

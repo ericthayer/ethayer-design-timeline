@@ -2,8 +2,19 @@
 import { describe, expect, it } from 'vitest';
 import { ASK_FILES } from '../../../src/content/paths.ts';
 import { ASK_CAPS } from '../../../src/core/ask/protocol.ts';
-import { ASK_LIMITS, validateAbout, validateAsk } from '../../../src/content/validate/ask.ts';
-import type { Issue, Validated } from '../../../src/content/validate/issue.ts';
+import type { Project } from '../../../src/content/types.ts';
+import {
+  ASK_LIMITS,
+  askProjectsOf,
+  validateAbout,
+  validateAsk,
+  validateAskContent,
+} from '../../../src/content/validate/ask.ts';
+import {
+  type Issue,
+  JsonParseFailure,
+  type Validated,
+} from '../../../src/content/validate/issue.ts';
 import { ASK_PROJECTS, baseAbout, baseAsk } from '../../fixtures/content/ask.ts';
 import type { JsonObject } from '../../fixtures/content/projects.ts';
 
@@ -117,5 +128,32 @@ describe('validateAbout (FR-435)', () => {
       { id: 'a', topic: 'process', title: 'B', text: 'Two.' },
     ];
     expect(rulesAt(validateAbout({ sections }))).toEqual([['slug', '/sections/1/id']]);
+  });
+});
+
+describe('validateAskContent (FR-410, FR-435)', () => {
+  it('skips absent files and checks present ones', () => {
+    expect(validateAskContent({}, ASK_PROJECTS)).toEqual([]);
+    const raw = { [ASK_FILES.ask]: baseAsk(), [ASK_FILES.about]: baseAbout() };
+    expect(validateAskContent(raw, ASK_PROJECTS)).toEqual([]);
+  });
+
+  it('reports a chip that links to a draft, and a file that does not parse', () => {
+    const raw = {
+      [ASK_FILES.ask]: withChip({ related: ['workbench'] }),
+      [ASK_FILES.about]: new JsonParseFailure('Unexpected end'),
+    };
+    expect(validateAskContent(raw, ASK_PROJECTS).map((i) => [i.file, i.rule])).toEqual([
+      [ASK_FILES.ask, 'slug'],
+      [ASK_FILES.about, 'json-parse'],
+    ]);
+  });
+
+  it('derives slugs and drafts from projects', () => {
+    const p = (slug: string, draft?: boolean): Project =>
+      ({ slug, ...(draft === undefined ? {} : { draft }) }) as unknown as Project;
+    const facts = askProjectsOf([p('a'), p('b', true), p('c', false)]);
+    expect([...facts.slugs]).toEqual(['a', 'b', 'c']);
+    expect([...facts.drafts]).toEqual(['b']);
   });
 });
