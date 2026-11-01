@@ -13,6 +13,12 @@ export const CONTENT_FILES = {
   resume: `${CONTENT_DIR}/resume.json`,
 } as const;
 
+/** Ask content (spec 005, FR-410, FR-435). Kept apart from `CONTENT_FILES` until the files exist. */
+export const ASK_FILES = {
+  ask: `${CONTENT_DIR}/ask.json`,
+  about: `${CONTENT_DIR}/about.json`,
+} as const;
+
 const PROJECT_FILE = /^src\/content\/data\/projects\/([^/]+)\.json$/;
 
 /** The slug a project path names, or `null` when `path` is not a project file. */

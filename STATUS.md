@@ -8,7 +8,7 @@ updatedBy: claude
 
 - v1, the hero and résumé (spec 002), the Batch B artwork and gallery (spec 003), and the prerender and link previews (T070, T071) are merged to main.
 - Spec 004 (admin editing) parts 1 and 2 are merged to main: PR #6 (content as JSON, build-time media, `/admin` sign-in) and PR #7 (`github-publish`).
-- PR #8 (release-please and commitlint) was closed unmerged on purpose. Keep using Conventional Commit messages and squash merges. A small tag-on-merge release workflow is undecided (first tag `v1.0.0` or `v0.x`).
+- PR #8 (release-please and commitlint) was closed unmerged on purpose. Keep using Conventional Commit messages and squash merges. `v1.0.0` is tagged. A tag-on-merge release workflow (`.github/workflows/release.yml`, bump from the squash PR title) is in review, with a PR-title check.
 - PR #9, #10 and #11 are merged. #11 added `scripts/smoke-publish.ts`.
 - CP4d smoke publish passed on 2026-11-01 against `ericthayer/admin-sandbox`: create (JSON + image), update and delete each made one commit, JSON read-backs matched with UTF-8 intact, the `sha: null` delete worked, and deploy status read `queued → unknown: timeout`.
 - The PR #5 post-deploy smoke test passed on production on 2026-10-24 (steps 1–5). It turned up one console error, now follow-up 1.
@@ -20,6 +20,7 @@ updatedBy: claude
 - The owner approved CP1–CP3, CP4a and CP4c on 2026-10-24. The current design is locked (constitution I).
 - The owner approved CP4d on 2026-11-01. `edit-layer` (T380+) can start, on a branch from `origin/main`.
 - CP4b is still open, and T389 uploads wait for it.
+- Spec 005 (Ask) was approved on 2026-11-01 with all of AQ1–AQ9 answered (Claude Haiku 5.5, a $20 monthly cap, no question logging), and constitution amendments A1 and A2 are applied. Pure core T400–T403 may run now. Everything visible waits for CP4e.
 
 ## Blockers
 
@@ -98,6 +99,11 @@ Done 2026-10-24: the PR #5 smoke test on production. (1) `/work/dmns` has its ow
 18. Unity capture of the VR design system, and the motion-reel source for an 8-second loop.
 19. CoBank and Threecolts screenshots, if you're cleared to show them.
 20. Copy and dates for the seven drafts: `curiteva`, `madramps`, `motion-reel`, `qr-landing`, `map-course-launcher`, `safetyhive`, `workbench`. They stay `noindex` until `draft: true` is removed, which will be possible in `/admin` once `edit-layer` ships.
+
+**Spec 005 (Ask)**
+
+- Owner: draft `about.json` and 8–16 suggestion chips with answers (T399). This can start any time.
+- T400–T403 (pure core) are done on `claude/project-thread-vg1394` (2026-11-01): content validators, corpus builder, answer parser, and stream protocol, with unit tests and no UI. They're in a draft PR, and no review is needed until CP4e. T404+ waits for CP4e. Phase 2 also needs a dedicated Anthropic workspace with the $20 limit (T427).
 
 **Housekeeping**
 
