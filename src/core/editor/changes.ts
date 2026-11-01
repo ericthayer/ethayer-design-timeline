@@ -157,3 +157,23 @@ export function buildDelete(raw: RawContent, slug: string, ctx: EditorContext): 
   if (!plan.ok) return built([], issuesOf(plan));
   return built([...plan.value, { kind: 'delete-dir', path: `media-src/${slug}/` }], issuesOf(plan));
 }
+
+/** The draft after a commit of `changes` at `sha`: its base is what the commit left (FR-397). */
+export function rebase(draft: Draft, sha: string, changes: readonly PlannedChange[]): Draft {
+  const files = new Map(Object.entries(draft.base.files));
+  for (const change of changes) {
+    if (change.kind === 'put') files.set(change.path, change.content);
+    else if (change.kind === 'delete') files.set(change.path, null);
+  }
+  return {
+    ...draft,
+    action: 'update',
+    base: { sha, files: Object.fromEntries(files) },
+    staged: [],
+    savedAt: 0,
+  };
+}
+
+/** Only the JSON changes, for `applyContent`. */
+export const contentOnly = (changes: readonly PlannedChange[]): ContentChange[] =>
+  changes.flatMap((c) => (c.kind === 'put' || c.kind === 'delete' ? [c] : []));

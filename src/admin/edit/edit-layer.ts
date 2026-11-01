@@ -178,7 +178,9 @@ export class EditLayer extends EventTarget {
 
   #setHistory(h: History, rerender: boolean, show = false): void {
     this.#histories.set(h.draft.slug, h);
-    this.store.save(h.draft);
+    // A clean draft isn't kept: nothing to restore, and no "Local drafts" entry (FR-385).
+    if (changeCount(h.draft) === 0) void this.store.clear(h.draft.slug);
+    else this.store.save(h.draft);
     if (rerender) this.render(show);
     this.#changed();
   }

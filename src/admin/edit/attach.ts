@@ -8,7 +8,7 @@ import { EditLayer } from './edit-layer.ts';
 import { installInline } from './inline.ts';
 import { Lifecycle } from './lifecycle.ts';
 import { installPanel } from './panel-wiring.ts';
-import { Publisher } from './publish-flow.ts';
+import { PublishFlow, Publisher } from './publish-flow.ts';
 import { ToolbarController } from './toolbar-wiring.ts';
 import { Validation } from './validation.ts';
 
@@ -38,6 +38,7 @@ export interface Editor {
   readonly toolbar: ToolbarController;
   readonly publisher: Publisher;
   readonly lifecycle: Lifecycle;
+  readonly flow: PublishFlow;
 }
 
 /**
@@ -62,8 +63,9 @@ export async function attach(
   installInline(layer, validation);
   const publisher = new Publisher(layer, toolbar);
   const lifecycle = new Lifecycle(layer, toolbar, publisher);
+  const flow = new PublishFlow(layer, validation, toolbar, publisher);
   installPanel(layer, validation, toolbar, (slug) => lifecycle.rename(slug));
   if (modal.open) layer.sync();
   else await lifecycle.reopen(requested);
-  return { layer, validation, toolbar, publisher, lifecycle };
+  return { layer, validation, toolbar, publisher, lifecycle, flow };
 }
