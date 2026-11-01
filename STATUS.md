@@ -13,7 +13,7 @@ updatedBy: claude
 - CP4d smoke publish passed on 2026-11-01 against `ericthayer/admin-sandbox`: create (JSON + image), update and delete each made one commit, JSON read-backs matched with UTF-8 intact, the `sha: null` delete worked, and deploy status read `queued → unknown: timeout`.
 - The PR #5 post-deploy smoke test passed on production on 2026-10-24 (steps 1–5). It turned up one console error, now follow-up 1.
 
-- Spec 006 (Experience and Projects views, categories, contact footer) is in PR #13. The owner approved CP6a on 2026-11-01 (Q1 five categories, Q2 Experience stays `/`, Q3 placeholder portrait, Q4 drop the early Education tile, Q5 Claude drafts the footer copy). The T078 prototype commits are reverted (T510).
+- Spec 006 (Experience and Projects views, categories, contact footer) is in PR #13. The owner approved CP6a on 2026-11-01 (Q1 five categories, Q2 Experience stays `/`, Q3 placeholder portrait, Q4 drop the early Education tile, Q5 Claude drafts the footer copy). The T078 prototype commits are reverted (T510). T501–T509 and T512 are built on the PR #13 branch: categories (rule `category-ref`), `/projects`, the header view switch, the prerendered Projects page and `og/projects.png`, the dialog Focus fact, and the contact footer with a placeholder portrait (`media-src/site/portrait.png`, 1440 × 1800). Also done here: 004 T312/T313 (migration and legacy TS modules removed), and `npm run og` works again. Next: the owner's CP6b review. T511 (editor categories fieldset) lands with edit-layer.
 
 ## Next step
 
@@ -26,6 +26,8 @@ updatedBy: claude
 - T389 uploads (edit-layer) are blocked until CP4b is approved.
 
 ## Waiting on
+
+- Owner: CP6b (review `/projects`, the view switch and the footer on the PR #13 deploy preview at 390, 1280 and 1920 px; written OK before any baseline). Replace `media-src/site/portrait.png` with the final photo (1440 × 1800) and update `PORTRAIT_ALT` in `site-footer.ts`.
 
 - Owner: CP4b (review the media-pipeline deploy preview, the migration manifest diff and the timings, and answer MQ1–MQ4)
 - Owner: the original cover images for `media-src/<slug>/` (D5)

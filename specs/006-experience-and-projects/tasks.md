@@ -23,14 +23,14 @@ Nothing below starts until CP6a is approved.
 
 **Footer**
 
-- [ ] **T509** `site-footer` component, portrait through the media pipeline, draft copy, placeholder portrait at 1440 × 1800, on both views. → FR-540–FR-542
+- [x] **T509** `site-footer` component, portrait through the media pipeline, draft copy, placeholder portrait at 1440 × 1800, on both views. → FR-540–FR-542
 - [x] **T510** Revert the T078 prototype commits on the PR #13 branch, so the Experience end-cap is unchanged (FR-543). PR #13 carries spec 006 instead.
 
 **Admin**
 
-- [ ] **T511** Categories fieldset in the edit-layer form. It lands with or after T38x, depending on which ships first. → FR-550
+- [ ] **T511** Categories fieldset in the edit-layer form. It lands with T38x (edit-layer hasn't started), since there is no form to add it to yet. → FR-550
 
 **Verify**
 
-- [ ] **T512** e2e over `/` and `/projects`: switch, deep link, return-to-view, keyboard, axe; budgets. → §4
+- [x] **T512** e2e over `/` and `/projects`: switch, deep link, return-to-view, keyboard, axe; budgets. → §4
 - [ ] **CP6b** Owner reviews the running build (Projects grid, view switch, footer) at 390, 1280 and 1920 px. Approval locks the new visuals. Baselines need the owner's written OK.
