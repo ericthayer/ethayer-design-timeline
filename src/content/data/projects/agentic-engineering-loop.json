@@ -3,6 +3,10 @@
   "title": "Agentic Engineering Loop",
   "client": "CoBank",
   "era": "cobank",
+  "categories": [
+    "agentic-engineering",
+    "design-systems"
+  ],
   "engagement": "full-time",
   "role": "Senior UX Engineer / Systems Lead",
   "period": {

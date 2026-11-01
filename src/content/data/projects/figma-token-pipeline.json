@@ -3,6 +3,10 @@
   "title": "Figma → Token Pipeline",
   "client": "CoBank",
   "era": "cobank",
+  "categories": [
+    "design-systems",
+    "agentic-engineering"
+  ],
   "engagement": "full-time",
   "role": "Senior UX Engineer / Systems Lead",
   "period": {

@@ -7,9 +7,7 @@ Companion to [spec.md](./spec.md). This says how; the spec says what and why.
 Reuse first. Projects is the same `<timeline-wall>` with a different item list, so the bento grid, card sizes, batching, keyboard navigation, horizontal mode and the dialog all come for free and stay under the CP1 lock. The new pieces are small: a grouping function, a marker tile, a header switch, and a footer.
 
 ```
-src/content/data/categories.json      FR-500   ordered { id, label, description }
-src/content/data/category-order.json  FR-503   optional curated order per category
-src/content/categories.ts             FR-500   CATEGORIES, CategoryId (like eras.ts / era-ids.ts)
+src/content/categories.ts             FR-500   CATEGORY_IDS, CategoryId, CATEGORIES (labels, descriptions)
 src/content/validate/project.ts       FR-502   categories rules
 src/core/order.ts                     FR-510   + buildCategoryItems(projects, categories, order)
 src/content/types.ts                  FR-501   Project.categories, WallItem | { type: 'category' }
@@ -31,8 +29,8 @@ admin edit-layer form                 FR-550   categories fieldset (lands with T
 | Duplicates | One card per project, in its primary category | Showing a card in every category it belongs to: repeated cards, a confused Prev/Next, and screen readers hear the same project twice |
 | Routing | `/projects` is a real route, prerendered | A tab widget on `/`: no shareable URL, no prerender, and tabs semantics for what is navigation |
 | Contact | A footer after `<main>` on both views | A contact end-cap tile (PR #13): wrong at the end of a newest-first wall, and missing from Projects |
-| Category data | `categories.json` plus generated `CategoryId` | Free-text tags: typos split sections, and the editor can't offer a closed list |
-| Order in a category | Optional `category-order.json`, newest first by default | Required order: every new project needs two edits |
+| Category data | TS vocabulary `CATEGORY_IDS` plus `CATEGORIES` labels (code-only, FR-551) | Free-text tags: typos split sections, and the editor can't offer a closed list. A `categories.json` document: a validator and bundle entry for a list only code edits |
+| Order in a category | The Experience order, filtered | A `category-order.json`: deferred until the owner wants Projects ordered differently. Required order: every new project needs two edits |
 
 ## 3. Initial category assignment
 

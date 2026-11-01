@@ -1,3 +1,4 @@
+import type { CategoryId } from './categories.ts';
 import type { ERA_IDS } from './era-ids.ts';
 import type { MOTIFS } from './motifs.ts';
 import type { THEMES } from './themes.ts';
@@ -112,6 +113,8 @@ interface ProjectBase {
   readonly title: string;
   readonly client: string;
   readonly era: EraId;
+  /** Primary first, then an optional secondary (spec 006, FR-501). */
+  readonly categories: readonly [CategoryId] | readonly [CategoryId, CategoryId];
   readonly engagement: Engagement;
   readonly role: string;
   readonly period: Period;

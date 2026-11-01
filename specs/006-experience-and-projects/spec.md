@@ -41,7 +41,7 @@ The project dialog (`/work/:slug`) is shared by both views.
 ## 3. Functional requirements
 
 ### Content
-- **FR-500** New `src/content/data/categories.json`: an ordered list of `{ id, label, description }`. The order is the order of the Projects sections. Initial set (owner to confirm, Q1):
+- **FR-500** New `src/content/categories.ts`: an ordered `CATEGORIES` list of `{ id, label, description }`, and `CATEGORY_IDS` as a TS vocabulary like `ERA_IDS`. The order is the order of the Projects sections. *Amended at T501 (2026-11-01):* the list is TS, not a `categories.json` document, because editing it stays code-only (FR-551), and a document would add a validator, a bundle entry and an editor read for no gain. Initial set (approved, Q1):
 
 | id | Label |
 | --- | --- |
@@ -52,12 +52,12 @@ The project dialog (`/work/:slug`) is shared by both views.
 | `motion-media` | Motion and media |
 
 - **FR-501** `Project.categories: readonly [CategoryId] | readonly [CategoryId, CategoryId]`. The first entry is the primary. Projects appear **once**, in their primary section. The secondary is shown as a tag on the dialog (and is ready for filters later), never as a duplicate card.
-- **FR-502** The shared validator rejects a missing or empty `categories` field, unknown ids, a duplicate id, and more than two entries. `CategoryId` is generated from `categories.json` the same way `EraId` is.
-- **FR-503** Curated order inside a category: a new `category-order.json` (like `order.json`). Projects not listed fall back to newest first by `period.start`. Order is optional, so adding a project never needs two edits.
+- **FR-502** The shared validator rejects a missing or empty `categories` field, unknown ids, a duplicate id, and more than two entries. Unknown ids are rule `category-ref`. `CategoryId` comes from `CATEGORY_IDS` the same way `EraId` comes from `ERA_IDS`.
+- **FR-503** Order inside a category is the Experience order (eras newest first, then `order.json` within each era), filtered to that category. *Amended at T501 (2026-11-01):* the separate `category-order.json` is deferred until the owner asks for a different order on Projects. Adding a project never needs a second edit.
 - **FR-504** Initial assignment of the 28 projects is in [plan.md §3](./plan.md#3-initial-category-assignment). The owner reviews it at CP6a.
 
 ### Projects view
-- **FR-510** `/projects` renders `<timeline-wall>` with a category grouping. Build-time order: category sections in `categories.json` order, each with a **category marker** tile, then its projects. Card sizes, themes, media, batching, keyboard navigation, and horizontal mode above 1800 px all behave as they do on Experience (001 FR-001–FR-007, FR-070–FR-073, FR-081).
+- **FR-510** `/projects` renders `<timeline-wall>` with a category grouping. Build-time order: category sections in `CATEGORIES` order, each with a **category marker** tile, then its projects. Card sizes, themes, media, batching, keyboard navigation, and horizontal mode above 1800 px all behave as they do on Experience (001 FR-001–FR-007, FR-070–FR-073, FR-081).
 - **FR-511** The category marker is an `sm` tile in the same style as the era marker (locked styling). It shows the category label and a two-digit project count (for example `07`) instead of the era years.
 - **FR-512** Projects has no end-cap. The last section is followed by the contact footer.
 - **FR-513** The grid's accessible name is "Projects by category". Each marker's label is an `h2`, so screen-reader heading navigation jumps between sections.
@@ -82,7 +82,7 @@ The project dialog (`/work/:slug`) is shared by both views.
 
 ### Admin (amends 004 edit-layer)
 - **FR-550** The project form gets a "Categories" fieldset: a required primary `<select>` and an optional secondary `<select>` (which can't equal the primary). It's validated by the shared validator (FR-502).
-- **FR-551** Editing `categories.json` (adding or renaming categories) stays code-only in this spec.
+- **FR-551** Adding or renaming categories (`src/content/categories.ts`) stays code-only in this spec.
 
 ## 4. Non-functional
 
@@ -96,7 +96,7 @@ The project dialog (`/work/:slug`) is shared by both views.
 - Filters or search on Projects (the secondary category makes them possible later).
 - Changing which view is the home page (Q2: decide after CP6b with real content).
 - New Swiss motifs or new themes.
-- Editing `categories.json` from `/admin`.
+- Editing the category list from `/admin`.
 
 ## 6. Owner decisions (2026-11-01)
 

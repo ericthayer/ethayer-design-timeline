@@ -3,6 +3,10 @@
   "title": "Multi-Framework Design System",
   "client": "CoBank",
   "era": "cobank",
+  "categories": [
+    "design-systems",
+    "front-end-platforms"
+  ],
   "engagement": "full-time",
   "role": "Senior UX Engineer / Systems Lead",
   "period": {

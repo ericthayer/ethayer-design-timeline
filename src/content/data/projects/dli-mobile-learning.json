@@ -3,6 +3,10 @@
   "title": "Mobile Learning UI",
   "client": "Defense Language Institute",
   "era": "dli",
+  "categories": [
+    "front-end-platforms",
+    "product-design"
+  ],
   "engagement": "full-time",
   "role": "Multimedia Specialist & Front-End Designer",
   "period": {

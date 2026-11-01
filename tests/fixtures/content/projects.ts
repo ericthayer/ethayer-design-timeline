@@ -19,6 +19,7 @@ export function baseProject(slug: string, overrides: JsonObject = {}): JsonObjec
     title: 'Demo',
     client: 'Demo Co',
     era: 'cobank',
+    categories: ['design-systems'],
     engagement: 'full-time',
     role: 'Engineer',
     period: { start: '2024-01', end: 'present' },
@@ -56,6 +57,10 @@ export type ProjectRule = Exclude<
 export const PROJECT_FIXTURES: Record<ProjectRule, ProjectFixture> = {
   shape: { project: baseProject('demo', { size: 'huge' }), path: '/size' },
   'unknown-key': { project: baseProject('demo', { color: 'red' }), path: '/color' },
+  'category-ref': {
+    project: baseProject('demo', { categories: ['design-systems', 'knitting'] }),
+    path: '/categories',
+  },
   slug: { project: baseProject('other'), path: '/slug' },
   'text-length': {
     project: baseProject('demo', { title: 'A title that is too long!' }),

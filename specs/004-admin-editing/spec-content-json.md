@@ -70,6 +70,7 @@ The browser editor (`edit-layer`) can't write TypeScript modules safely, so cont
 | `focal-format` | error | `^\d{1,3}% \d{1,3}%$` | FR-213 |
 | `period` | error | `YYYY-MM` with a real month, and `start ≤ end` (projects, eras, résumé roles, site span) | FR-091 |
 | `era-ref` | error | `project.era` and `eras.json` ids are in `ERA_IDS`; eras are unique and newest first | FR-091; hero "Now" reads `ERAS[0]` |
+| `category-ref` | error | `project.categories` holds one or two distinct ids from `CATEGORY_IDS`, primary first (added by [spec 006](../006-experience-and-projects/spec.md) FR-502) | Projects view sections |
 | `theme-name` / `motif-name` | error | in `THEMES` (each is contrast-tested in `contrast.test.ts`) / in `MOTIFS` | FR-015, FR-201 |
 | `url` | error | `https://` for links, iframes, and résumé `href`; site links are `/resume`, `https://`, or `mailto:`; captions match `/captions/<name>.vtt` (served from `public/captions/`, outside the media pipeline's folder) | types |
 | `iframe-host` | error | the iframe origin is in `ctx.frameOrigins` | FR-091, VII |

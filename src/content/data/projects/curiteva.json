@@ -3,6 +3,9 @@
   "title": "Curiteva",
   "client": "Curiteva",
   "era": "independent",
+  "categories": [
+    "front-end-platforms"
+  ],
   "engagement": "freelance",
   "role": "Front-end development",
   "period": {

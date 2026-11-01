@@ -1,5 +1,6 @@
 // Per-file project rules (spec 004 content-json, FR-307, FR-313). Output is rebuilt field by
 // field in `types.ts` order, and a per-size `switch` lets `tsc` check the size × media matrix.
+import { CATEGORY_IDS, type CategoryId } from '../categories.ts';
 import { ERA_IDS } from '../era-ids.ts';
 import { MOTIFS } from '../motifs.ts';
 import { slugOfFile } from '../paths.ts';
@@ -114,6 +115,29 @@ function readGalleryItem(r: Reader, ctx: ValidationContext): GalleryItem | undef
   };
 }
 
+/** One primary category, then at most one other (rule `category-ref`, spec 006 FR-502). */
+function readCategories(r: Reader): Project['categories'] | undefined {
+  const ids = r.strings('categories');
+  if (ids === undefined) return undefined;
+  const unknown = ids.find((id) => !(CATEGORY_IDS as readonly string[]).includes(id));
+  if (unknown !== undefined) {
+    r.error('category-ref', 'categories', `"${unknown}" is not a known category`);
+    return undefined;
+  }
+  const [primary, secondary, ...rest] = ids as readonly CategoryId[];
+  if (primary === undefined || rest.length > 0) {
+    const count = String(ids.length);
+    r.error('category-ref', 'categories', `has ${count} categories, use one or two`);
+    return undefined;
+  }
+  if (secondary === undefined) return [primary];
+  if (secondary === primary) {
+    r.error('category-ref', 'categories', `"${primary}" is listed twice`);
+    return undefined;
+  }
+  return [primary, secondary];
+}
+
 function readBody(r: Reader): Project['body'] | undefined {
   const b = r.object('body');
   if (b === undefined) return undefined;
@@ -166,6 +190,7 @@ function readProject(r: Reader, file: string, ctx: ValidationContext): Project |
   const title = r.limited('title', size === 'sm' ? LIMITS.titleSm : LIMITS.title);
   const client = r.string('client');
   const era = r.named('era', ERA_IDS, 'era-ref');
+  const categories = readCategories(r);
   const engagement = r.oneOf('engagement', ENGAGEMENTS);
   const role = r.string('role');
   const period = readPeriod(r);
@@ -189,6 +214,7 @@ function readProject(r: Reader, file: string, ctx: ValidationContext): Project |
 
   if (slug === undefined || title === undefined || client === undefined) return undefined;
   if (era === undefined || engagement === undefined || role === undefined) return undefined;
+  if (categories === undefined) return undefined;
   if (period === undefined || theme === undefined || motif === undefined) return undefined;
   if (layout === undefined || treatment === undefined || summary === undefined) return undefined;
   if (body === undefined || tracklist === undefined) return undefined;
@@ -198,6 +224,7 @@ function readProject(r: Reader, file: string, ctx: ValidationContext): Project |
     title,
     client,
     era,
+    categories,
     engagement,
     role,
     period,

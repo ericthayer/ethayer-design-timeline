@@ -127,6 +127,28 @@ describe('paths (FR-308)', () => {
 describe('validateProject (FR-313 per-file rules)', () => {
   const file = projectFile('demo');
 
+  // Spec 006 FR-502: one primary category, then at most one other.
+  it.each([
+    ['missing', undefined, 'shape'],
+    ['empty', [], 'category-ref'],
+    ['a duplicate', ['design-systems', 'design-systems'], 'category-ref'],
+    ['three entries', ['design-systems', 'motion-media', 'product-design'], 'category-ref'],
+    ['an unknown id', ['knitting'], 'category-ref'],
+  ] as const)('rejects categories with %s', (_, categories, rule) => {
+    const project = baseProject('demo', { categories });
+    if (categories === undefined) delete project['categories'];
+    const result = validateProject(project, file, CTX);
+    expect(result.ok ? [] : result.errors.map((e) => [e.rule, e.path])).toEqual([
+      [rule, '/categories'],
+    ]);
+  });
+
+  it('keeps the primary category first', () => {
+    const categories = ['motion-media', 'product-design'];
+    const result = validateProject(baseProject('demo', { categories }), file, CTX);
+    expect(result.ok && result.value.categories).toEqual(categories);
+  });
+
   it('accepts the base project and rebuilds it without stray keys', () => {
     const result = validateProject(baseProject('demo'), file, CTX);
     expect(result).toStrictEqual({ ok: true, value: baseProject('demo'), warnings: [] });

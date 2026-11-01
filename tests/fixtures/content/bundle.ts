@@ -67,6 +67,7 @@ export const RULE_FIXTURES: Record<RuleId, Fixture> = {
   'focal-format': fromProject('focal-format'),
   period: fromProject('period'),
   'era-ref': projectCase(ERA_REF_PROJECT.project, ERA_REF_PROJECT.path),
+  'category-ref': fromProject('category-ref'),
   'theme-name': fromProject('theme-name'),
   'motif-name': fromProject('motif-name'),
   url: fromProject('url'),
