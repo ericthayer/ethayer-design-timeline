@@ -8,13 +8,14 @@ The owner approved this spec on 2026-11-01 (spec §13). T400–T403 may run now 
 - [ ] **T399** Owner drafts `about.json` (process, values, how he works, and whatever personal topics he wants answerable) and 8–16 chips with answers. Claude can propose question wording and edit copy, but the facts are Eric's. → FR-410, FR-435
 
 ## Pure core
-- [ ] **T400** Types and validator rules for `ask.json` and `about.json`, with fixtures. → FR-410, FR-435
+- [x] **T400** Types and validator rules for `ask.json` and `about.json`, with fixtures. → FR-410, FR-435
   - Acceptance: an unknown or draft `related` slug, a missing follow-up id, a self follow-up, a label over 60 chars, and an about corpus over 12,000 chars each give an error-level issue. · Verify: `npx vitest run tests/unit/ask/content` · Files: `src/content/ask.ts`, `src/content/validate/ask.ts`, `tests/unit/ask/content.test.ts`
-- [ ] **T401** `buildCorpus(bundle)`. → FR-430
+  - Done 2026-11-01. The rules reuse the shared rule ids (`slug`, `text-length`, `a11y-text`, `shape`), so `RULE_IDS` is unchanged. The paths live in `ASK_FILES`, apart from `CONTENT_FILES`, so `npm run content:check` keeps passing until the files exist. `content:check` starts calling the validators when T399 adds the files.
+- [x] **T401** `buildCorpus(bundle)`. → FR-430
   - Acceptance: drafts are absent, two runs give byte-identical output, and key order in the source JSON doesn't change the output. · Verify: `npx vitest run tests/unit/ask/corpus` · Files: `src/core/ask/corpus.ts`, `tests/unit/ask/corpus.test.ts`
-- [ ] **T402** `render.ts` segment parser. → FR-432
+- [x] **T402** `render.ts` segment parser. → FR-432
   - Acceptance: `[[dmns]]` → project ref, `[[nope]]` → dropped, `[[link:Email]]` → the site link, a bare `https://…`, `<b>`, `![x](y)`, and `[a](b)` stay inert text, and a half token at the end is dropped. · Verify: `npx vitest run tests/unit/ask/render` · Files: `src/core/ask/render.ts`, `tests/unit/ask/render.test.ts`
-- [ ] **T403** `protocol.ts` and `history.ts`: request validation and caps, the event union, the incremental NDJSON decoder (split chunks, multi-byte UTF-8 across chunks), and history trimming. → FR-417, FR-418, FR-436
+- [x] **T403** `protocol.ts` and `history.ts`: request validation and caps, the event union, the incremental NDJSON decoder (split chunks, multi-byte UTF-8 across chunks), and history trimming. → FR-417, FR-418, FR-436
   - Acceptance: an oversize body, a seventh turn, a non-string field, and an unknown event type are all rejected, and a decoder fed one byte at a time yields the same events. · Verify: `npx vitest run tests/unit/ask/protocol` · Files: `src/core/ask/protocol.ts`, `src/core/ask/history.ts`, `tests/unit/ask/protocol.test.ts`
 
 ## Phase 1 · Ask, static (after CP4e)
