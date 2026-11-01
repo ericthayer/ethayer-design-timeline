@@ -8,7 +8,7 @@ updatedBy: claude
 
 - v1, the hero and résumé (spec 002), the Batch B artwork and gallery (spec 003), and the prerender and link previews (T070, T071) are merged to main.
 - Spec 004 (admin editing) parts 1 and 2 are merged to main: PR #6 (content as JSON, build-time media, `/admin` sign-in) and PR #7 (`github-publish`).
-- PR #8 (release-please and commitlint) was closed unmerged on purpose. Keep using Conventional Commit messages and squash merges. A small tag-on-merge release workflow is undecided (first tag `v1.0.0` or `v0.x`).
+- PR #8 (release-please and commitlint) was closed unmerged on purpose. Keep using Conventional Commit messages and squash merges. `v1.0.0` is tagged. A tag-on-merge release workflow (`.github/workflows/release.yml`, bump from the squash PR title) is in review, with a PR-title check.
 - PR #9, #10 and #11 are merged. #11 added `scripts/smoke-publish.ts`.
 - CP4d smoke publish passed on 2026-11-01 against `ericthayer/admin-sandbox`: create (JSON + image), update and delete each made one commit, JSON read-backs matched with UTF-8 intact, the `sha: null` delete worked, and deploy status read `queued → unknown: timeout`.
 - The PR #5 post-deploy smoke test passed on production on 2026-10-24 (steps 1–5). It turned up one console error, now follow-up 1.
