@@ -50,7 +50,7 @@ const LINK_KINDS: readonly ProjectLink['kind'][] = [
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const PLACEHOLDER_PREFIX = 'Placeholder ·';
 /** FR-091 text limits. */
-const LIMITS = { titleSm: 24, title: 40, summary: 160, tracklist: 8 } as const;
+const LIMITS = { titleSm: 24, title: 40, summary: 160, tracklist: 8, note: 240 } as const;
 
 function readSlug(r: Reader, file: string): string | undefined {
   const slug = r.string('slug');
@@ -104,12 +104,14 @@ function readGalleryItem(r: Reader, ctx: ValidationContext): GalleryItem | undef
   ) {
     r.error('placeholder-caption', 'label', `"${label}" must start with "${PLACEHOLDER_PREFIX}"`);
   }
+  const note = r.has('note') ? r.limited('note', LIMITS.note) : undefined;
   const span = r.optionalOneOf('span', SPANS);
   const focal = readFocal(r);
   if (media === undefined || label === undefined) return undefined;
   return {
     media,
     label,
+    ...(note === undefined ? {} : { note }),
     ...(span === undefined ? {} : { span }),
     ...(focal === undefined ? {} : { focal }),
   };

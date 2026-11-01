@@ -26,6 +26,7 @@ import { Reader, Sink, readPeriod } from '../../src/content/validate/read.ts';
 import {
   CTX,
   ERA_REF_PROJECT,
+  type JsonObject,
   PROJECT_FIXTURES,
   type ProjectFixture,
   type ProjectRule,
@@ -147,6 +148,29 @@ describe('validateProject (FR-313 per-file rules)', () => {
     const categories = ['motion-media', 'product-design'];
     const result = validateProject(baseProject('demo', { categories }), file, CTX);
     expect(result.ok && result.value.categories).toEqual(categories);
+  });
+
+  // Spec 006 FR-536: an optional companion note under each gallery label, 240 characters at most.
+  it('keeps a gallery note and limits it to 240 characters', () => {
+    const tile = (note: string): JsonObject => ({
+      media: { kind: 'placeholder', variant: 'site' },
+      label: 'Placeholder · Docs',
+      note,
+    });
+    const ok = validateProject(
+      baseProject('demo', { gallery: [tile('Why it matters.')] }),
+      file,
+      CTX,
+    );
+    expect(ok.ok && ok.value.gallery?.[0]?.note).toBe('Why it matters.');
+    const long = validateProject(
+      baseProject('demo', { gallery: [tile('x'.repeat(241))] }),
+      file,
+      CTX,
+    );
+    expect(long.ok ? [] : long.errors.map((e) => [e.rule, e.path])).toEqual([
+      ['text-length', '/gallery/0/note'],
+    ]);
   });
 
   it('accepts the base project and rebuilds it without stray keys', () => {
