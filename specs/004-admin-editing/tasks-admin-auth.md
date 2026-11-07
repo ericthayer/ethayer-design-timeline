@@ -33,7 +33,7 @@ From [spec-admin-auth.md](./spec-admin-auth.md) and [plan-admin-auth.md](./plan-
 - [x] **T350** Gated boot in `entry.ts`: restore, verify, mount, then `import('../main.ts')`. → FR-343, FR-350, US-A1–US-A3, US-A5
   - Acceptance: the public app never boots without a verified session. Focus moves to `<main>` after sign-in. A deep link opens after sign-in.
   - Verify: dev with a real token (owner). Files: `src/admin/entry.ts`
-- [ ] **T351** E2E and axe, with GitHub mocked (specs written; awaiting an `npm run e2e` run). → US-A1–US-A6, FR-341, FR-356, FR-357
+- [x] **T351** E2E and axe, with GitHub mocked. → US-A1–US-A6, FR-341, FR-356, FR-357 · CI run `41354596319` on main (2026-11-01): `npm run e2e`, 93 passed.
   - Acceptance: the spec §6 e2e list passes, with zero axe violations on the four `/admin` states.
   - Verify: `npm run e2e`. Files: `tests/e2e/admin.spec.ts`, `tests/e2e/public-isolation.spec.ts`, `tests/e2e/github-mock.ts`
 - [ ] **T352** Deploy-preview check (owner). → FR-341, FR-344, FR-355
