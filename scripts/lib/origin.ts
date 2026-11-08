@@ -1,5 +1,5 @@
 /** Site origin for absolute URLs in canonical and social tags (FR-132). */
-export const FALLBACK_ORIGIN = 'https://ethayer-design.netlify.app';
+export const FALLBACK_ORIGIN = 'https://work.ethayer.design';
 
 type Env = Readonly<Record<string, string | undefined>>;
 
@@ -21,4 +21,16 @@ export function resolveOrigin(env: Env): string {
   const url = new URL(candidate);
   const local = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
   return `${local ? url.protocol : 'https:'}//${url.host}`;
+}
+
+/** The Netlify subdomain that visitors and old links still use (FR-610). */
+export const LEGACY_ORIGIN = 'https://ethayer-design.netlify.app';
+
+/**
+ * A domain-level redirect from the Netlify subdomain to the primary origin (FR-610). Written only
+ * on production builds, so a preview or branch deploy never redirects the production subdomain.
+ */
+export function renderLegacyRedirect(origin: string, context: string | undefined): string {
+  if (context !== 'production' || origin === LEGACY_ORIGIN) return '';
+  return `${LEGACY_ORIGIN}/* ${origin}/:splat 301!\n`;
 }

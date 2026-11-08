@@ -66,7 +66,6 @@ export function projectsPage(items: readonly WallItem[], note: string): Page {
       description: PROJECTS_DESCRIPTION,
       image: ogImagePath(PROJECTS_OG_SLUG),
       imageAlt: projectsOgCard().alt,
-      noindex: false,
     },
     body: projectsBody(items, note),
   };

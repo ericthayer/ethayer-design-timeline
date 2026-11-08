@@ -1,4 +1,5 @@
 import { expect, expectNoAxeViolations, renderEverything, test } from './fixtures.ts';
+import { PUBLISHED_COUNT } from './published.ts';
 
 // Spec 006: the Projects view, the header view switch, and the contact footer.
 test.describe('projects view', () => {
@@ -19,7 +20,7 @@ test.describe('projects view', () => {
       'Product and UX design',
       'Motion and media',
     ]);
-    await expect(page.locator('project-card')).toHaveCount(28);
+    await expect(page.locator('project-card')).toHaveCount(PUBLISHED_COUNT);
     await expect(page.locator('[data-type="end-cap"]')).toHaveCount(0);
     await expect(page.getByRole('link', { name: 'Skip to end of timeline' })).toBeHidden();
   });

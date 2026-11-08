@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ERAS } from '../../src/content/eras.ts';
 import { PROJECTS } from '../../src/content/projects/index.ts';
+import { RESUME } from '../../src/content/resume.ts';
 import {
   HOME_DESCRIPTION,
   HOME_TITLE,
@@ -10,8 +11,14 @@ import {
   projectTitle,
 } from '../../src/content/site.ts';
 import type { Project } from '../../src/content/types.ts';
+import { visibleProjects } from '../../src/core/drafts.ts';
 import { Raw, esc, html } from '../../scripts/lib/html.ts';
-import { FALLBACK_ORIGIN, resolveOrigin } from '../../scripts/lib/origin.ts';
+import {
+  FALLBACK_ORIGIN,
+  LEGACY_ORIGIN,
+  renderLegacyRedirect,
+  resolveOrigin,
+} from '../../scripts/lib/origin.ts';
 import {
   applyPage,
   buildPages,
@@ -28,7 +35,9 @@ const manifest = JSON.parse(
   readFileSync('src/content/media-manifest.json', 'utf8'),
 ) as MediaManifest;
 const shell = readFileSync('index.html', 'utf8');
-const pages = buildPages({ projects: PROJECTS, eras: ERAS, manifest });
+// The build passes only published projects to buildPages (spec 007, FR-600).
+const published = visibleProjects(PROJECTS, { includeDrafts: false });
+const pages = buildPages({ projects: published, eras: ERAS, manifest, resume: RESUME });
 
 const pageFor = (slug: string): Page => {
   const page = pages.find((p) => p.route === `/work/${slug}`);
@@ -79,25 +88,44 @@ describe('site origin (FR-132)', () => {
   });
 });
 
+describe('netlify subdomain redirect (FR-610)', () => {
+  it('redirects the subdomain to the primary origin only on production', () => {
+    expect(renderLegacyRedirect('https://work.ethayer.design', 'production')).toBe(
+      `${LEGACY_ORIGIN}/* https://work.ethayer.design/:splat 301!\n`,
+    );
+    expect(renderLegacyRedirect('https://pr-22--x.netlify.app', 'deploy-preview')).toBe('');
+    expect(renderLegacyRedirect('https://work.ethayer.design', undefined)).toBe('');
+    expect(renderLegacyRedirect(LEGACY_ORIGIN, 'production')).toBe('');
+  });
+});
+
 describe('page model', () => {
-  it('builds the home page, the Projects page, and one page per project, in timeline order', () => {
-    expect(pages).toHaveLength(PROJECTS.length + 2);
+  it('builds the home page, the Projects page, and one page per published project, in timeline order', () => {
+    // Home, Projects, one page per published project, and the résumé (FR-615).
+    expect(pages).toHaveLength(published.length + 3);
+    expect(pages.at(-1)).toMatchObject({ route: '/resume', file: 'resume.html' });
     expect(home.route).toBe('/');
     expect(home.file).toBe('index.html');
     expect(pages[1]).toMatchObject({
       route: '/projects',
       file: 'projects.html',
-      meta: { title: PROJECTS_TITLE, image: '/og/projects.png', noindex: false },
+      meta: { title: PROJECTS_TITLE, image: '/og/projects.png' },
     });
     expect(new Set(pages.map((p) => p.route)).size).toBe(pages.length);
-    for (const project of PROJECTS) {
+    for (const project of published) {
       const page = pageFor(project.slug);
       expect(page.file).toBe(`work/${project.slug}.html`);
       expect(page.meta.title).toBe(projectTitle(project.title));
       expect(page.meta.description).toBe(project.summary);
       expect(page.meta.image).toBe(`/og/${project.slug}.png`);
       expect(page.meta.imageAlt.length).toBeGreaterThan(0);
-      expect(page.meta.noindex, project.slug).toBe(project.draft === true);
+    }
+  });
+
+  it('builds no page for a draft (FR-600, FR-601)', () => {
+    const routes = pages.map((p) => p.route);
+    for (const project of PROJECTS.filter((p) => p.draft === true)) {
+      expect(routes, project.slug).not.toContain(`/work/${project.slug}`);
     }
   });
 
@@ -137,7 +165,12 @@ describe('head tags (FR-131)', () => {
     expect(out).toContain(
       'og:image:alt" content="Poster for Denver Museum of Nature &amp; Science',
     );
-    expect(out).not.toContain('noindex');
+  });
+
+  it('never marks a page noindex, since drafts have no page (FR-601)', () => {
+    for (const page of pages) {
+      expect(renderHeadTags(page, ORIGIN), page.route).not.toContain('noindex');
+    }
   });
 
   it('puts the tags before </head> and leaves the app scripts alone', () => {
@@ -151,23 +184,13 @@ describe('head tags (FR-131)', () => {
     }
   });
 
-  it('marks drafts noindex and only drafts (FR-135)', () => {
-    for (const project of PROJECTS) {
-      const tags = renderHeadTags(pageFor(project.slug), ORIGIN);
-      expect(tags.includes('name="robots" content="noindex"'), project.slug).toBe(
-        project.draft === true,
-      );
-    }
-    expect(renderHeadTags(home, ORIGIN)).not.toContain('noindex');
-  });
-
   it('keeps $ patterns in content literal', () => {
     const tricky: Project = {
       ...(PROJECTS[0] as Project),
       title: "Cost $& $1 $' $$",
       summary: 'A $& B',
     };
-    const trickyPages = buildPages({ projects: [tricky], eras: ERAS, manifest });
+    const trickyPages = buildPages({ projects: [tricky], eras: ERAS, manifest, resume: RESUME });
     const out2 = applyPage(shell, trickyPages[2] as Page, ORIGIN);
     expect(out2).toContain('<title>Cost $&amp; $1 $&#39; $$ — Eric Thayer</title>');
     expect(out2).toContain('content="A $&amp; B"');
@@ -196,7 +219,7 @@ describe('head tags (FR-131)', () => {
 
 describe('static content (FR-133)', () => {
   it('gives every project page one h1 and a story, with no bare ampersands', () => {
-    for (const project of PROJECTS) {
+    for (const project of published) {
       const { body } = pageFor(project.slug);
       expect(body.match(/<h1[ >]/g), project.slug).toHaveLength(1);
       expect(body, project.slug).toContain(`>${esc(project.title)}</h1>`);
@@ -212,14 +235,14 @@ describe('static content (FR-133)', () => {
     const first = pageFor('agentic-engineering-loop').body;
     expect(first).not.toContain('Previous:');
     expect(first).toContain('href="/work/cobank-design-system">Next:');
-    const last = pageFor('motion-reel').body;
+    const last = pageFor('dli-training-media').body;
     expect(last).not.toContain('Next:');
-    expect(last).toContain('href="/work/dli-training-media">← Previous:');
+    expect(last).toContain('href="/work/dli-mobile-learning">← Previous:');
     expect(last).toContain('<a href="/">All projects</a>');
   });
 
-  it('lists every project on the home page, with an Education target for the skip link', () => {
-    for (const project of PROJECTS) {
+  it('lists every published project on the home page, with an Education target for the skip link', () => {
+    for (const project of published) {
       expect(home.body, project.slug).toContain(`href="/work/${project.slug}"`);
     }
     expect(home.body.match(/<h1[ >]/g)).toHaveLength(1);
@@ -235,14 +258,6 @@ describe('static content (FR-133)', () => {
     }
   });
 
-  it('shows the draft note only on drafts', () => {
-    for (const project of PROJECTS) {
-      expect(pageFor(project.slug).body.includes('static__draft'), project.slug).toBe(
-        project.draft === true,
-      );
-    }
-  });
-
   it('includes a sized cover image where the project has one', () => {
     expect(pageFor('dmns').body).toMatch(
       /<img[^>]*src="\/media\/dmns\/cover-960\.webp"[^>]*width="960"/,
@@ -252,15 +267,16 @@ describe('static content (FR-133)', () => {
 });
 
 describe('sitemap, robots, redirects (FR-130)', () => {
-  it('lists the home page and non-draft projects only', () => {
+  it('lists the home page, Projects, and published projects only', () => {
     const xml = renderSitemap(pages, ORIGIN);
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(locs).toContain('https://example.test/');
     expect(locs).toContain('https://example.test/projects');
-    expect(locs).toHaveLength(2 + PROJECTS.filter((p) => !p.draft).length);
+    expect(locs).toContain('https://example.test/resume');
+    expect(locs).toHaveLength(3 + published.length);
     for (const project of PROJECTS) {
       expect(locs.includes(`https://example.test/work/${project.slug}`), project.slug).toBe(
-        !project.draft,
+        project.draft !== true,
       );
     }
   });
@@ -269,11 +285,13 @@ describe('sitemap, robots, redirects (FR-130)', () => {
     expect(renderRobots(ORIGIN)).toContain('Sitemap: https://example.test/sitemap.xml');
   });
 
-  it('forces one rewrite for Projects and one per project page', () => {
+  it('forces one rewrite for Projects and one per published project page', () => {
     const [projects, ...lines] = renderRedirects(pages).trim().split('\n');
     expect(projects).toBe('/projects /projects.html 200!');
-    expect(lines).toHaveLength(PROJECTS.length);
-    for (const line of lines) {
+    expect(lines).toContain('/resume /resume.html 200!');
+    const work = lines.filter((line) => line.startsWith('/work/'));
+    expect(work).toHaveLength(published.length);
+    for (const line of work) {
       expect(line).toMatch(/^\/work\/([a-z0-9-]+) \/work\/\1\.html 200!$/);
     }
   });

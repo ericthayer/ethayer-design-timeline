@@ -1,15 +1,10 @@
 // Prerendered pages and link previews (US13, FR-130–FR-135) against the built, served output.
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import type { Page } from '@playwright/test';
-import { readContext, readRawContent } from '../../scripts/content-fs.ts';
 import { HOME_TITLE } from '../../src/content/site.ts';
-import { validateContent } from '../../src/content/validate/index.ts';
 import { expect, expectNoAxeViolations, test } from './fixtures.ts';
-
-// Playwright loads specs in plain Node, where the projects loader's import.meta.glob doesn't
-// exist, so read projects through the validator, as the prerender plugin does (spec 004).
-const content = validateContent(readRawContent('.'), readContext('.'));
-if (!content.ok) throw new Error('content is invalid: run npm run content:check');
-const PROJECTS = content.value.projects;
+import { PUBLISHED, PUBLISHED_COUNT } from './published.ts';
 
 /**
  * axe can't run while JavaScript is off, so serve the same static markup as live DOM: unwrap the
@@ -47,10 +42,18 @@ test.describe('without JavaScript', () => {
     await expect(page).toHaveURL(/\/$/);
   });
 
+  test('the résumé reads without JavaScript (FR-615)', async ({ page }) => {
+    await page.goto('/resume');
+    await expect(page).toHaveTitle('Résumé — Eric Thayer');
+    await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Experience' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Selected projects' })).toBeVisible();
+  });
+
   test('the home page lists every project and ends with education', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
-    await expect(page.locator('main a[href^="/work/"]')).toHaveCount(28);
+    await expect(page.locator('main a[href^="/work/"]')).toHaveCount(PUBLISHED_COUNT);
     await expect(page.getByRole('heading', { level: 2, name: 'Education' })).toBeVisible();
     await expect(page.locator('#timeline-end')).toHaveCount(1);
     await expect(page.locator('timeline-wall')).toHaveCount(0);
@@ -58,7 +61,13 @@ test.describe('without JavaScript', () => {
 });
 
 test.describe('static content accessibility (FR-133)', () => {
-  for (const path of ['/', '/work/agentic-engineering-loop', '/work/dmns', '/work/workbench']) {
+  for (const path of [
+    '/',
+    '/work/agentic-engineering-loop',
+    '/work/dmns',
+    '/work/dli-training-media',
+    '/resume',
+  ]) {
     test(`has no axe violations at ${path}`, async ({ page, request }) => {
       const source = await (await request.get(path)).text();
       await openStaticVersion(page, source, path);
@@ -88,7 +97,7 @@ test.describe('link previews', () => {
   });
 
   test('every og:image URL serves a 1200 × 630 PNG', async ({ request }) => {
-    for (const path of ['/', ...PROJECTS.map((project) => `/work/${project.slug}`)]) {
+    for (const path of ['/', ...PUBLISHED.map((project) => `/work/${project.slug}`)]) {
       const html = await (await request.get(path)).text();
       const url = /property="og:image" content="([^"]+)"/.exec(html)?.[1];
       if (!url) throw new Error(`${path} has no og:image`);
@@ -109,9 +118,8 @@ test.describe('link previews', () => {
     expect(body).not.toContain('noindex');
   });
 
-  test('draft pages are noindex and stay out of the sitemap', async ({ request }) => {
-    const draft = await (await request.get('/work/workbench')).text();
-    expect(draft).toContain('<meta name="robots" content="noindex" />');
+  test('drafts get no page and stay out of the sitemap (FR-600, FR-601)', async ({ request }) => {
+    expect(existsSync(join(process.cwd(), 'dist/work/workbench.html'))).toBe(false);
     const sitemap = await (await request.get('/sitemap.xml')).text();
     expect(sitemap).toContain('<loc>http://localhost:4173/work/dmns</loc>');
     expect(sitemap).not.toContain('/work/workbench');
@@ -121,9 +129,9 @@ test.describe('link previews', () => {
     expect(await (await request.get('/robots.txt')).text()).toContain(
       'Sitemap: http://localhost:4173/sitemap.xml',
     );
-    expect(await (await request.get('/_redirects')).text()).toContain(
-      '/work/dmns /work/dmns.html 200!',
-    );
+    const redirects = await (await request.get('/_redirects')).text();
+    expect(redirects).toContain('/work/dmns /work/dmns.html 200!');
+    expect(redirects).toContain('/resume /resume.html 200!');
   });
 });
 
@@ -151,5 +159,26 @@ test.describe('with JavaScript', () => {
     await page.goto('/work/not-a-project');
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
+  });
+
+  test("a draft's URL falls back to the wall in production (FR-601)", async ({ page }) => {
+    await page.goto('/work/workbench');
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
+  });
+});
+
+test.describe('not found page (FR-620, FR-621)', () => {
+  test('is a standalone, noindex document that passes axe without JavaScript', async ({
+    page,
+    request,
+  }) => {
+    const body = await (await request.get('/404.html')).text();
+    expect(body).toContain('<meta name="robots" content="noindex" />');
+    expect(body).not.toContain('<script');
+    await page.goto('/404.html');
+    await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Résumé' })).toHaveAttribute('href', '/resume');
+    await expectNoAxeViolations(page);
   });
 });

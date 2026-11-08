@@ -21,9 +21,9 @@ Nothing below starts until CP7a is approved.
 
 **Build**
 
-- [ ] **T604** Hide drafts: `visibleProjects()` with unit tests, wired into `main.ts` and `vite-prerender.ts`, with draft-aware counts in e2e. → FR-600–FR-604, plan §3, §4, SC-L1
+- [x] **T604** Hide drafts: `visibleProjects()` with unit tests, wired into `main.ts` and `vite-prerender.ts`, with draft-aware counts in e2e. → FR-600–FR-604, plan §3, §4, SC-L1
   - Done when: the hero count equals the published count, no draft page is built, and a new e2e shows a draft in `/admin`.
-- [ ] **T605** Static `/resume`: `resume-page.ts`, the page in `buildPages`, the `netlify.toml` rule removed, unit tests, and axe with JavaScript off. → FR-615–FR-617, SC-L3
+- [x] **T605** Static `/resume`: `resume-page.ts`, the page in `buildPages`, the `netlify.toml` rule removed, unit tests, and axe with JavaScript off. → FR-615–FR-617, SC-L3
   - Done when: `dist/resume.html` has its own head tags and the full résumé in `<noscript>`, and the JavaScript path still passes `resume.spec.ts`.
 - [ ] **T606** The 404 page and cache headers: `not-found-page.ts`, the `/work/*` rule removed, unit tests, axe, and FR-630 in `netlify.toml`. → FR-620–FR-622, FR-630
   - Done when: on the deploy preview, `curl` shows 404 for `/nope`, `/work/not-a-project`, and a draft's URL, 200 for `/work/dmns`, and the new `Cache-Control` on one file each under `/og`, `/media`, and `/fonts`. SC-L4 is checked on production at T613.

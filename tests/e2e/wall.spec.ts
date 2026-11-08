@@ -1,4 +1,5 @@
 import { expect, expectNoAxeViolations, renderEverything, test } from './fixtures.ts';
+import { PUBLISHED, PUBLISHED_COUNT } from './published.ts';
 
 test.describe('wall', () => {
   test('opens with the hero and the first batch (US1, spec 002 FR-100)', async ({ page }) => {
@@ -54,14 +55,15 @@ test.describe('wall', () => {
     }
     await expect(endCap).toBeVisible();
     await expect(page.locator('#wall-status')).toHaveText(/Loaded \d+ more projects/);
-    await expect(page.locator('project-card')).toHaveCount(28);
+    await expect(page.locator('project-card')).toHaveCount(PUBLISHED_COUNT);
   });
 
   test('renders about one Swiss card in four (FR-011b)', async ({ page }) => {
     await page.goto('/');
     await renderEverything(page);
-    await expect(page.locator('.card--swiss')).toHaveCount(7);
-    await expect(page.locator('.card--standard')).toHaveCount(21);
+    const swiss = PUBLISHED.filter((p) => p.treatment === 'swiss').length;
+    await expect(page.locator('.card--swiss')).toHaveCount(swiss);
+    await expect(page.locator('.card--standard')).toHaveCount(PUBLISHED_COUNT - swiss);
   });
 
   test('moves focus between cards with arrow keys (FR-081)', async ({ page }) => {

@@ -9,17 +9,6 @@
 [[plugins]]
   package = "./netlify/plugins/media-cache"
 
-# Deep links open the dialog client-side (FR-061). Prerendered pages replace this in T070.
-[[redirects]]
-  from = "/work/*"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/resume"
-  to = "/index.html"
-  status = 200
-
 # Admin entry (spec 004 FR-340): its own HTML, never linked from the public site (FR-344).
 [[redirects]]
   from = "/admin"
@@ -61,3 +50,20 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Images, video, and fonts (spec 007, FR-630). Not immutable: their file names aren't content-hashed,
+# so a replaced cover or font must reach visitors within a day.
+[[headers]]
+  for = "/og/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
