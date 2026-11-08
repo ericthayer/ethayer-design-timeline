@@ -4,12 +4,13 @@
  */
 import { HOME_OG_SLUG, OG_SIZE, homeOgCard, ogCardFor, ogImagePath } from '../../src/content/og.ts';
 import { HOME_DESCRIPTION, HOME_TITLE, SITE, projectTitle } from '../../src/content/site.ts';
-import type { Era, ImageMedia, Project, WallItem } from '../../src/content/types.ts';
+import type { Era, ImageMedia, Project, Resume, WallItem } from '../../src/content/types.ts';
 import { yearRange } from '../../src/core/format.ts';
 import { CATEGORIES } from '../../src/content/categories.ts';
 import { buildCategoryItems, buildWallItems, projectSequence } from '../../src/core/order.ts';
 import { Raw, esc, html } from './html.ts';
 import { projectsPage } from './projects-page.ts';
+import { resumePage } from './resume-page.ts';
 
 export interface MediaManifestEntry {
   readonly width: number;
@@ -38,6 +39,7 @@ export interface BuildInput {
   readonly projects: readonly Project[];
   readonly eras: readonly Era[];
   readonly manifest: MediaManifest;
+  readonly resume: Resume;
 }
 
 const NOTE =
@@ -234,7 +236,7 @@ export function buildPages(input: BuildInput): Page[] {
     buildCategoryItems(input.projects, input.eras, CATEGORIES),
     NOTE.replace('timeline', 'projects page'),
   );
-  return [home, byCategory, ...projects];
+  return [home, byCategory, ...projects, resumePage(input.resume)];
 }
 
 /** Canonical, robots, Open Graph, and Twitter tags for one page (FR-131). */

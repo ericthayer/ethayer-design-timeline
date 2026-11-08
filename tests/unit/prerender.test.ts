@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ERAS } from '../../src/content/eras.ts';
 import { PROJECTS } from '../../src/content/projects/index.ts';
+import { RESUME } from '../../src/content/resume.ts';
 import {
   HOME_DESCRIPTION,
   HOME_TITLE,
@@ -31,7 +32,7 @@ const manifest = JSON.parse(
 const shell = readFileSync('index.html', 'utf8');
 // The build passes only published projects to buildPages (spec 007, FR-600).
 const published = visibleProjects(PROJECTS, { includeDrafts: false });
-const pages = buildPages({ projects: published, eras: ERAS, manifest });
+const pages = buildPages({ projects: published, eras: ERAS, manifest, resume: RESUME });
 
 const pageFor = (slug: string): Page => {
   const page = pages.find((p) => p.route === `/work/${slug}`);
@@ -84,7 +85,9 @@ describe('site origin (FR-132)', () => {
 
 describe('page model', () => {
   it('builds the home page, the Projects page, and one page per published project, in timeline order', () => {
-    expect(pages).toHaveLength(published.length + 2);
+    // Home, Projects, one page per published project, and the résumé (FR-615).
+    expect(pages).toHaveLength(published.length + 3);
+    expect(pages.at(-1)).toMatchObject({ route: '/resume', file: 'resume.html' });
     expect(home.route).toBe('/');
     expect(home.file).toBe('index.html');
     expect(pages[1]).toMatchObject({
@@ -171,7 +174,7 @@ describe('head tags (FR-131)', () => {
       title: "Cost $& $1 $' $$",
       summary: 'A $& B',
     };
-    const trickyPages = buildPages({ projects: [tricky], eras: ERAS, manifest });
+    const trickyPages = buildPages({ projects: [tricky], eras: ERAS, manifest, resume: RESUME });
     const out2 = applyPage(shell, trickyPages[2] as Page, ORIGIN);
     expect(out2).toContain('<title>Cost $&amp; $1 $&#39; $$ — Eric Thayer</title>');
     expect(out2).toContain('content="A $&amp; B"');
@@ -253,7 +256,8 @@ describe('sitemap, robots, redirects (FR-130)', () => {
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(locs).toContain('https://example.test/');
     expect(locs).toContain('https://example.test/projects');
-    expect(locs).toHaveLength(2 + published.length);
+    expect(locs).toContain('https://example.test/resume');
+    expect(locs).toHaveLength(3 + published.length);
     for (const project of PROJECTS) {
       expect(locs.includes(`https://example.test/work/${project.slug}`), project.slug).toBe(
         project.draft !== true,
@@ -268,8 +272,10 @@ describe('sitemap, robots, redirects (FR-130)', () => {
   it('forces one rewrite for Projects and one per published project page', () => {
     const [projects, ...lines] = renderRedirects(pages).trim().split('\n');
     expect(projects).toBe('/projects /projects.html 200!');
-    expect(lines).toHaveLength(published.length);
-    for (const line of lines) {
+    expect(lines).toContain('/resume /resume.html 200!');
+    const work = lines.filter((line) => line.startsWith('/work/'));
+    expect(work).toHaveLength(published.length);
+    for (const line of work) {
       expect(line).toMatch(/^\/work\/([a-z0-9-]+) \/work\/\1\.html 200!$/);
     }
   });

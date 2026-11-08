@@ -42,6 +42,14 @@ test.describe('without JavaScript', () => {
     await expect(page).toHaveURL(/\/$/);
   });
 
+  test('the résumé reads without JavaScript (FR-615)', async ({ page }) => {
+    await page.goto('/resume');
+    await expect(page).toHaveTitle('Résumé — Eric Thayer');
+    await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Experience' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Selected projects' })).toBeVisible();
+  });
+
   test('the home page lists every project and ends with education', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
@@ -58,6 +66,7 @@ test.describe('static content accessibility (FR-133)', () => {
     '/work/agentic-engineering-loop',
     '/work/dmns',
     '/work/dli-training-media',
+    '/resume',
   ]) {
     test(`has no axe violations at ${path}`, async ({ page, request }) => {
       const source = await (await request.get(path)).text();
@@ -120,9 +129,9 @@ test.describe('link previews', () => {
     expect(await (await request.get('/robots.txt')).text()).toContain(
       'Sitemap: http://localhost:4173/sitemap.xml',
     );
-    expect(await (await request.get('/_redirects')).text()).toContain(
-      '/work/dmns /work/dmns.html 200!',
-    );
+    const redirects = await (await request.get('/_redirects')).text();
+    expect(redirects).toContain('/work/dmns /work/dmns.html 200!');
+    expect(redirects).toContain('/resume /resume.html 200!');
   });
 });
 

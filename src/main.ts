@@ -16,7 +16,7 @@ import { define as defineViewSwitch, ViewSwitch } from './components/view-switch
 import { CATEGORIES } from './content/categories.ts';
 import { ERAS } from './content/eras.ts';
 import { PROJECTS } from './content/projects/index.ts';
-import { HOME_TITLE, PROJECTS_TITLE, projectTitle } from './content/site.ts';
+import { HOME_TITLE, PROJECTS_TITLE, RESUME_TITLE, projectTitle } from './content/site.ts';
 import { visibleProjects } from './core/drafts.ts';
 import { getScheduler } from './core/media-scheduler.ts';
 import { getMotion } from './core/motion.ts';
@@ -209,7 +209,7 @@ async function openResume(): Promise<void> {
   if (openSlug) await closeProject();
   const dialog = await loadResume();
   scheduler.setGate('dialog', true);
-  document.title = 'Résumé — Eric Thayer';
+  document.title = RESUME_TITLE;
   dialog.show();
 }
 

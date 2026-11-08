@@ -15,11 +15,6 @@
   to = "/index.html"
   status = 200
 
-[[redirects]]
-  from = "/resume"
-  to = "/index.html"
-  status = 200
-
 # Admin entry (spec 004 FR-340): its own HTML, never linked from the public site (FR-344).
 [[redirects]]
   from = "/admin"

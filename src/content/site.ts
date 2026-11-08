@@ -11,6 +11,7 @@ export const HOME_DESCRIPTION =
 
 /** The Projects view's title and description (spec 006, FR-523). */
 export const PROJECTS_TITLE = 'Projects — Eric Thayer';
+export const RESUME_TITLE = `Résumé — ${SITE.name}`;
 export const PROJECTS_DESCRIPTION =
   'Design systems, agentic engineering, front-end platforms, product design, and motion work by Eric Thayer, grouped by kind of work.';
 
