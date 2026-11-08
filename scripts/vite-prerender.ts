@@ -5,6 +5,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import type { Plugin, ResolvedConfig } from 'vite';
+import { visibleProjects } from '../src/core/drafts.ts';
 import { validateContent } from '../src/content/validate/index.ts';
 import { readContext, readRawContent } from './content-fs.ts';
 import { resolveOrigin } from './lib/origin.ts';
@@ -43,7 +44,9 @@ export function prerender(): Plugin {
       const content = validateContent(readRawContent(config.root), readContext(config.root));
       if (!content.ok) throw new Error('prerender: content is invalid; run npm run content:check');
       const { projects, eras } = content.value;
-      const pages = buildPages({ projects, eras, manifest });
+      // Drafts get no page, sitemap entry, or redirect in production (spec 007, FR-600, FR-601).
+      const shown = visibleProjects(projects, { includeDrafts: false });
+      const pages = buildPages({ projects: shown, eras, manifest });
 
       for (const page of pages) write(join(outDir, page.file), applyPage(shell, page, origin));
       write(join(outDir, 'sitemap.xml'), renderSitemap(pages, origin));

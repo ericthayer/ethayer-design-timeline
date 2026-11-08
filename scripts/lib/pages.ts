@@ -23,7 +23,6 @@ export interface PageMeta {
   readonly description: string;
   readonly image: string;
   readonly imageAlt: string;
-  readonly noindex: boolean;
 }
 
 export interface Page {
@@ -190,7 +189,6 @@ function projectBody(project: Project, near: Neighbors, manifest: MediaManifest)
               </ul>`
           : null
       }
-      ${project.draft ? html`<p class="static__draft">Draft copy and placeholder media. Final details pending.</p>` : null}
     </article>
     <nav class="static__nav" aria-label="Project navigation">
       <ul class="static__links">
@@ -214,7 +212,6 @@ export function buildPages(input: BuildInput): Page[] {
       description: HOME_DESCRIPTION,
       image: ogImagePath(HOME_OG_SLUG),
       imageAlt: homeOgCard().alt,
-      noindex: false,
     },
     body: homeBody(items),
   };
@@ -226,7 +223,6 @@ export function buildPages(input: BuildInput): Page[] {
       description: project.summary,
       image: ogImagePath(project.slug),
       imageAlt: ogCardFor(project).alt,
-      noindex: project.draft === true,
     },
     body: projectBody(
       project,
@@ -248,7 +244,6 @@ export function renderHeadTags(page: Page, origin: string): string {
   const image = `${origin}${meta.image}`;
   const tags: Raw[] = [
     html`<link rel="canonical" href="${url}" />`,
-    ...(meta.noindex ? [html`<meta name="robots" content="noindex" />`] : []),
     html`<meta property="og:type" content="website" />`,
     html`<meta property="og:site_name" content="${SITE.name}" />`,
     html`<meta property="og:title" content="${meta.title}" />`,
@@ -322,10 +317,7 @@ function markProjectsView(shell: string): string {
 const loc = (page: Page, origin: string): string => `${origin}${page.route}`;
 
 export function renderSitemap(pages: readonly Page[], origin: string): string {
-  const urls = pages
-    .filter((page) => !page.meta.noindex)
-    .map((page) => `  <url><loc>${esc(loc(page, origin))}</loc></url>`)
-    .join('\n');
+  const urls = pages.map((page) => `  <url><loc>${esc(loc(page, origin))}</loc></url>`).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
 }
 

@@ -17,6 +17,7 @@ import { CATEGORIES } from './content/categories.ts';
 import { ERAS } from './content/eras.ts';
 import { PROJECTS } from './content/projects/index.ts';
 import { HOME_TITLE, PROJECTS_TITLE, projectTitle } from './content/site.ts';
+import { visibleProjects } from './core/drafts.ts';
 import { getScheduler } from './core/media-scheduler.ts';
 import { getMotion } from './core/motion.ts';
 import { buildCategoryItems, buildWallItems, itemIndexOf, projectSequence } from './core/order.ts';
@@ -29,15 +30,19 @@ defineToggle();
 defineWall();
 defineViewSwitch();
 
+const base = routerBase(location.pathname);
+// Drafts show in dev and under /admin only (spec 007, FR-600, FR-602).
+const SHOWN = visibleProjects(PROJECTS, { includeDrafts: import.meta.env.DEV || base !== '' });
+
 // Two views of one content set (spec 006): items, wall label, and page title per view.
 const VIEWS = {
   experience: {
-    items: buildWallItems(PROJECTS, ERAS),
+    items: buildWallItems(SHOWN, ERAS),
     label: 'Career timeline',
     title: HOME_TITLE,
   },
   projects: {
-    items: buildCategoryItems(PROJECTS, ERAS, CATEGORIES),
+    items: buildCategoryItems(SHOWN, ERAS, CATEGORIES),
     label: 'Projects by category',
     title: PROJECTS_TITLE,
   },
@@ -46,7 +51,6 @@ const GRID_LABELS: Readonly<Record<ViewId, string>> = {
   experience: 'Projects, newest first',
   projects: 'Projects by category',
 };
-const base = routerBase(location.pathname);
 let view: ViewId = viewOfPath(location.pathname.slice(base.length) || '/') ?? 'experience';
 let items = VIEWS[view].items;
 let sequence = projectSequence(items);

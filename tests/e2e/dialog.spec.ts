@@ -1,4 +1,5 @@
 import { expect, expectNoAxeViolations, test } from './fixtures.ts';
+import { PUBLISHED_COUNT } from './published.ts';
 
 test.describe('project dialog', () => {
   test('opens on click, focuses the title, and closes with Esc (US2, FR-053)', async ({ page }) => {
@@ -54,21 +55,20 @@ test.describe('project dialog', () => {
     await expect(page).toHaveURL(/\/work\/figma-token-pipeline$/);
     await page.keyboard.press('ArrowLeft');
     await expect(page).toHaveURL(/\/work\/cobank-design-system$/);
-    await expect(page.getByText('02 / 28')).toBeVisible();
+    await expect(page.getByText(`02 / ${PUBLISHED_COUNT}`)).toBeVisible();
     await page.goBack();
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole('dialog')).toBeHidden();
   });
 
   test('deep-links into a later batch and returns focus there (US5, FR-053)', async ({ page }) => {
-    await page.goto('/work/motion-reel');
-    const dialog = page.getByRole('dialog', { name: 'Motion Demo Reel' });
+    await page.goto('/work/dli-training-media');
+    const dialog = page.getByRole('dialog', { name: '100+ Training Media' });
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('button', { name: /loads Vimeo/ })).toBeVisible();
     await dialog.getByRole('button', { name: 'Close' }).click();
     await expect(dialog).toBeHidden();
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByRole('link', { name: 'Motion Demo Reel' })).toBeFocused();
+    await expect(page.getByRole('link', { name: '100+ Training Media' })).toBeFocused();
   });
 
   test('sends unknown slugs back to the wall (US5)', async ({ page }) => {

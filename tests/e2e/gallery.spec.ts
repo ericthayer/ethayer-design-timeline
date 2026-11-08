@@ -44,14 +44,6 @@ test.describe('editorial gallery (spec 003, 006 FR-535)', () => {
     expect(focal).toBe('30% 40%');
   });
 
-  test('keeps the Vimeo facade click-to-load (NFR-06)', async ({ page }) => {
-    await page.goto('/work/motion-reel');
-    const gallery = page.getByRole('list', { name: 'Project gallery' });
-    await expect(gallery.locator('iframe')).toHaveCount(0);
-    await gallery.getByRole('button', { name: /Play “Motion demo reel”/ }).click();
-    await expect(gallery.locator('iframe')).toHaveCount(1);
-  });
-
   test('has no axe violations with the gallery open (SC-2)', async ({ page }) => {
     await page.goto('/work/cobank-design-system');
     await expect(page.getByRole('list', { name: 'Project gallery' })).toBeVisible();
