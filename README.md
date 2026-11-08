@@ -49,5 +49,6 @@ The preview images (`public/og/*.png`, 1200 × 630) are rendered locally by `npm
 | [specs/001-timeline-wall/data-model.md](specs/001-timeline-wall/data-model.md) | Types, themes, motifs, content inventory |
 | [specs/001-timeline-wall/plan.md](specs/001-timeline-wall/plan.md) | Architecture, decisions, layout, testing |
 | [specs/001-timeline-wall/tasks.md](specs/001-timeline-wall/tasks.md) | Ordered todo list with approval checkpoints |
+| [specs/007-launch/runbook.md](specs/007-launch/runbook.md) | Roll production back to a good deploy, check it, and roll forward |
 
 Hanken Grotesk is licensed under the SIL Open Font License (`public/fonts/OFL-hanken-grotesk.txt`).
