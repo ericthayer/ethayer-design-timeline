@@ -42,8 +42,9 @@ Nothing below starts until CP7a is approved.
 
 - [ ] **T610** (owner) Create the uptime monitor for `/`, turn on Netlify's failed-deploy email, and send one test alert. Nothing is added to the client. → FR-652–FR-654
   - Done when: the test alert reached the owner's inbox.
-- [ ] **T611** Write `specs/007-launch/runbook.md`, and link it from the README. Check Netlify's restore behavior against its docs and record the URL. → FR-651
+- [x] **T611** Write `specs/007-launch/runbook.md`, and link it from the README. Check Netlify's restore behavior against its docs and record the URL. → FR-651
   - Done when: each step names the exact place to click or command to run, including what happens to the next deploy after a restore.
+  - Evidence: [runbook.md](./runbook.md), checked against Netlify's "Manage deploys" page on 2026-11-07. Two points the docs don't settle (whether a restore locks on its own, and what unlocking publishes) are handled by explicit steps, and T612 confirms them.
 - [ ] **T612** (owner, with Claude) Merge the CP7b PR, then do one real restore and roll it forward, following the runbook as written. Fix any step that was wrong. → SC-L9
   - Done when: the time to restore is recorded, and production is back on the latest deploy.
 

@@ -83,7 +83,12 @@ wall.id = 'wall';
 wall.setAttribute('role', 'region');
 wall.setAttribute('aria-label', VIEWS[view].label);
 wall.tabIndex = -1;
-document.getElementById('main')?.append(hero, wall);
+// The skip link's target exists from first load: the end-cap renders only after the wall's
+// batches (spec 007 fix). The link handler below moves focus to the end-cap heading.
+const skipTarget = document.createElement('span');
+skipTarget.id = 'timeline-end';
+skipTarget.tabIndex = -1;
+document.getElementById('main')?.append(hero, wall, skipTarget);
 document.getElementById('main')?.after(renderFooter());
 
 const viewSwitch = document.querySelector('view-switch');
@@ -268,7 +273,7 @@ document.addEventListener('click', (event) => {
   if (href === '#timeline-end') {
     event.preventDefault();
     wall.renderAll();
-    document.getElementById('timeline-end')?.focus();
+    document.getElementById('timeline-end-title')?.focus();
   }
   // Hero CTA: scroll to the wall and hand it focus (FR-103)
   if (href === '#wall' && link.classList.contains('site-hero__cta')) {

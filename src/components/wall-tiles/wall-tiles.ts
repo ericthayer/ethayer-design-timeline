@@ -38,9 +38,13 @@ export function renderCategory(category: Category, count: number): HTMLElement {
 export function renderEndCap(): HTMLElement {
   return el(
     'section',
-    { class: 'tile tile--end', 'data-theme': 'paper-vermilion', 'aria-labelledby': 'timeline-end' },
+    {
+      class: 'tile tile--end',
+      'data-theme': 'paper-vermilion',
+      'aria-labelledby': 'timeline-end-title',
+    },
     [
-      el('h2', { class: 'tile__title', id: 'timeline-end', tabindex: '-1' }, ['Education']),
+      el('h2', { class: 'tile__title', id: 'timeline-end-title', tabindex: '-1' }, ['Education']),
       el(
         'ul',
         { class: 'tile__education' },
