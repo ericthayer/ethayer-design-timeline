@@ -167,3 +167,18 @@ test.describe('with JavaScript', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
   });
 });
+
+test.describe('not found page (FR-620, FR-621)', () => {
+  test('is a standalone, noindex document that passes axe without JavaScript', async ({
+    page,
+    request,
+  }) => {
+    const body = await (await request.get('/404.html')).text();
+    expect(body).toContain('<meta name="robots" content="noindex" />');
+    expect(body).not.toContain('<script');
+    await page.goto('/404.html');
+    await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Résumé' })).toHaveAttribute('href', '/resume');
+    await expectNoAxeViolations(page);
+  });
+});

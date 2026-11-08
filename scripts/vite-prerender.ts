@@ -9,6 +9,7 @@ import type { Resume } from '../src/content/types.ts';
 import { visibleProjects } from '../src/core/drafts.ts';
 import { validateContent } from '../src/content/validate/index.ts';
 import { readContext, readRawContent } from './content-fs.ts';
+import { notFoundPage } from './lib/not-found-page.ts';
 import { resolveOrigin } from './lib/origin.ts';
 import {
   applyPage,
@@ -57,6 +58,8 @@ export function prerender(): Plugin {
       write(join(outDir, 'sitemap.xml'), renderSitemap(pages, origin));
       write(join(outDir, 'robots.txt'), renderRobots(origin));
       write(join(outDir, '_redirects'), renderRedirects(pages));
+      // Netlify serves this for any unknown path, with status 404 (spec 007, FR-620).
+      write(join(outDir, '404.html'), notFoundPage(shell));
       config.logger.info(`prerendered ${String(pages.length)} pages for ${origin}`);
     },
   };
