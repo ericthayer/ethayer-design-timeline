@@ -2,7 +2,7 @@
 
 A career timeline for [Eric Thayer](https://ethayer.design): a fluid bento wall of project cards. About one card in four is a Swiss-style poster with generated artwork. The rest are media tiles showing a screenshot, a short video loop, a live (non-interactive) iframe, or a placeholder. Each card opens a full-screen dialog with the project details. The wall scrolls vertically, and switches to horizontal scrolling on screens wider than 1800 px.
 
-**Status:** live at [ethayer-design.netlify.app](https://ethayer-design.netlify.app) and preparing for launch ([spec 007](specs/007-launch/spec.md)). The latest state is in [STATUS.md](STATUS.md).
+**Status:** live at [work.ethayer.design](https://work.ethayer.design) and preparing for launch ([spec 007](specs/007-launch/spec.md)). The latest state is in [STATUS.md](STATUS.md).
 
 Built with vanilla TypeScript and Custom Elements (light DOM, native ES modules), with zero runtime dependencies.
 
@@ -35,7 +35,7 @@ npm run og         # regenerate the link-preview images in public/og/
 - `work/<slug>.html` and `index.html` each get their own `<title>`, description, canonical URL, Open Graph, and Twitter tags, so pasted links preview correctly in Slack, iMessage, LinkedIn, and X.
 - The same pages carry static content inside `<noscript>`, so visitors without JavaScript get the project story (or the full project list on `/`). With JavaScript on, nothing changes on screen.
 - The build also writes `sitemap.xml` (drafts left out), `robots.txt`, and a `_redirects` file that makes Netlify serve each page at `/work/<slug>`.
-- Absolute URLs come from `SITE_URL`, else Netlify's `URL` (production) or `DEPLOY_PRIME_URL` (previews), else `https://ethayer-design.netlify.app`. A custom domain needs no code change.
+- Absolute URLs come from `SITE_URL`, else Netlify's `URL` (production) or `DEPLOY_PRIME_URL` (previews), else `https://work.ethayer.design`. A custom domain needs no code change.
 
 The preview images (`public/og/*.png`, 1200 × 630) are rendered locally by `npm run og` from `tools/og-card.html` and committed, because the Netlify build has no browser. `npm test` fails if a project, the palette, the font, or the artwork code changes without regenerated images. `npm run og -- <slug>` re-renders one card, but only while the template is unchanged. After a style or artwork change, run `npm run og` for the full set.
 
