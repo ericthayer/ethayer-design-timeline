@@ -2,7 +2,7 @@
 
 A career timeline for [Eric Thayer](https://ethayer.design): a fluid bento wall of project cards. About one card in four is a Swiss-style poster with generated artwork. The rest are media tiles showing a screenshot, a short video loop, a live (non-interactive) iframe, or a placeholder. Each card opens a full-screen dialog with the project details. The wall scrolls vertically, and switches to horizontal scrolling on screens wider than 1800 px.
 
-**Status:** v1 is built and waiting for the owner's review (CP1 in [tasks.md](specs/001-timeline-wall/tasks.md)).
+**Status:** live at [ethayer-design.netlify.app](https://ethayer-design.netlify.app) and preparing for launch ([spec 007](specs/007-launch/spec.md)). The latest state is in [STATUS.md](STATUS.md).
 
 Built with vanilla TypeScript and Custom Elements (light DOM, native ES modules), with zero runtime dependencies.
 

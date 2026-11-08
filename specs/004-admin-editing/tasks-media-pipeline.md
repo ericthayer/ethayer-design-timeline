@@ -31,10 +31,11 @@ Legend as in [001 tasks](../001-timeline-wall/tasks.md). Spec: [spec-media-pipel
   - Verify: `npx vitest run tests/unit/content.test.ts`
   - Files: `tests/unit/content.test.ts`
 - [ ] **T327** Netlify local plugin `netlify/plugins/media-cache/` (`manifest.yml` + `index.js`): restore `.cache/media` in `onPreBuild` and save it in `onPostBuild`, with try/catch and a warning. Add `[[plugins]]` to `netlify.toml` and node globals to the ESLint config. First check the API against Netlify's docs and record the doc URL in a code comment. → FR-333
+  - *Status 2026-11-07: the code shipped in `660eaa6`, and the plugin reports success on production. Still open: reading the deploy logs for this acceptance, and the forced plugin error.*
   - Acceptance: the second deploy log shows a cache restore and `encoded: 0`. A forced plugin error still deploys.
   - Verify: two deploy previews on the PR branch; read the logs.
   - Files: `netlify/plugins/media-cache/manifest.yml`, `netlify/plugins/media-cache/index.js`, `netlify.toml`, `eslint.config.js`
-- [ ] **T328** CI: `actions/cache@v4` for `.cache/media`, keyed per FR-333, before `npm run check`. Confirm sharp's Linux binary installs from the lockfile, and fix the lockfile if not. → FR-333
+- [x] **T328** CI: `actions/cache@v4` for `.cache/media`, keyed per FR-333, before `npm run check`. Confirm sharp's Linux binary installs from the lockfile, and fix the lockfile if not. → FR-333 · Shipped in `a8776ad`. CI run `41354596319` on main (2026-11-01) is green, with a primary cache hit and `media: 9 images (encoded: 0, cached: 9)`.
   - Acceptance: CI green on `ubuntu-latest`. A rerun shows a cache hit and `encoded: 0`.
   - Verify: two CI runs on the PR; read the logs.
   - Files: `.github/workflows/ci.yml`, `package-lock.json` (only if the fix is needed)
