@@ -10,7 +10,7 @@ import { visibleProjects } from '../src/core/drafts.ts';
 import { validateContent } from '../src/content/validate/index.ts';
 import { readContext, readRawContent } from './content-fs.ts';
 import { notFoundPage } from './lib/not-found-page.ts';
-import { resolveOrigin } from './lib/origin.ts';
+import { renderLegacyRedirect, resolveOrigin } from './lib/origin.ts';
 import {
   applyPage,
   buildPages,
@@ -57,7 +57,10 @@ export function prerender(): Plugin {
       for (const page of pages) write(join(outDir, page.file), applyPage(shell, page, origin));
       write(join(outDir, 'sitemap.xml'), renderSitemap(pages, origin));
       write(join(outDir, 'robots.txt'), renderRobots(origin));
-      write(join(outDir, '_redirects'), renderRedirects(pages));
+      write(
+        join(outDir, '_redirects'),
+        renderRedirects(pages) + renderLegacyRedirect(origin, process.env['CONTEXT']),
+      );
       // Netlify serves this for any unknown path, with status 404 (spec 007, FR-620).
       write(join(outDir, '404.html'), notFoundPage(shell));
       config.logger.info(`prerendered ${String(pages.length)} pages for ${origin}`);

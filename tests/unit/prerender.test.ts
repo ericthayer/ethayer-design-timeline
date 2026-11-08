@@ -13,7 +13,12 @@ import {
 import type { Project } from '../../src/content/types.ts';
 import { visibleProjects } from '../../src/core/drafts.ts';
 import { Raw, esc, html } from '../../scripts/lib/html.ts';
-import { FALLBACK_ORIGIN, resolveOrigin } from '../../scripts/lib/origin.ts';
+import {
+  FALLBACK_ORIGIN,
+  LEGACY_ORIGIN,
+  renderLegacyRedirect,
+  resolveOrigin,
+} from '../../scripts/lib/origin.ts';
 import {
   applyPage,
   buildPages,
@@ -80,6 +85,17 @@ describe('site origin (FR-132)', () => {
     ],
   ])('resolves %j to %s', (env, expected) => {
     expect(resolveOrigin(env)).toBe(expected);
+  });
+});
+
+describe('netlify subdomain redirect (FR-610)', () => {
+  it('redirects the subdomain to the primary origin only on production', () => {
+    expect(renderLegacyRedirect('https://work.ethayer.design', 'production')).toBe(
+      `${LEGACY_ORIGIN}/* https://work.ethayer.design/:splat 301!\n`,
+    );
+    expect(renderLegacyRedirect('https://pr-22--x.netlify.app', 'deploy-preview')).toBe('');
+    expect(renderLegacyRedirect('https://work.ethayer.design', undefined)).toBe('');
+    expect(renderLegacyRedirect(LEGACY_ORIGIN, 'production')).toBe('');
   });
 });
 
