@@ -49,8 +49,10 @@ Nothing below starts until CP7a is approved.
 
 **Verify**
 
-- [ ] **T613** Run the production `curl` list again on the new domain: routes, 404s, headers, sitemap count, and JavaScript-off `/resume`. → SC-L1–SC-L4
-- [ ] **T614** Lighthouse, mobile, on production, for the four routes, with results recorded here. → SC-L5
+- [x] **T613** Run the production `curl` list again on the new domain: routes, 404s, headers, sitemap count, and JavaScript-off `/resume`. → SC-L1–SC-L4
+  - *Run 2026-11-08 on work.ethayer.design: `/`, `/projects`, `/work/dmns`, and `/resume` return 200, `/nope`, `/work/not-a-project`, and `/work/workbench` return 404. The sitemap lists 24 URLs with no drafts and no netlify.app. `/resume` has the résumé in `<noscript>`. The 404 page is noindex. `/og`, `/media`, and `/fonts` send the one-day cache policy.*
+- [x] **T614** Lighthouse, mobile, on production, for the four routes, with results recorded here. → SC-L5
+  - *Run 2026-11-08, Lighthouse 12, mobile, simulated throttling, on the content as it is now (LQ2 placeholders and T608 still open, so this isn't the final measure). Performance: `/` 100, `/projects` 100, `/work/dmns` 99, `/resume` 100. LCP: 1.2 s, 1.1 s, 1.6 s, 1.3 s. CLS 0 on all four. Accessibility: `/` 98, the rest 100. The `/` miss is the skip-link audit: its `#timeline-end` target is rendered by JavaScript, so the link isn't focusable until the wall renders that batch. Fix or accept at T616.*
 - [ ] **T615** (owner) Test iPhone Safari, desktop Safari, desktop Firefox, and a VoiceOver pass over the core path, then paste a URL into Slack, LinkedIn (Post Inspector), and iMessage. → SC-L6–SC-L8
 - [ ] **T616** Report every SC-L result, with any miss listed as fix or accept.
 - [ ] **CP7c** Owner gives go or no-go.
