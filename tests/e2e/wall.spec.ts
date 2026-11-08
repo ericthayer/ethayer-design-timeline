@@ -101,4 +101,12 @@ test.describe('wall', () => {
     await renderEverything(page);
     await expectNoAxeViolations(page);
   });
+
+  test('the skip link reaches the end-cap from the first load (FR-083)', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#timeline-end')).toHaveCount(1);
+    await page.getByRole('link', { name: 'Skip to end of timeline' }).focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('heading', { level: 2, name: 'Education' })).toBeFocused();
+  });
 });
