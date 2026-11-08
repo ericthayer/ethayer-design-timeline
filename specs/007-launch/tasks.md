@@ -16,7 +16,7 @@ Nothing below starts until CP7a is approved.
 
 - [ ] **T602** (owner) Add `work.ethayer.design` on Netlify, set it as primary, and wait for TLS. → FR-610
   - Done when: the site loads on the new address, and `netlify.app` redirects to it.
-- [ ] **T603** Update `FALLBACK_ORIGIN`, trigger a production deploy, and verify plan §5. → FR-611, SC-L2
+- [x] **T603** Update `FALLBACK_ORIGIN`, trigger a production deploy, and verify plan §5. → FR-611, SC-L2
   - Done when: `curl` finds no `netlify.app` URL in the home page's canonical tag, the sitemap, or `robots.txt`.
 
 **Build**

@@ -59,7 +59,9 @@ export function prerender(): Plugin {
       write(join(outDir, 'robots.txt'), renderRobots(origin));
       write(
         join(outDir, '_redirects'),
-        renderRedirects(pages) + renderLegacyRedirect(origin, process.env['CONTEXT']),
+        // The subdomain rule goes first: Netlify takes the first matching rule, and the forced
+        // page rules below would otherwise serve netlify.app's own pages.
+        renderLegacyRedirect(origin, process.env['CONTEXT']) + renderRedirects(pages),
       );
       // Netlify serves this for any unknown path, with status 404 (spec 007, FR-620).
       write(join(outDir, '404.html'), notFoundPage(shell));
