@@ -1,20 +1,20 @@
 ---
 state: active
-updated: 2026-11-07
+updated: 2026-11-08
 updatedBy: claude
 ---
 
 ## Left off
 
-- **Active feature: [spec 007, Launch](specs/007-launch/spec.md).** The owner approved CP7a on 2026-11-07 with the default answers to LQ1–LQ5. T601 corrected these records.
-- Main is at `b38ea3a` (v1.4.0), and production is on that commit. CI is green, with 686 unit tests and 93 e2e tests passing. No PRs are open.
-- Merged: specs 001–003, spec 006, the prerender and link previews, spec 004 `content-json`, `admin-auth`, `github-publish`, and the `edit-layer` work through T395 (#17), and the Ask pure core and draft content (#18, #19).
-- Releases are tag-on-merge from the squash commit subject (`.github/workflows/release.yml`). `v1.0.0` through `v1.4.0` are tagged.
+- **Active feature: [spec 007, Launch](specs/007-launch/spec.md).** The owner approved CP7a on 2026-11-07 with the default answers to LQ1–LQ5.
+- The site is live on `work.ethayer.design` (T602, T603). Production is on `6db2435` (latest tag `v1.5.2`). No PRs are open.
+- Done for launch: drafts hidden, static `/resume`, the 404 page and cache headers (T604–T606), the rollback runbook (T611), the production `curl` list (T613), and Lighthouse on production (T614: Performance 99–100 on all four routes, CLS 0; the skip-link fix shipped in #26).
+- T607 decided 2026-11-08 (owner): the five large cards keep placeholders at launch, and real media comes through `/admin` once the CMS works. The Swiss share is accepted at about 33 %.
+- Merged earlier: specs 001–003 and 006, spec 004 `content-json`, `admin-auth`, `github-publish`, and `edit-layer` through T395 (#17), and the Ask pure core and draft content (#18, #19). Releases are tag-on-merge (`.github/workflows/release.yml`).
 
 ## Next step
 
-- T602 (owner): add `work.ethayer.design` on Netlify, set it as primary, and wait for TLS.
-- Then T603–T618, in order, from [007 tasks](specs/007-launch/tasks.md).
+- T608 (owner): supply the final portrait (1440 × 1800) and its alt text, and confirm `HOME_TITLE`, `HOME_DESCRIPTION`, the footer copy, and the résumé. Claude then commits them and opens the T609 deploy-preview PR for CP7b.
 
 ## Blockers
 
@@ -23,8 +23,7 @@ updatedBy: claude
 
 ## Waiting on
 
-- Owner: T602, the domain.
-- Owner, for launch: T607 (the five large placeholder cards), T608 (final portrait and alt text, then confirm the home title and description, the footer copy, and the résumé), T610 (uptime monitor and failed-deploy email), and T615 (device, VoiceOver, and link-preview checks).
+- Owner, for launch: T608 (portrait, alt text, and copy confirmations), T610 (uptime monitor and failed-deploy email), and T615 (device, VoiceOver, and link-preview checks). Then CP7b and CP7c.
 
 ## Open decisions
 
@@ -41,7 +40,7 @@ The order is in [007 tasks](specs/007-launch/tasks.md#after-launch): T329 and CP
 
 Other notes:
 
-- T327's code is shipped, but its deploy-log acceptance is unread. T352's acceptance still needs confirming.
+- T327's code is shipped, and production deploy `6aefed03` reports `plugin_state: success`, so Netlify loads the plugin. The cache-restore and `encoded: 0` lines are in the deploy log, which only the owner's Netlify dashboard shows (T329). T352's acceptance still needs confirming.
 - Open from CP4d: an image read-back in the smoke script, on the first real publish.
 - Owner, for spec 005: check the T399 wording, and add any personal topics to `about.json`. Phase 2 needs a dedicated Anthropic workspace with the $20 limit (T427).
 - Owner assets: the Unity capture of the VR design system, the motion-reel source for an 8-second loop, and CoBank and Threecolts screenshots if cleared.
