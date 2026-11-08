@@ -86,6 +86,7 @@ Already passing, so out of scope: unit tests, typecheck, lint, build, budgets, C
 ### Content
 - **FR-640** The footer uses the final portrait (1440 × 1800, `media-src/site/portrait.png`), and `PORTRAIT_ALT` describes it.
 - **FR-641** No published `feature`, `wide`, or `tall` card uses a placeholder. Each of the five in §6 LQ2 gets real media, gets artwork, or becomes a draft. `sm` cards may launch with placeholders.
+  **Amended 2026-11-08 (owner):** the five LQ2 cards keep their placeholder media at launch. Real media goes in through `/admin` once the CMS works. The Swiss share is accepted as it stands (7 of 21 published, about 33 %, above the 20–30 % target).
 - **FR-642** The owner confirms `HOME_TITLE`, `HOME_DESCRIPTION`, the footer copy, and the résumé. The home description says "fifteen-plus years", while the hero says 2003 to now.
 
 ### Operations
@@ -115,7 +116,7 @@ The owner accepted every answer below at CP7a (2026-11-07).
 | # | Question | Answer |
 | --- | --- | --- |
 | LQ1 | Should drafts leave production, as in FR-600 and FR-601? | Yes. Alternatives: finish all seven before launch, or keep direct links working |
-| LQ2 | What happens to each of the five large placeholder cards (table below)? | Real media if ready, otherwise draft |
+| LQ2 | What happens to each of the five large placeholder cards (table below)? | Owner decision, 2026-11-08: keep placeholders at launch; real media later through `/admin` (FR-641 amended) |
 | LQ3 | Is `work.ethayer.design` still the address? | Yes (001 Q4) |
 | LQ4 | Which uptime monitor? | Any free external monitor with email alerts. The owner creates the account |
 | LQ5 | Does the home description change to match 2003 to now? | The owner supplies the wording at T608 |

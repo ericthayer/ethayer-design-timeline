@@ -14,7 +14,7 @@ Nothing below starts until CP7a is approved.
 
 **Domain**
 
-- [ ] **T602** (owner) Add `work.ethayer.design` on Netlify, set it as primary, and wait for TLS. → FR-610
+- [x] **T602** (owner) Add `work.ethayer.design` on Netlify, set it as primary, and wait for TLS. → FR-610
   - Done when: the site loads on the new address, and `netlify.app` redirects to it.
 - [x] **T603** Update `FALLBACK_ORIGIN`, trigger a production deploy, and verify plan §5. → FR-611, SC-L2
   - Done when: `curl` finds no `netlify.app` URL in the home page's canonical tag, the sitemap, or `robots.txt`.
@@ -25,13 +25,14 @@ Nothing below starts until CP7a is approved.
   - Done when: the hero count equals the published count, no draft page is built, and a new e2e shows a draft in `/admin`.
 - [x] **T605** Static `/resume`: `resume-page.ts`, the page in `buildPages`, the `netlify.toml` rule removed, unit tests, and axe with JavaScript off. → FR-615–FR-617, SC-L3
   - Done when: `dist/resume.html` has its own head tags and the full résumé in `<noscript>`, and the JavaScript path still passes `resume.spec.ts`.
-- [ ] **T606** The 404 page and cache headers: `not-found-page.ts`, the `/work/*` rule removed, unit tests, axe, and FR-630 in `netlify.toml`. → FR-620–FR-622, FR-630
+- [x] **T606** The 404 page and cache headers: `not-found-page.ts`, the `/work/*` rule removed, unit tests, axe, and FR-630 in `netlify.toml`. → FR-620–FR-622, FR-630
   - Done when: on the deploy preview, `curl` shows 404 for `/nope`, `/work/not-a-project`, and a draft's URL, 200 for `/work/dmns`, and the new `Cache-Control` on one file each under `/og`, `/media`, and `/fonts`. SC-L4 is checked on production at T613.
 
 **Content**
 
-- [ ] **T607** (owner, with Claude committing) Apply LQ2 to the five large cards: add media to `media-src/<slug>/`, or change the card, or set `draft: true`. Run `npm run content:check` after each. Review the wall per plan §6. → FR-641
+- [x] **T607** (owner, with Claude committing) Apply LQ2 to the five large cards: add media to `media-src/<slug>/`, or change the card, or set `draft: true`. Run `npm run content:check` after each. Review the wall per plan §6. → FR-641
   - Done when: no `feature`, `wide`, or `tall` published card has `kind: placeholder`.
+  - *Decided 2026-11-08 (owner): the five cards keep placeholders at launch, and real media comes through `/admin` after the CMS works (FR-641 amended). The Swiss share is accepted at about 33 %.*
 - [ ] **T608** (owner) Supply the final portrait and alt text, and confirm `HOME_TITLE`, `HOME_DESCRIPTION` (LQ5), the footer copy, and the résumé. Claude commits them. → FR-640, FR-642
   - Done when: the alt text no longer says "Placeholder", and the owner has confirmed each item.
 - [ ] **T609** Open a PR with T604–T608 on a deploy preview. Report drafts, `/resume`, the 404 page, and the wall at 390, 1280, and 1920 px for review.
@@ -49,8 +50,10 @@ Nothing below starts until CP7a is approved.
 
 **Verify**
 
-- [ ] **T613** Run the production `curl` list again on the new domain: routes, 404s, headers, sitemap count, and JavaScript-off `/resume`. → SC-L1–SC-L4
-- [ ] **T614** Lighthouse, mobile, on production, for the four routes, with results recorded here. → SC-L5
+- [x] **T613** Run the production `curl` list again on the new domain: routes, 404s, headers, sitemap count, and JavaScript-off `/resume`. → SC-L1–SC-L4
+  - *Run 2026-11-08 on work.ethayer.design: `/`, `/projects`, `/work/dmns`, and `/resume` return 200, `/nope`, `/work/not-a-project`, and `/work/workbench` return 404. The sitemap lists 24 URLs with no drafts and no netlify.app. `/resume` has the résumé in `<noscript>`. The 404 page is noindex. `/og`, `/media`, and `/fonts` send the one-day cache policy.*
+- [x] **T614** Lighthouse, mobile, on production, for the four routes, with results recorded here. → SC-L5
+  - *Run 2026-11-08, Lighthouse 12, mobile, simulated throttling, on the content as it is now (LQ2 placeholders and T608 still open, so this isn't the final measure). Performance: `/` 100, `/projects` 100, `/work/dmns` 99, `/resume` 100. LCP: 1.2 s, 1.1 s, 1.6 s, 1.3 s. CLS 0 on all four. Accessibility: `/` 98, the rest 100. The `/` miss is the skip-link audit: its `#timeline-end` target is rendered by JavaScript, so the link isn't focusable until the wall renders that batch. Fix or accept at T616.*
 - [ ] **T615** (owner) Test iPhone Safari, desktop Safari, desktop Firefox, and a VoiceOver pass over the core path, then paste a URL into Slack, LinkedIn (Post Inspector), and iMessage. → SC-L6–SC-L8
 - [ ] **T616** Report every SC-L result, with any miss listed as fix or accept.
 - [ ] **CP7c** Owner gives go or no-go.
