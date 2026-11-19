@@ -35,6 +35,7 @@ Nothing below starts until CP7a is approved.
   - *Decided 2026-11-08 (owner): the five cards keep placeholders at launch, and real media comes through `/admin` after the CMS works (FR-641 amended). The Swiss share is accepted at about 33 %.*
 - [ ] **T608** (owner) Supply the final portrait and alt text, and confirm `HOME_TITLE`, `HOME_DESCRIPTION` (LQ5), the footer copy, and the résumé. Claude commits them. → FR-640, FR-642
   - Done when: the alt text no longer says "Placeholder", and the owner has confirmed each item.
+  - *Deferred 2026-11-19 (owner) until a new portrait image is ready. T609 goes ahead without it; FR-640 and FR-642 stay open and are reported at T616 as fix or accept.*
 - [ ] **T609** Open a PR with T604–T608 on a deploy preview. Report drafts, `/resume`, the 404 page, and the wall at 390, 1280, and 1920 px for review.
 - [ ] **CP7b** Owner reviews the deploy preview. Approval locks the 404 page.
 
