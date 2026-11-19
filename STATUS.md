@@ -1,6 +1,6 @@
 ---
 state: active
-updated: 2026-11-08
+updated: 2026-11-19
 updatedBy: claude
 ---
 
@@ -14,7 +14,8 @@ updatedBy: claude
 
 ## Next step
 
-- T608 (owner): supply the final portrait (1440 × 1800) and its alt text, and confirm `HOME_TITLE`, `HOME_DESCRIPTION`, the footer copy, and the résumé. Claude then commits them and opens the T609 deploy-preview PR for CP7b.
+- T609 (Claude): open the deploy-preview PR for CP7b and report drafts, `/resume`, the 404 page, and the wall at 390, 1280, and 1920 px.
+- T608 is deferred (owner, 2026-11-19) until a new portrait image is ready. The footer keeps the placeholder portrait until then.
 
 ## Blockers
 
@@ -23,9 +24,11 @@ updatedBy: claude
 
 ## Waiting on
 
-- Owner, for launch: T608 (portrait, alt text, and copy confirmations), T610 (uptime monitor and failed-deploy email), and T615 (device, VoiceOver, and link-preview checks). Then CP7b and CP7c.
+- Owner, for launch: T610 (uptime monitor and failed-deploy email) and T615 (device, VoiceOver, and link-preview checks). Then CP7b and CP7c.
 
 ## Open decisions
+
+- Launch with the placeholder portrait, or hold CP7c until T608's new portrait arrives? FR-640 and FR-642 stay open until then. · since 2026-11-19
 
 - Should a licensed face like Neue Haas Unica replace Hanken Grotesk later? It stays for launch (007 §5). Switching would be an owner-approved design change. · since 2026-10-23
 - Should the Swiss artwork stay fixed, or should the cards that get one rotate? It stays fixed for launch (007 §5). · since 2026-10-23
