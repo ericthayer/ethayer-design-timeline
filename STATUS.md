@@ -1,20 +1,20 @@
 ---
 state: active
-updated: 2026-11-19
+updated: 2026-11-18
 updatedBy: claude
 ---
 
 ## Left off
 
 - **Active feature: [spec 007, Launch](specs/007-launch/spec.md).** The owner approved CP7a on 2026-11-07 with the default answers to LQ1–LQ5.
-- The site is live on `work.ethayer.design` (T602, T603). Production is on `6db2435` (latest tag `v1.5.2`). No PRs are open.
+- The site is live on `work.ethayer.design` (T602, T603). Production is on `6db2435` (latest tag `v1.5.2`). PR #28 (T609) is open for CP7b.
 - Done for launch: drafts hidden, static `/resume`, the 404 page and cache headers (T604–T606), the rollback runbook (T611), the production `curl` list (T613), and Lighthouse on production (T614: Performance 99–100 on all four routes, CLS 0; the skip-link fix shipped in #26).
 - T607 decided 2026-11-08 (owner): the five large cards keep placeholders at launch, and real media comes through `/admin` once the CMS works. The Swiss share is accepted at about 33 %.
 - Merged earlier: specs 001–003 and 006, spec 004 `content-json`, `admin-auth`, `github-publish`, and `edit-layer` through T395 (#17), and the Ask pure core and draft content (#18, #19). Releases are tag-on-merge (`.github/workflows/release.yml`).
 
 ## Next step
 
-- T609 (Claude): open the deploy-preview PR for CP7b and report drafts, `/resume`, the 404 page, and the wall at 390, 1280, and 1920 px.
+- CP7b (owner): review the deploy preview on PR #28 and the T609 report in [007 tasks](specs/007-launch/tasks.md). Approval locks the 404 page. Merging the PR starts T612.
 - T608 is deferred (owner, 2026-11-19) until a new portrait image is ready. The footer keeps the placeholder portrait until then.
 
 ## Blockers
