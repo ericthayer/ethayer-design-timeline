@@ -37,6 +37,7 @@ Nothing below starts until CP7a is approved.
   - Done when: the alt text no longer says "Placeholder", and the owner has confirmed each item.
   - *Deferred 2026-11-19 (owner) until a new portrait image is ready. T609 goes ahead without it; FR-640 and FR-642 stay open and are reported at T616 as fix or accept.*
 - [ ] **T609** Open a PR with T604–T608 on a deploy preview. Report drafts, `/resume`, the 404 page, and the wall at 390, 1280, and 1920 px for review.
+  - *Opened 2026-11-18 without T608 (deferred). T604–T606 are already on `main`, so the preview builds `main` as it is now. The report is in the PR.*
 - [ ] **CP7b** Owner reviews the deploy preview. Approval locks the 404 page.
 
 **Operations**
