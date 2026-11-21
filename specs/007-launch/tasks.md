@@ -36,7 +36,15 @@ Nothing below starts until CP7a is approved.
 - [ ] **T608** (owner) Supply the final portrait and alt text, and confirm `HOME_TITLE`, `HOME_DESCRIPTION` (LQ5), the footer copy, and the résumé. Claude commits them. → FR-640, FR-642
   - Done when: the alt text no longer says "Placeholder", and the owner has confirmed each item.
   - *Deferred 2026-11-19 (owner) until a new portrait image is ready. T609 goes ahead without it; FR-640 and FR-642 stay open and are reported at T616 as fix or accept.*
-- [ ] **T609** Open a PR with T604–T608 on a deploy preview. Report drafts, `/resume`, the 404 page, and the wall at 390, 1280, and 1920 px for review.
+- [x] **T609** Open a PR with T604–T608 on a deploy preview. Report drafts, `/resume`, the 404 page, and the wall at 390, 1280, and 1920 px for review.
+  - *Opened 2026-11-18 as PR #28 without T608 (deferred). T604–T606 are already on `main`, so the preview builds `main` as it is now, with the same JS bundle as production. Checked on `deploy-preview-28--ethayer-design.netlify.app`:*
+    - *Drafts: the hero says 21 projects (28 minus 7 drafts). The wall links 21 projects at 390, 1280, and 1920 px, with no draft among them. The 7 draft URLs return 404, and the sitemap lists 24 URLs (21 projects plus `/`, `/projects`, and `/resume`).*
+    - *`/resume`: 200. With JavaScript off it has its own title and canonical tag and the résumé in `<noscript>`. With JavaScript on the résumé dialog opens.*
+    - *404: `/nope`, `/work/not-a-project`, and a draft's URL return 404 with the standalone page (noindex, no site script). `/work/dmns` returns 200.*
+    - *Cache: `/og`, `/media`, and `/fonts` send `public,max-age=86400,stale-while-revalidate=604800`.*
+    - *Wall: no horizontal page scroll at 390 or 1280 px. At 1920 px the wall scrolls sideways and loads all 21 cards by its end.*
+    - *Preview only: Netlify adds its review drawer (`/.netlify/scripts/cdp`), which logs four CSP errors and draws a bar at the bottom of the window. Production has neither, and its console is clean.*
+    - *For CP7b: the footer still shows the placeholder portrait (T608). At 1280 px the wall ends with an empty dark area to the right of the Education card.*
 - [ ] **CP7b** Owner reviews the deploy preview. Approval locks the 404 page.
 
 **Operations**

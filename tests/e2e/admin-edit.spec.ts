@@ -124,12 +124,15 @@ test.describe('edit and publish (US-E1, US-E2)', () => {
     await editTitle(page, ' kept');
     await page.waitForTimeout(700);
     await page.reload();
-    // The token may or may not be remembered (admin-auth "Remember on this device").
-    const token = page.getByLabel('GitHub token');
-    await expect(token.or(title(page))).toBeVisible();
-    if (await token.isVisible()) {
-      await token.fill(TOKEN);
-      await page.getByRole('button', { name: 'Verify' }).click();
+    // The token may or may not be remembered (admin-auth "Remember on this device"). The form
+    // shows while the stored token is checked, then leaves the DOM, so wait until that check is
+    // over: the editor is up, or the form is idle again (Verify no longer aria-disabled).
+    const verify = page.getByRole('button', { name: 'Verify' });
+    const idleForm = verify.and(page.locator('[aria-disabled="false"]'));
+    await expect(title(page).or(idleForm)).toBeVisible();
+    if (await idleForm.isVisible()) {
+      await page.getByLabel('GitHub token').fill(TOKEN);
+      await verify.click();
     }
     await expect(title(page)).toHaveText('Denver Museum of Nature & Science kept');
     await expect(toolbar(page).getByText('1 unsaved change')).toBeVisible();
