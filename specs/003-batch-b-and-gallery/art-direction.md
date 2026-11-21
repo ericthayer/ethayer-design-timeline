@@ -44,3 +44,7 @@ banner/hero text-art overlap and no horizontal overflow. Visually inspected the
 Regenerated social-preview images and their freshness manifest after the SVG
 changes. All hard asset budgets pass; the budget checker still reports its
 non-blocking +2110 B initial-JS comparison against historical commit 6240560.
+
+T233: Owner requested a PR for deploy review. Add a separate compiled review entry
+only to Netlify's deploy-preview build command. Keep public/admin manifests intact
+and the production homepage unchanged; mark the review page noindex.

@@ -1,6 +1,12 @@
+"$schema" = "https://open-api.netlify.com/netlify.schema.json"
+
 [build]
   command = "npm run build"
   publish = "dist"
+
+# Keep the proposed homepage available for PR review without changing the live homepage.
+[context.deploy-preview]
+  command = "npm run build && npm run build:review"
 
 [build.environment]
   NODE_VERSION = "22"
