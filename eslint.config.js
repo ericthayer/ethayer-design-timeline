@@ -9,7 +9,7 @@ const htmlSinks = ['innerHTML', 'outerHTML', 'insertAdjacentHTML'].map((property
 }));
 
 export default defineConfig(
-  { ignores: ['dist', 'node_modules', 'public', 'test-results', 'playwright-report'] },
+  { ignores: ['dist', 'node_modules', 'public', 'test-results', 'playwright-report', 'docs/design-explorations'] },
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
   {
