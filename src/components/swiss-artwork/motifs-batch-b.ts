@@ -15,45 +15,41 @@ const polar = (cx: number, cy: number, r: number, angle: number): [number, numbe
 const poly = (points: readonly (readonly [number, number])[]): string =>
   points.map(([x, y]) => `${x.toFixed(2)},${y.toFixed(2)}`).join(' ');
 
-/** Triangles tessellated on a grid, keeping only those inside a chamfered square. */
+/** A tessellated square: four columns of connected, two-tone diagonal modules. */
 export function triMosaic({ rng, outlier }: MotifContext): SVGElement[] {
-  const n = 6;
-  const s = AREA / n;
-  const inside = ([x, y]: readonly [number, number]): boolean => {
-    const dx = Math.abs(x - 50);
-    const dy = Math.abs(y - 50);
-    return dx <= 42 && dy <= 42 && dx + dy <= 62;
-  };
-  const cells: SVGElement[] = [];
-  const candidates: number[] = [];
+  const n = 4;
+  const step = AREA / n;
+  const odd = outlier ? randInt(rng, 0, n * n - 1) : -1;
+  const nodes: SVGElement[] = [];
   for (let row = 0; row < n; row += 1) {
     for (let col = 0; col < n; col += 1) {
-      const x = INSET + col * s;
-      const y = INSET + row * s;
-      const up = (row + col) % 2 === 0;
-      const pts: [number, number][] = up
-        ? [
-            [x, y + s],
-            [x + s, y + s],
-            [x + s / 2, y],
-          ]
-        : [
+      const x = INSET + col * step;
+      const y = INSET + row * step;
+      const i = row * n + col;
+      nodes.push(
+        svg('polygon', {
+          points: poly([
             [x, y],
-            [x + s, y],
-            [x + s / 2, y + s],
-          ];
-      const [p0, p1, p2] = pts as [[number, number], [number, number], [number, number]];
-      const centroid: [number, number] = [(p0[0] + p1[0] + p2[0]) / 3, (p0[1] + p1[1] + p2[1]) / 3];
-      if (!inside(centroid)) continue;
-      candidates.push(cells.length);
-      cells.push(svg('polygon', { points: poly(pts), class: rng() < 0.5 ? 'a1' : 'a2' }));
+            [x + step, y],
+            [x, y + step],
+          ]),
+          class: i === odd ? 'a3' : (row + col) % 2 === 0 ? 'a1' : 'a2',
+        }),
+      );
+      if (row + col > 2)
+        nodes.push(
+          svg('polygon', {
+            points: poly([
+              [x + step, y],
+              [x + step, y + step],
+              [x, y + step],
+            ]),
+            class: (row + col) % 2 === 0 ? 'a2' : 'a1',
+          }),
+        );
     }
   }
-  if (outlier && candidates.length > 0) {
-    const pick = cells[randInt(rng, 0, cells.length - 1)];
-    pick?.setAttribute('class', 'a3');
-  }
-  return cells;
+  return nodes;
 }
 
 /** Two half-discs: line hatch on the left, a dot halftone that fades toward the right. */
@@ -86,39 +82,34 @@ export function halftoneHalves({ rng, outlier }: MotifContext): SVGElement[] {
   return nodes;
 }
 
-/** Two multiply-blended discs; the outlier is a bg-colored counter-form in the overlap. */
+/** Two substantial discs share one lens, like overlapping printing inks. */
 export function overlap({ rng, outlier }: MotifContext): SVGElement[] {
-  const spread = randInt(rng, 4, 22);
-  const nodes: SVGElement[] = [
-    svg('circle', { cx: 50 - spread, cy: 50, r: 26, class: 'a1 blend' }),
-    svg('circle', { cx: 50 + spread, cy: 50, r: 26, class: 'a2 blend' }),
+  const spread = outlier ? randInt(rng, 11, 16) : 13;
+  return [
+    svg('circle', { cx: 50 - spread, cy: 50, r: 34, class: 'a1 blend' }),
+    svg('circle', { cx: 50 + spread, cy: 50, r: 34, class: 'a2 blend' }),
   ];
-  if (outlier) nodes.push(svg('circle', { cx: 50, cy: 50, r: 6, class: 'bg' }));
-  return nodes;
 }
 
-/** Four-blade glyphs on a staggered grid; odd rows turn the other way. */
+/** Nine complete four-blade forms; a single turned glyph breaks the rhythm. */
 export function pinwheels({ rng, outlier }: MotifContext): SVGElement[] {
-  const n = 4;
+  const n = 3;
   const step = AREA / n;
-  const radius = step * 0.56;
+  const radius = step * 0.46;
   const odd = outlier ? randInt(rng, 0, n * n - 1) : -1;
   const nodes: SVGElement[] = [];
   for (let row = 0; row < n; row += 1) {
     for (let col = 0; col < n; col += 1) {
       const i = row * n + col;
-      const cx = INSET + col * step + step / 2 + (row % 2 === 1 ? step / 2 : 0);
-      const cy = INSET + row * step + step / 2;
-      const turn = row % 2 === 0 ? 1 : -1;
-      const base = i === odd ? Math.PI / 6 : 0;
+      const cx = INSET + (col + 0.5) * step;
+      const cy = INSET + (row + 0.5) * step;
+      const base = i === odd ? Math.PI / 4 : 0;
       for (let blade = 0; blade < 4; blade += 1) {
-        const a = base + turn * (blade * (TAU / 4));
-        const tip = polar(cx, cy, radius, a);
-        const side = polar(cx, cy, radius * 0.62, a + turn * (TAU / 8));
+        const a = base + (blade * TAU) / 4;
         nodes.push(
           svg('polygon', {
-            points: poly([[cx, cy], side, tip]),
-            class: i === odd ? 'a3' : 'a1',
+            points: poly([[cx, cy], polar(cx, cy, radius, a), polar(cx, cy, radius, a + TAU / 8)]),
+            class: i === odd ? 'a2' : 'a1',
           }),
         );
       }
@@ -160,28 +151,19 @@ export function impossibleHex({ rng, outlier }: MotifContext): SVGElement[] {
   return nodes;
 }
 
-/** Concentric rings, each broken by a seeded gap; the outlier ring is accented and off-centre. */
+/** A continuous four-lobed contour repeated at a measured interval. */
 export function concentricKnot({ rng, outlier }: MotifContext): SVGElement[] {
-  const rings = 9;
-  const accent = outlier ? randInt(rng, 2, rings - 3) : -1;
-  const nodes: SVGElement[] = [];
-  for (let i = 0; i < rings; i += 1) {
-    const r = 8 + i * 4.2;
-    const c = 2 * Math.PI * r;
-    const gap = c * (0.12 + rng() * 0.2);
-    const offset = rng() * c;
-    nodes.push(
-      svg('circle', {
-        cx: 50 + (i === accent ? 3 : 0),
-        cy: 50,
-        r,
-        class: i === accent ? 'ring ring-accent' : 'ring',
-        'stroke-dasharray': `${(c - gap).toFixed(2)} ${gap.toFixed(2)}`,
-        'stroke-dashoffset': offset.toFixed(2),
-      }),
-    );
-  }
-  return nodes;
+  const accent = outlier ? randInt(rng, 2, 6) : -1;
+  const contour =
+    'M50 24 C20 -6 -6 20 24 50 C-6 80 20 106 50 76 C80 106 106 80 76 50 C106 20 80 -6 50 24 Z';
+  return Array.from({ length: 9 }, (_, i) => {
+    const scale = 1 - i * 0.082;
+    return svg('path', {
+      d: contour,
+      class: i === accent ? 'ring ring-accent' : 'ring',
+      transform: `translate(50 50) scale(${scale}) translate(-50 -50)`,
+    });
+  });
 }
 
 /** Three translucent triangles stacked and offset, ramped from art-1 to art-3. */
@@ -222,28 +204,27 @@ export function triStack({ rng, outlier }: MotifContext): SVGElement[] {
   return nodes;
 }
 
-/** Concentric arcs of dashes at seeded phases, with one dot in accent on an orbit. */
+/** Nested orbital paths share one opening; one satellite marks the active loop. */
 export function orbitRings({ rng, outlier }: MotifContext): SVGElement[] {
-  const rings = 6;
-  const accent = outlier ? randInt(rng, 1, rings - 2) : -1;
-  const nodes: SVGElement[] = [svg('circle', { cx: 50, cy: 50, r: 4, class: 'a1' })];
-  for (let i = 0; i < rings; i += 1) {
-    const r = 12 + i * 6.4;
-    const c = 2 * Math.PI * r;
-    const dash = c / (5 + i);
+  const phase = randInt(rng, 0, 7) * 45;
+  const active = outlier ? randInt(rng, 2, 5) : -1;
+  const nodes: SVGElement[] = [];
+  for (let i = 0; i < 7; i += 1) {
+    const r = 11 + i * 5.4;
+    const length = TAU * r;
     nodes.push(
       svg('circle', {
         cx: 50,
         cy: 50,
         r,
         class: 'ring',
-        'stroke-dasharray': `${dash.toFixed(2)} ${dash.toFixed(2)}`,
-        'stroke-dashoffset': (rng() * c).toFixed(2),
+        'stroke-dasharray': `${length * 0.83} ${length * 0.17}`,
+        transform: `rotate(${phase + i * 8} 50 50)`,
       }),
     );
-    if (i === accent) {
-      const [x, y] = polar(50, 50, r, rng() * TAU);
-      nodes.push(svg('circle', { cx: x, cy: y, r: 2.6, class: 'a3' }));
+    if (i === active) {
+      const [cx, cy] = polar(50, 50, r, ((phase + i * 8 - 30) * Math.PI) / 180);
+      nodes.push(svg('circle', { cx, cy, r: 2.2, class: 'a2' }));
     }
   }
   return nodes;
