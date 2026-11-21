@@ -37,18 +37,6 @@ export const MOTIF_REGISTRY: Readonly<Record<MotifName, MotifGenerator>> = {
   'orbit-rings': orbitRings,
 };
 
-/** Field motifs crop to fill (slice); lattice motifs stay whole and align left (meet). */
-const CROPS: ReadonlySet<MotifName> = new Set([
-  'eclipse',
-  'diagonal-lines',
-  'nested-squares',
-  'halftone-halves',
-  'overlap',
-  'concentric-knot',
-  'tri-stack',
-  'orbit-rings',
-]);
-
 export const isMotif = (value: string | null): value is MotifName =>
   MOTIFS.some((motif) => motif === value);
 
@@ -60,7 +48,7 @@ export function renderArtwork(motif: MotifName, seed: number, outlier = true): S
     {
       class: 'swiss-art',
       viewBox: '0 0 100 100',
-      preserveAspectRatio: CROPS.has(motif) ? 'xMidYMid slice' : 'xMinYMid meet',
+      preserveAspectRatio: 'xMidYMid meet',
       'aria-hidden': 'true',
       focusable: 'false',
     },

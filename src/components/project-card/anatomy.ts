@@ -67,6 +67,7 @@ function fillCommon(fragment: DocumentFragment, project: Project): Anatomy {
 export function buildSwiss(project: Project): Anatomy {
   const fragment = cloneTemplate(swissTemplate());
   const anatomy = fillCommon(fragment, project);
+  anatomy.article.dataset['motif'] = project.motif;
   const [first, second] = indexNumerals(project.period);
   qs(fragment, '[data-slot="i1"]').textContent = first;
   qs(fragment, '[data-slot="i2"]').textContent = second;

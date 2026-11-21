@@ -26,24 +26,24 @@ export function petals({ rng, outlier }: MotifContext): SVGElement[] {
 
 /** Rows of bars on a strict grid; one bar drifts off-grid (the outlier). */
 export function driftBars({ rng, outlier }: MotifContext): SVGElement[] {
-  const rows = 7;
+  const rows = 6;
   const cols = 3;
   const gap = 3;
   const w = (AREA - gap * (cols - 1)) / cols;
   const h = (AREA - gap * (rows - 1)) / rows;
-  const accents = ['a2', 'a3', 'a4'];
-  const drift = outlier ? randInt(rng, 0, rows * cols - 1) : -1;
+  const drift = outlier ? randInt(rng, 9, rows * cols - 1) : -1;
+  const offset = randInt(rng, 0, 2);
   const nodes: SVGElement[] = [];
   for (let i = 0; i < rows * cols; i += 1) {
     const x = INSET + (i % cols) * (w + gap);
     const y = INSET + Math.floor(i / cols) * (h + gap);
-    const cls = rng() < 0.16 ? (accents[randInt(rng, 0, 2)] ?? 'a2') : 'a1';
+    const cls = i === 2 + offset ? 'a2' : i === 8 - offset ? 'a3' : 'a1';
     const rect = svg('rect', { x, y, width: w, height: h, class: i === drift ? 'a3' : cls });
     if (i === drift) {
-      const angle = randInt(rng, 10, 22) * (rng() < 0.5 ? -1 : 1);
+      const angle = -18;
       rect.setAttribute(
         'transform',
-        `rotate(${angle} ${x + w / 2} ${y + h / 2}) translate(${w * 0.18} ${h * 0.4})`,
+        `rotate(${angle} ${x + w / 2} ${y + h / 2}) translate(0 ${h * 0.12})`,
       );
     }
     nodes.push(rect);

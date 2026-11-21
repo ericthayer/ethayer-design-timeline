@@ -6,6 +6,7 @@
   }
 
   .swiss-art {
+    display: block;
     inline-size: 100%;
     block-size: 100%;
   }
@@ -43,8 +44,8 @@
   .swiss-art .ring {
     fill: none;
     stroke: var(--art-1);
-    stroke-width: 1.6;
-    stroke-linecap: round;
+    stroke-width: 1.5;
+    stroke-linecap: butt;
   }
   .swiss-art .ring-accent {
     stroke: var(--art-3);

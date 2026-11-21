@@ -1,0 +1,300 @@
+/* Review-only composition. Uses the real poster components and artwork generators. */
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+body {
+  background: #dedbd2;
+  color: var(--ink);
+}
+.review-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.25rem 5vw;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.8125rem;
+}
+.review-nav > a {
+  font-weight: 700;
+  text-decoration: none;
+}
+.review-nav span {
+  margin-left: 0.5rem;
+  opacity: 0.6;
+  font-weight: 450;
+}
+.review-nav nav {
+  display: flex;
+  gap: 1.5rem;
+}
+.review-nav nav a {
+  text-decoration: none;
+}
+.review-hero,
+.review-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  background: var(--bg);
+  color: var(--fg);
+  padding: clamp(2rem, 5vw, 5rem);
+  gap: clamp(2rem, 5vw, 5rem);
+}
+.review-hero {
+  min-height: 42rem;
+}
+.review-hero__copy {
+  display: grid;
+  align-content: space-between;
+  gap: 3rem;
+}
+.review-eyebrow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.review-eyebrow > span {
+  font-variant-numeric: tabular-nums;
+}
+.review-hero h1 {
+  max-width: 13ch;
+  font-size: clamp(3rem, 5.65vw, 6rem);
+  font-weight: 700;
+  line-height: 1.01;
+  letter-spacing: -0.045em;
+}
+.review-hero h1 em {
+  display: block;
+  color: var(--coral);
+  font-style: normal;
+}
+.review-hero__foot {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 1.5rem;
+}
+.review-hero__foot p {
+  font-size: 0.9375rem;
+  max-width: 34ch;
+  line-height: 1.5;
+}
+.review-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.375rem 0.375rem 0.375rem 1rem;
+  border-radius: 100px;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.review-cta span {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  background: #dedbd2;
+  border-radius: 50%;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.review-cta:hover span {
+  transform: translateY(2px);
+}
+.review-art {
+  min-width: 0;
+  align-self: center;
+  aspect-ratio: 1;
+}
+.review-art svg {
+  width: 100%;
+  height: 100%;
+}
+.review-hero .review-art {
+  --art-3: var(--bg);
+}
+.review-selection,
+.review-categories,
+.review-roles {
+  padding: clamp(4rem, 7.5vw, 7.5rem) 5vw;
+}
+.review-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 3rem;
+}
+.review-section-head h2 {
+  font-size: 2.25rem;
+  letter-spacing: -0.035em;
+}
+.review-section-head a {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.review-selected {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 3rem);
+}
+.review-card {
+  container-type: size;
+  min-width: 0;
+}
+.review-card--tall {
+  aspect-ratio: 1 / 1.45;
+}
+.review-card--sm {
+  aspect-ratio: 1;
+}
+.review-selected .card--swiss {
+  gap: 5cqi;
+  padding: 7cqi;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-areas: 'head' 'title' 'art';
+}
+.review-selected .card--swiss[data-layout='title-bottom'] {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'head' 'art' 'title';
+}
+.review-selected .poster__foot {
+  display: none;
+}
+.review-selected .poster__head {
+  font-size: clamp(0.75rem, 3.2cqi, 0.875rem);
+}
+.review-selected .poster__title {
+  max-width: 14ch;
+  font-size: clamp(1.5rem, 9cqi, 3rem);
+  line-height: 1.03;
+}
+.review-selected [data-motif='overlap'] {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'head' 'art' 'title';
+}
+.review-selected [data-motif='overlap'] .poster__title {
+  max-width: 10ch;
+}
+.review-stat {
+  padding-top: 1.5rem;
+}
+.review-stat strong {
+  font-size: clamp(2.5rem, 4.3vw, 4.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+}
+.review-stat p {
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+.review-stat small {
+  display: block;
+  margin-top: 0.35rem;
+  max-width: 38ch;
+  font-size: 0.75rem;
+}
+.review-banner {
+  min-height: 30rem;
+  padding-block: 4rem;
+}
+.review-banner__copy {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 2rem;
+}
+.review-banner h2 {
+  font-size: clamp(3rem, 5.5vw, 6rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.review-banner__summary {
+  max-width: 32ch;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.review-banner .review-art {
+  max-width: 25rem;
+  width: 100%;
+  justify-self: end;
+}
+.review-banner--capabilities .review-art {
+  --art-2: var(--ink);
+}
+.review-banner--career {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+}
+.review-banner--career .review-art {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+}
+.review-banner--career .review-banner__copy {
+  grid-column: 2;
+}
+.review-category {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr);
+  gap: 4rem;
+  padding-block: 2rem 4rem;
+  border-top: 1px solid #12121260;
+}
+.review-category:last-child {
+  padding-bottom: 0;
+}
+.review-category h2 {
+  font-size: clamp(1.5rem, 2.2vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.review-category p {
+  max-width: 30ch;
+  font-size: 0.9375rem;
+  margin: 0.75rem 0;
+}
+.review-category a {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.review-category__cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.review-category .poster__head {
+  font-size: 0.75rem;
+}
+.review-category .poster__title {
+  font-size: clamp(1rem, 8cqi, 1.75rem);
+}
+.review-category .card--swiss {
+  gap: 3cqi;
+}
+.review-role {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2.5fr auto;
+  gap: 2rem;
+  padding-block: 2rem;
+  border-top: 1px solid #12121240;
+  font-size: 0.9375rem;
+}
+.review-role h3 {
+  font-size: 1.0625rem;
+}
+.review-role small {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+}
+.review-role a {
+  font-size: 0.8125rem;
+}
