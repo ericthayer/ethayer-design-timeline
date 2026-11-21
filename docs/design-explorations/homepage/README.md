@@ -1,0 +1,9 @@
+# Homepage design explorations
+
+Sources for the homepage mockup versions reviewed in the Artifact board (versions 1 to 15). These are design references, not part of the site build. Nothing here is imported by `src/` or run by `npm run build`.
+
+- `mock-data.json`: project rows, stats, categories and career eras used by the mockups.
+- `mock2.css`: layered overrides, one class per version (`.v5` to `.v15`).
+- `mock2.cjs`: Playwright script that builds each version on the live site and writes full-page captures at 1280 and 390 px. Run it from this folder with `node mock2.cjs <letters>`, for example `node mock2.cjs q`. The `CAREER_ART` environment variable swaps the Career banner artwork.
+
+The captures and the review board are not committed. Their live location is the Artifact board.
