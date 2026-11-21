@@ -1,0 +1,85 @@
+@layer components {
+  @media (max-width: 900px) {
+    .home-hero__foot {
+      grid-template-columns: 1fr;
+      justify-items: start;
+    }
+    .home-category {
+      gap: 2rem;
+    }
+  }
+  @media (max-width: 700px) {
+    .home-hero,
+    .home-banner,
+    .home-banner--career {
+      grid-template-columns: 1fr;
+      min-height: 0;
+      padding: 2rem 1rem;
+      gap: 2.5rem;
+    }
+    .home-hero h1 {
+      font-size: clamp(2.75rem, 10.5vw, 4.5rem);
+      max-width: 14ch;
+    }
+    .home-hero__copy {
+      gap: 2rem;
+    }
+    .home-art {
+      width: 80%;
+      justify-self: end;
+    }
+    .home-selection,
+    .home-categories,
+    .home-roles {
+      padding: 4rem 1rem;
+    }
+    .home-section-head {
+      margin-bottom: 2rem;
+    }
+    .home-section-head h2 {
+      font-size: 1.75rem;
+    }
+    .home-selected {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+    .home-card--tall {
+      aspect-ratio: 1 / 1.35;
+    }
+    .home-banner__copy {
+      min-height: 16rem;
+    }
+    .home-banner .home-art {
+      width: 75%;
+    }
+    .home-banner--career .home-art,
+    .home-banner--career .home-banner__copy {
+      grid-column: auto;
+      grid-row: auto;
+    }
+    .home-banner--career .home-art {
+      justify-self: end;
+    }
+    .home-category {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      padding-bottom: 3rem;
+    }
+    .home-category__cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .home-role {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    .home-cta span {
+      transition: none;
+    }
+  }
+}

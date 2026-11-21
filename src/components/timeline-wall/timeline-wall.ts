@@ -91,11 +91,12 @@ export class TimelineWall extends HTMLElement {
 
   /** CSS decides the mode (container query); JS mirrors it for wheel and observer roots. */
   private syncMode(): void {
+    if (this.hidden) return;
     const horizontal = getComputedStyle(this.grid).gridAutoFlow.startsWith('column');
+    getScheduler().setRoot(horizontal ? this.grid : null);
     if (horizontal === this.horizontal && this.dataset['mode']) return;
     this.horizontal = horizontal;
     this.dataset['mode'] = horizontal ? 'horizontal' : 'vertical';
-    getScheduler().setRoot(horizontal ? this.grid : null);
     this.observeTail();
     const focused = this.grid.contains(document.activeElement) ? document.activeElement : null;
     focused?.scrollIntoView({ block: 'nearest', inline: 'nearest' });

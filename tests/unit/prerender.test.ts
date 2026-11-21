@@ -102,7 +102,7 @@ describe('netlify subdomain redirect (FR-610)', () => {
 describe('page model', () => {
   it('builds the home page, the Projects page, and one page per published project, in timeline order', () => {
     // Home, Projects, one page per published project, and the résumé (FR-615).
-    expect(pages).toHaveLength(published.length + 3);
+    expect(pages).toHaveLength(published.length + 4);
     expect(pages.at(-1)).toMatchObject({ route: '/resume', file: 'resume.html' });
     expect(home.route).toBe('/');
     expect(home.file).toBe('index.html');
@@ -191,7 +191,11 @@ describe('head tags (FR-131)', () => {
       summary: 'A $& B',
     };
     const trickyPages = buildPages({ projects: [tricky], eras: ERAS, manifest, resume: RESUME });
-    const out2 = applyPage(shell, trickyPages[2] as Page, ORIGIN);
+    const out2 = applyPage(
+      shell,
+      trickyPages.find((p) => p.route === `/work/${tricky.slug}`) as Page,
+      ORIGIN,
+    );
     expect(out2).toContain('<title>Cost $&amp; $1 $&#39; $$ — Eric Thayer</title>');
     expect(out2).toContain('content="A $&amp; B"');
   });
@@ -202,7 +206,7 @@ describe('head tags (FR-131)', () => {
     expect(out).not.toContain('data-view="experience" aria-current="page"');
     expect(out).toContain('data-view-only="experience" hidden');
     expect(out).toContain('id="static-category-design-systems"');
-    expect(applyPage(shell, home, ORIGIN)).toContain('data-view="experience" aria-current="page"');
+    expect(applyPage(shell, home, ORIGIN)).toContain('data-view="overview" aria-current="page"');
   });
 
   it('fails loudly when the shell changes shape', () => {
@@ -241,12 +245,14 @@ describe('static content (FR-133)', () => {
     expect(last).toContain('<a href="/">All projects</a>');
   });
 
-  it('lists every published project on the home page, with an Education target for the skip link', () => {
+  it('lists every published project on the overview and keeps Education on Experience', () => {
     for (const project of published) {
       expect(home.body, project.slug).toContain(`href="/work/${project.slug}"`);
     }
     expect(home.body.match(/<h1[ >]/g)).toHaveLength(1);
-    expect(home.body).toContain('id="timeline-end"');
+    expect(home.body).toContain('Selected work');
+    expect(home.body).toContain('What I do');
+    expect(pages.find((p) => p.route === '/experience')?.body).toContain('id="timeline-end"');
     expect(home.body).not.toMatch(BARE_AMPERSAND);
   });
 
@@ -273,7 +279,7 @@ describe('sitemap, robots, redirects (FR-130)', () => {
     expect(locs).toContain('https://example.test/');
     expect(locs).toContain('https://example.test/projects');
     expect(locs).toContain('https://example.test/resume');
-    expect(locs).toHaveLength(3 + published.length);
+    expect(locs).toHaveLength(4 + published.length);
     for (const project of PROJECTS) {
       expect(locs.includes(`https://example.test/work/${project.slug}`), project.slug).toBe(
         project.draft !== true,

@@ -13,7 +13,8 @@ The captures and the review board are not committed. Their live location is the 
 Run `npx vite --host 127.0.0.1 --port 5174` from the repository root, then open
 `http://127.0.0.1:5174/docs/design-explorations/homepage/swiss-review.html`.
 This standalone review uses the real project-card components and revised SVG generators
-in the proposed homepage composition. It is not the production homepage. Artwork is
+in the approved homepage composition. This archived comparison page is separate from the
+production implementation in `src/components/site-home/`, which now renders at `/`. Artwork is
 contained, section type and art occupy separate columns, and the mobile layout stacks.
 
 Netlify PR deploy previews also build this page at the same path using `npm run build:review`

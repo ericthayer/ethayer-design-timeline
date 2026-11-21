@@ -1,3 +1,5 @@
+import { EXPERIENCE_TITLE } from '../../src/content/site.ts';
+import { overviewBody } from './overview-page.ts';
 /**
  * Prerendered pages (FR-130–FR-135): per-route head tags and static `<noscript>` content, applied
  * to the built app shell. Pure functions, so unit tests cover them without a build.
@@ -96,7 +98,11 @@ function homeBody(items: readonly WallItem[]): string {
       <h2 id="static-projects">Projects</h2>
       ${groupByEra(items).map(
         ({ era, projects }) =>
-          html` <section class="static__era" aria-labelledby="static-era-${era.id}">
+          html` <section
+            class="static__era"
+            id="era-${era.id}"
+            aria-labelledby="static-era-${era.id}"
+          >
             <h3 id="static-era-${era.id}">
               ${era.label} <span class="static__meta">${yearRange(era.period)}</span>
             </h3>
@@ -215,7 +221,7 @@ export function buildPages(input: BuildInput): Page[] {
       image: ogImagePath(HOME_OG_SLUG),
       imageAlt: homeOgCard().alt,
     },
-    body: homeBody(items),
+    body: overviewBody(input.projects, input.eras),
   };
   const projects = sequence.map((project, index): Page => ({
     route: `/work/${project.slug}`,
@@ -236,7 +242,14 @@ export function buildPages(input: BuildInput): Page[] {
     buildCategoryItems(input.projects, input.eras, CATEGORIES),
     NOTE.replace('timeline', 'projects page'),
   );
-  return [home, byCategory, ...projects, resumePage(input.resume)];
+  const experience: Page = {
+    ...home,
+    route: '/experience',
+    file: 'experience.html',
+    meta: { ...home.meta, title: EXPERIENCE_TITLE },
+    body: homeBody(items),
+  };
+  return [home, byCategory, experience, ...projects, resumePage(input.resume)];
 }
 
 /** Canonical, robots, Open Graph, and Twitter tags for one page (FR-131). */
@@ -291,29 +304,30 @@ export function applyPage(shell: string, page: Page, origin: string): string {
     '<noscript>',
   );
   out = swapOnce(out, /\s*<\/head>/, `\n${renderHeadTags(page, origin)}\n  </head>`, '</head>');
-  return page.route === '/projects' ? markProjectsView(out) : out;
-}
-
-/** The static header names Experience as current; the Projects page names itself (FR-520, FR-522). */
-function markProjectsView(shell: string): string {
-  let out = swapOnce(
-    shell,
-    /data-view="experience" aria-current="page"/,
-    'data-view="experience"',
-    'current Experience link',
-  );
-  out = swapOnce(
-    out,
-    /data-view="projects"/,
-    'data-view="projects" aria-current="page"',
-    'Projects link',
-  );
-  return swapOnce(
-    out,
-    /data-view-only="experience"/,
-    'data-view-only="experience" hidden',
-    'end skip link',
-  );
+  const view =
+    page.route === '/projects'
+      ? 'projects'
+      : page.route === '/experience'
+        ? 'experience'
+        : 'overview';
+  if (view !== 'overview') {
+    out = swapOnce(
+      out,
+      /data-view="overview" aria-current="page"/,
+      'data-view="overview"',
+      'current Overview link',
+    );
+    out = swapOnce(
+      out,
+      new RegExp(`data-view="${view}"`),
+      `data-view="${view}" aria-current="page"`,
+      'current view link',
+    );
+    out = out.replace('class="skip-link" href="#selected"', 'class="skip-link" href="#wall"');
+  }
+  if (view === 'experience')
+    out = out.replace('data-view-only="experience" hidden', 'data-view-only="experience"');
+  return out;
 }
 
 const loc = (page: Page, origin: string): string => `${origin}${page.route}`;

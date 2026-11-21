@@ -1,5 +1,5 @@
 /**
- * History API routes (FR-060, spec 002 FR-124, spec 006 FR-521/FR-530): '/' is the Experience
+ * History API routes (FR-060, spec 002 FR-124, spec 006 FR-521/FR-530): '/' is the Overview; '/experience' is the Experience
  * wall, '/projects' the Projects wall, '/work/:slug' opens the project dialog over the current
  * view, and '/resume' opens the résumé dialog. Inside the admin entry the same routes live under
  * the '/admin' base (spec 004 FR-342).
@@ -9,19 +9,22 @@ const RESUME = /^\/resume\/?$/;
 export const RESUME_PATH = '/resume';
 const PROJECTS = /^\/projects\/?$/;
 
-export type ViewId = 'experience' | 'projects';
+export type ViewId = 'overview' | 'experience' | 'projects';
 export const VIEW_PATHS: Readonly<Record<ViewId, string>> = {
-  experience: '/',
+  overview: '/',
+  experience: '/experience',
   projects: '/projects',
 };
 
 /** The view a path shows by itself, or `null` for dialog routes (they keep the current view). */
 export function viewOfPath(pathname: string): ViewId | null {
+  if (/^\/experience\/?$/.test(pathname)) return 'experience';
   if (PROJECTS.test(pathname)) return 'projects';
-  return pathname === '/' || pathname === '' ? 'experience' : null;
+  return pathname === '/' || pathname === '' ? 'overview' : null;
 }
 
-const isView = (value: unknown): value is ViewId => value === 'experience' || value === 'projects';
+const isView = (value: unknown): value is ViewId =>
+  value === 'overview' || value === 'experience' || value === 'projects';
 
 export function parseSlug(pathname: string): string | null {
   return WORK.exec(pathname)?.[1] ?? null;
@@ -60,6 +63,7 @@ export class Router {
     private readonly handlers: RouterHandlers,
     private readonly base = routerBase(location.pathname),
   ) {
+    this.current = base ? 'experience' : 'overview';
     addEventListener('popstate', () => {
       this.sync();
     });
@@ -69,7 +73,9 @@ export class Router {
   sync(): void {
     const pathname = location.pathname.slice(this.base.length) || '/';
     const stateView = isRouteState(history.state) ? history.state.view : undefined;
-    this.current = viewOfPath(pathname) ?? (isView(stateView) ? stateView : 'experience');
+    const routeView = this.base && pathname === '/' ? 'experience' : viewOfPath(pathname);
+    this.current =
+      routeView ?? (isView(stateView) ? stateView : this.base ? 'experience' : 'overview');
     this.handlers.onView(this.current);
     const slug = parseSlug(pathname);
     if (slug) this.handlers.onOpen(slug);
@@ -132,6 +138,6 @@ export class Router {
   }
 
   private viewPath(view: ViewId): string {
-    return view === 'experience' ? this.base || '/' : this.base + VIEW_PATHS[view];
+    return view === 'experience' && this.base ? this.base : this.base + VIEW_PATHS[view];
   }
 }

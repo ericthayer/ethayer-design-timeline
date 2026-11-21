@@ -3,7 +3,7 @@ import { VIEW_PATHS, type ViewId } from '../../core/router.ts';
 import './view-switch.css';
 
 const isView = (value: string | undefined): value is ViewId =>
-  value === 'experience' || value === 'projects';
+  value === 'overview' || value === 'experience' || value === 'projects';
 
 /**
  * <view-switch>: progressive enhancement of the header's "Views" nav (spec 006, FR-520). The
@@ -30,7 +30,7 @@ export class ViewSwitch extends HTMLElement {
     for (const link of this.links()) {
       const view = link.dataset['view'];
       if (!isView(view)) continue;
-      link.href = view === 'experience' ? base || '/' : base + VIEW_PATHS[view];
+      link.href = view === 'experience' && base ? base : base + VIEW_PATHS[view];
     }
   }
 

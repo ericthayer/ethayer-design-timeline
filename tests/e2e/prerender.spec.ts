@@ -50,8 +50,8 @@ test.describe('without JavaScript', () => {
     await expect(page.getByRole('heading', { level: 2, name: 'Selected projects' })).toBeVisible();
   });
 
-  test('the home page lists every project and ends with education', async ({ page }) => {
-    await page.goto('/');
+  test('the experience page lists every project and ends with education', async ({ page }) => {
+    await page.goto('/experience');
     await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
     await expect(page.locator('main a[href^="/work/"]')).toHaveCount(PUBLISHED_COUNT);
     await expect(page.getByRole('heading', { level: 2, name: 'Education' })).toBeVisible();
@@ -158,13 +158,17 @@ test.describe('with JavaScript', () => {
   test('an unknown slug still falls back to the app (US5)', async ({ page }) => {
     await page.goto('/work/not-a-project');
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: /I build design systems/ }),
+    ).toBeVisible();
   });
 
   test("a draft's URL falls back to the wall in production (FR-601)", async ({ page }) => {
     await page.goto('/work/workbench');
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: /I build design systems/ }),
+    ).toBeVisible();
   });
 });
 

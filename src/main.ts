@@ -6,22 +6,21 @@ import './styles/header.css';
 import './styles/static.css';
 import { define as defineToggle } from './components/motion-toggle/motion-toggle.ts';
 import type { DialogView, ProjectDialog } from './components/project-dialog/project-dialog.ts';
-import { define as defineCard } from './components/project-card/project-card.ts';
+import { ProjectCard, define as defineCard } from './components/project-card/project-card.ts';
 import type { ResumeDialog } from './components/resume-dialog/resume-dialog.ts';
 import { renderFooter } from './components/site-footer/site-footer.ts';
-import { renderHero } from './components/site-hero/site-hero.ts';
 import { define as defineArtwork } from './components/swiss-artwork/swiss-artwork.ts';
-import { define as defineWall, TimelineWall } from './components/timeline-wall/timeline-wall.ts';
+import { define as defineWall } from './components/timeline-wall/timeline-wall.ts';
 import { define as defineViewSwitch, ViewSwitch } from './components/view-switch/view-switch.ts';
-import { CATEGORIES } from './content/categories.ts';
 import { ERAS } from './content/eras.ts';
 import { PROJECTS } from './content/projects/index.ts';
-import { HOME_TITLE, PROJECTS_TITLE, RESUME_TITLE, projectTitle } from './content/site.ts';
+import { RESUME_TITLE, projectTitle } from './content/site.ts';
 import { visibleProjects } from './core/drafts.ts';
 import { getScheduler } from './core/media-scheduler.ts';
 import { getMotion } from './core/motion.ts';
-import { buildCategoryItems, buildWallItems, itemIndexOf, projectSequence } from './core/order.ts';
-import { RESUME_PATH, Router, routerBase, viewOfPath, type ViewId } from './core/router.ts';
+import { itemIndexOf } from './core/order.ts';
+import { RESUME_PATH, Router, routerBase, type ViewId } from './core/router.ts';
+import { SiteViews } from './views.ts';
 import { morph } from './core/transition.ts';
 
 defineArtwork();
@@ -34,27 +33,9 @@ const base = routerBase(location.pathname);
 // Drafts show in dev and under /admin only (spec 007, FR-600, FR-602).
 const SHOWN = visibleProjects(PROJECTS, { includeDrafts: import.meta.env.DEV || base !== '' });
 
-// Two views of one content set (spec 006): items, wall label, and page title per view.
-const VIEWS = {
-  experience: {
-    items: buildWallItems(SHOWN, ERAS),
-    label: 'Career timeline',
-    title: HOME_TITLE,
-  },
-  projects: {
-    items: buildCategoryItems(SHOWN, ERAS, CATEGORIES),
-    label: 'Projects by category',
-    title: PROJECTS_TITLE,
-  },
-} as const;
-const GRID_LABELS: Readonly<Record<ViewId, string>> = {
-  experience: 'Projects, newest first',
-  projects: 'Projects by category',
-};
-let view: ViewId = viewOfPath(location.pathname.slice(base.length) || '/') ?? 'experience';
-let items = VIEWS[view].items;
-let sequence = projectSequence(items);
-const viewTitle = (): string => VIEWS[view].title;
+const views = new SiteViews(SHOWN, base);
+const wall = views.wall;
+const viewTitle = (): string => views.title;
 let openSlug: string | null = null;
 const status = document.getElementById('wall-status');
 const motion = getMotion();
@@ -73,40 +54,10 @@ narrow.addEventListener('change', () => {
 const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
 scheduler.setGate('save-data', connection?.saveData === true);
 
-// Hero, then the wall as a focusable region the CTA hands focus to (spec 002, FR-100, FR-103)
-const hero = renderHero(sequence.length);
-const wall = new TimelineWall();
-wall.items = items;
-wall.label = GRID_LABELS[view];
-wall.status = status;
-wall.id = 'wall';
-wall.setAttribute('role', 'region');
-wall.setAttribute('aria-label', VIEWS[view].label);
-wall.tabIndex = -1;
-// The skip link's target exists from first load: the end-cap renders only after the wall's
-// batches (spec 007 fix). The link handler below moves focus to the end-cap heading.
-const skipTarget = document.createElement('span');
-skipTarget.id = 'timeline-end';
-skipTarget.tabIndex = -1;
-document.getElementById('main')?.append(hero, wall, skipTarget);
 document.getElementById('main')?.after(renderFooter());
 
-const viewSwitch = document.querySelector('view-switch');
-if (viewSwitch instanceof ViewSwitch) viewSwitch.base = base;
-
-/** Swap the wall to another view (spec 006, FR-521, FR-522). */
 function showView(next: ViewId): void {
-  if (viewSwitch instanceof ViewSwitch) viewSwitch.current = next;
-  for (const link of document.querySelectorAll<HTMLElement>('[data-view-only]')) {
-    link.hidden = link.dataset['viewOnly'] !== next;
-  }
-  if (next === view) return;
-  view = next;
-  items = VIEWS[next].items;
-  sequence = projectSequence(items);
-  wall.label = GRID_LABELS[next];
-  wall.setAttribute('aria-label', VIEWS[next].label);
-  wall.replaceItems(items);
+  views.show(next);
   if (!openSlug) document.title = viewTitle();
 }
 
@@ -150,26 +101,27 @@ function loadResume(): Promise<ResumeDialog> {
 // Bumped by every open and close, so an open that resolves after a later Back bails (race fix).
 let navigation = 0;
 let resumeOpener: HTMLElement | null = null;
+let projectOpener: ProjectCard | null = null;
 
 async function openProject(slug: string): Promise<void> {
-  const index = sequence.findIndex((p) => p.slug === slug);
-  const project = sequence[index];
+  const index = views.sequence.findIndex((p) => p.slug === slug);
+  const project = views.sequence[index];
   if (!project) {
     if (status) status.textContent = 'Project not found.';
     router.reset();
     return;
   }
   const ticket = ++navigation;
-  wall.renderThrough(itemIndexOf(items, slug));
+  wall.renderThrough(itemIndexOf(views.items, slug));
   const dialog = await loadDialog();
   if (ticket !== navigation) return;
   const view: DialogView = {
     project,
     index: index + 1,
-    total: sequence.length,
+    total: views.sequence.length,
     era: ERAS.find((era) => era.id === project.era),
-    prev: sequence[index - 1],
-    next: sequence[index + 1],
+    prev: views.sequence[index - 1],
+    next: views.sequence[index + 1],
   };
   scheduler.setGate('dialog', true);
   document.title = projectTitle(project.title);
@@ -182,7 +134,7 @@ async function openProject(slug: string): Promise<void> {
         if (openSlug !== slug) return;
         dialog.show(view);
       },
-      wall.cardFor(slug)?.art,
+      (projectOpener ?? views.cardFor(slug))?.art,
       () => dialog.hero,
       !motion.paused,
     );
@@ -194,13 +146,14 @@ async function openProject(slug: string): Promise<void> {
 async function closeProject(): Promise<void> {
   navigation++;
   if (!openSlug) return;
-  const card = wall.cardFor(openSlug);
+  const card = projectOpener ?? views.cardFor(openSlug);
+  projectOpener = null;
   openSlug = null;
   const dialog = await loadDialog();
   morph(
     () => {
       dialog.hide();
-      card?.link?.focus();
+      (card?.isConnected ? card.link : views.focusTarget)?.focus();
     },
     dialog.hero,
     () => card?.art,
@@ -223,14 +176,14 @@ async function closeResume(): Promise<void> {
   const dialog = await resumePromise;
   if (!dialog.isOpen) return;
   dialog.hide();
-  (resumeOpener?.isConnected ? resumeOpener : document.getElementById('site-name'))?.focus();
+  (resumeOpener?.isConnected ? resumeOpener : views.focusTarget).focus();
   resumeOpener = null;
   scheduler.setGate('dialog', false);
   document.title = viewTitle();
 }
 
 function step(direction: -1 | 1): void {
-  const next = sequence[sequence.findIndex((p) => p.slug === openSlug) + direction];
+  const next = views.sequence[views.sequence.findIndex((p) => p.slug === openSlug) + direction];
   if (next) router.replace(next.slug);
 }
 
@@ -256,18 +209,24 @@ document.addEventListener('click', (event) => {
   const link = event.target instanceof Element ? event.target.closest('a') : null;
   const href = link?.getAttribute('href');
   if (!link || !plainClick(event)) return;
+  if (link.matches('.site-home .card__link') && link.dataset['slug']) {
+    event.preventDefault();
+    const card = link.closest('project-card');
+    projectOpener = card instanceof ProjectCard ? card : null;
+    router.open(link.dataset['slug']);
+  }
   // View switch: client-side, then hand the new wall focus (spec 006, FR-521)
   const target = ViewSwitch.viewOf(link);
   if (target) {
     event.preventDefault();
     const swap = (): void => {
       router.navigate(target);
+      views.focusTarget.scrollIntoView({ block: 'start' });
+      views.focusTarget.focus({ preventScroll: true });
     };
     if (!motion.paused && 'startViewTransition' in document) {
       document.startViewTransition(swap).ready.catch(() => undefined);
     } else swap();
-    wall.scrollIntoView({ block: 'start' });
-    wall.focus({ preventScroll: true });
   }
   // "Skip to end of timeline" renders the remaining batches first (FR-083)
   if (href === '#timeline-end') {

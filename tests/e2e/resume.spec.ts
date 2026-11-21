@@ -18,9 +18,12 @@ test.describe('résumé dialog (spec 002)', () => {
     await expect(link).toBeFocused();
   });
 
-  test('opens from the hero and closes with Back (FR-124)', async ({ page }) => {
+  test('opens from selected work and closes with Back (FR-124)', async ({ page }) => {
     await page.goto('/');
-    await page.locator('.site-hero').getByRole('link', { name: 'Résumé' }).click();
+    await page
+      .locator('.home-section-head')
+      .getByRole('link', { name: /Résumé/ })
+      .click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await page.goBack();
     await expect(page.getByRole('dialog')).toBeHidden();
@@ -34,7 +37,7 @@ test.describe('résumé dialog (spec 002)', () => {
     await dialog.getByRole('button', { name: 'Close' }).click();
     await expect(dialog).toBeHidden();
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeFocused();
+    await expect(page.locator('#main')).toBeFocused();
   });
 
   test('fits at 320 px: no overflow, both bar actions on screen (spec 006 FR-533)', async ({
