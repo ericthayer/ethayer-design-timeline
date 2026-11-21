@@ -201,7 +201,8 @@ describe('router views (spec 006 FR-521, FR-530)', () => {
   };
 
   it('maps paths to views; dialog routes keep the current one', () => {
-    expect(viewOfPath('/')).toBe('experience');
+    expect(viewOfPath('/')).toBe('overview');
+    expect(viewOfPath('/experience')).toBe('experience');
     expect(viewOfPath('/projects')).toBe('projects');
     expect(viewOfPath('/projects/')).toBe('projects');
     expect(viewOfPath('/work/dmns')).toBeNull();
@@ -218,7 +219,7 @@ describe('router views (spec 006 FR-521, FR-530)', () => {
     expect(calls).toEqual(['view:projects', 'open:dmns']);
     at('/work/dmns');
     router.sync();
-    expect(calls).toEqual(['view:experience', 'open:dmns']);
+    expect(calls).toEqual(['view:overview', 'open:dmns']);
   });
 
   it('navigates between views and closes a deep link back to the current view', () => {

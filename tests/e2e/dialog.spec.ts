@@ -3,7 +3,7 @@ import { PUBLISHED_COUNT } from './published.ts';
 
 test.describe('project dialog', () => {
   test('opens on click, focuses the title, and closes with Esc (US2, FR-053)', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     const link = page.getByRole('link', { name: 'Agentic Engineering Loop' });
     await link.click();
     const dialog = page.getByRole('dialog', { name: 'Agentic Engineering Loop' });
@@ -14,24 +14,24 @@ test.describe('project dialog', () => {
 
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/experience$/);
     await expect(link).toBeFocused();
   });
 
   test('opens with Enter and closes with browser Back (FR-060)', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     await page.getByRole('link', { name: 'Spec & Drift Detection' }).focus();
     await page.keyboard.press('Enter');
     await expect(page.getByRole('dialog')).toBeVisible();
     await page.goBack();
     await expect(page.getByRole('dialog')).toBeHidden();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/experience$/);
   });
 
   test('stays closed when Back lands while the dialog is still opening (FR-060)', async ({
     page,
   }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     const link = page.getByRole('link', { name: 'Agentic Engineering Loop' });
     await expect(link).toBeVisible();
     // Click and Back in the same task: the close runs before the lazy dialog finishes opening.
@@ -39,7 +39,7 @@ test.describe('project dialog', () => {
       el.click();
       history.back();
     });
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/experience$/);
     // Give the late open (dialog chunk + view-transition frame) time to land if it is going to.
     await page.waitForTimeout(500);
     await expect(page.locator('dialog[open]')).toHaveCount(0);
@@ -47,7 +47,7 @@ test.describe('project dialog', () => {
   });
 
   test('steps with Next/Previous without stacking history (FR-055)', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     await page.getByRole('link', { name: 'Agentic Engineering Loop' }).click();
     await page.getByRole('button', { name: /^Next: / }).click();
     await expect(page).toHaveURL(/\/work\/cobank-design-system$/);
@@ -57,7 +57,7 @@ test.describe('project dialog', () => {
     await expect(page).toHaveURL(/\/work\/cobank-design-system$/);
     await expect(page.getByText(`02 / ${PUBLISHED_COUNT}`)).toBeVisible();
     await page.goBack();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/experience$/);
     await expect(page.getByRole('dialog')).toBeHidden();
   });
 

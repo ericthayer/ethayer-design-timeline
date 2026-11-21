@@ -37,7 +37,7 @@ test.describe('projects view', () => {
     await expect(page.getByRole('heading', { level: 2, name: 'Design systems' })).toBeVisible();
     await page.goBack();
     await expect(page).toHaveURL(/\/$/);
-    await expect(views.getByRole('link', { name: 'Experience' })).toHaveAttribute(
+    await expect(views.getByRole('link', { name: 'Overview' })).toHaveAttribute(
       'aria-current',
       'page',
     );

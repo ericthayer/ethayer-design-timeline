@@ -10,7 +10,7 @@ test.describe('hero (spec 002)', () => {
       page,
     }) => {
       await page.setViewportSize({ width, height });
-      await page.goto('/');
+      await page.goto('/experience');
       const bottom = await page
         .locator('.site-hero')
         .evaluate((el) => el.getBoundingClientRect().bottom);
@@ -20,7 +20,7 @@ test.describe('hero (spec 002)', () => {
   }
 
   test('CTA moves the visitor and focus to the timeline (US9, FR-103)', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     await page.getByRole('link', { name: 'Explore the timeline' }).click();
     const wall = page.getByRole('region', { name: 'Career timeline' });
     await expect(wall).toBeFocused();
@@ -30,14 +30,14 @@ test.describe('hero (spec 002)', () => {
   });
 
   test('CTA works from the keyboard', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     await page.getByRole('link', { name: 'Explore the timeline' }).focus();
     await page.keyboard.press('Enter');
     await expect(page.getByRole('region', { name: 'Career timeline' })).toBeFocused();
   });
 
   test('has no axe violations', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     await expectNoAxeViolations(page);
   });
 });

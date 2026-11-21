@@ -3,7 +3,7 @@ import { PUBLISHED, PUBLISHED_COUNT } from './published.ts';
 
 test.describe('wall', () => {
   test('opens with the hero and the first batch (US1, spec 002 FR-100)', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     await expect(page.getByRole('heading', { level: 1, name: 'Eric Thayer' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 2, name: 'CoBank' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Agentic Engineering Loop' })).toBeVisible();
@@ -13,7 +13,7 @@ test.describe('wall', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1800, height: 1000 });
-    await page.goto('/');
+    await page.goto('/experience');
     await expect(page.locator('timeline-wall')).toHaveAttribute('data-mode', 'vertical');
 
     await page.setViewportSize({ width: 1801, height: 1000 });
@@ -24,7 +24,7 @@ test.describe('wall', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('/');
+    await page.goto('/experience');
     await expect(page.locator('timeline-wall')).toHaveAttribute('data-mode', 'horizontal');
     // Over the hero the wheel scrolls the page (spec 002 FR-007 change)
     await page.mouse.move(960, 600);
@@ -47,7 +47,7 @@ test.describe('wall', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto('/');
+    await page.goto('/experience');
     const endCap = page.getByRole('heading', { level: 2, name: 'Education' });
     for (let i = 0; i < 12 && !(await endCap.isVisible()); i += 1) {
       await page.mouse.wheel(0, 2500);
@@ -59,7 +59,7 @@ test.describe('wall', () => {
   });
 
   test('renders about one Swiss card in four (FR-011b)', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     await renderEverything(page);
     const swiss = PUBLISHED.filter((p) => p.treatment === 'swiss').length;
     await expect(page.locator('.card--swiss')).toHaveCount(swiss);
@@ -67,7 +67,7 @@ test.describe('wall', () => {
   });
 
   test('moves focus between cards with arrow keys (FR-081)', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     const first = page.getByRole('link', { name: 'Agentic Engineering Loop' });
     await first.focus();
     await page.keyboard.press('ArrowRight');
@@ -77,7 +77,7 @@ test.describe('wall', () => {
   });
 
   test('pauses motion from the header and remembers it (FR-080)', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     const toggle = page.getByRole('button', { name: 'Pause motion' });
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
     await toggle.click();
@@ -92,18 +92,18 @@ test.describe('wall', () => {
 
   test('starts paused under prefers-reduced-motion (US4)', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
+    await page.goto('/experience');
     await expect(page.locator('html')).toHaveAttribute('data-motion', 'reduced');
   });
 
   test('has no axe violations with every card rendered', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     await renderEverything(page);
     await expectNoAxeViolations(page);
   });
 
   test('the skip link reaches the end-cap from the first load (FR-083)', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/experience');
     await expect(page.locator('#timeline-end')).toHaveCount(1);
     await page.getByRole('link', { name: 'Skip to end of timeline' }).focus();
     await page.keyboard.press('Enter');

@@ -48,3 +48,31 @@ non-blocking +2110 B initial-JS comparison against historical commit 6240560.
 T233: Owner requested a PR for deploy review. Add a separate compiled review entry
 only to Netlify's deploy-preview build command. Keep public/admin manifests intact
 and the production homepage unchanged; mark the review page noindex.
+
+## Production homepage correction — owner request 2026-11-20
+
+The owner approved the Swiss overview and requested it live. PR #33 shipped shared artwork
+but left the overview behind a review-only entry. This correction promotes that approved
+composition to `/` in the normal production build.
+
+- FR-235: `/` shows the approved hero, selected work, capabilities and career sections using
+  published production content. `/experience` preserves the complete career timeline.
+- FR-236: Overview, Experience and Projects navigation, project dialogs, résumé, browser
+  Back/Forward, keyboard focus and admin base routes continue working. Section links reach
+  their category or era. No review-only build step is required for the homepage.
+- FR-237: Static metadata, sitemap and no-JavaScript pages reflect these routes.
+
+Plan: reuse the approved renderer as a production component; connect it to the existing
+router and dialog orchestration; add homepage and routing regression coverage; verify the
+production build and deploy, then inspect the actual live root.
+
+- T234: Promote the approved overview and integrate production routes (FR-235–237).
+- T235: Test, independently review, merge and verify the live homepage (FR-235–237).
+
+T234–T235 verification: `npm run check` (708 tests), `npm run build`, `npm run budgets`
+(all hard limits pass; initial JS 23.1 KB / 25 KB), and all 105 browser tests passed.
+Browser coverage includes the production root at 390/1280 px, axe, duplicate project focus,
+Back/Forward, batched category/era links and video playback at 1920 px. Independent review
+identified a hidden-wall media observer issue; it was corrected and regression tested.
+Admin retains its original two-view shell and `/admin` timeline; public navigation now has
+Overview, Experience and Projects. No locked screenshot baselines were changed.

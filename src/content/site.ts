@@ -5,7 +5,8 @@ import type { Site } from './types.ts';
 // Validated by content:check (FR-310).
 export const SITE = siteJson as Site;
 
-export const HOME_TITLE = 'Eric Thayer — Career Timeline';
+export const HOME_TITLE = 'Eric Thayer — Design Systems and Agentic Engineering';
+export const EXPERIENCE_TITLE = 'Eric Thayer — Career Timeline';
 export const HOME_DESCRIPTION =
   'Fifteen-plus years of design systems, front-end platforms, and agentic engineering work by Eric Thayer, Principal Design Engineer.';
 

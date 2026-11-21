@@ -24,9 +24,8 @@ async function openDmns(page: Page): Promise<GitMock> {
 }
 
 async function editTitle(page: Page, suffix: string): Promise<void> {
-  await title(page).click();
-  await page.keyboard.press('Control+End');
-  await page.keyboard.type(suffix);
+  // Contenteditable fill is portable; Control+End does not move the caret on macOS.
+  await title(page).fill(`${await title(page).innerText()}${suffix}`);
   await expect(toolbar(page).getByText('1 unsaved change')).toBeVisible();
 }
 

@@ -25,10 +25,7 @@ export {
   TimelineWall,
   define as defineTimelineWall,
 } from './components/timeline-wall/timeline-wall.ts';
-export {
-  ViewSwitch,
-  define as defineViewSwitch,
-} from './components/view-switch/view-switch.ts';
+export { ViewSwitch, define as defineViewSwitch } from './components/view-switch/view-switch.ts';
 export { renderCategory, renderEndCap, renderEra } from './components/wall-tiles/wall-tiles.ts';
 export { renderHero, renderHeroArt } from './components/site-hero/site-hero.ts';
 export { renderFooter } from './components/site-footer/site-footer.ts';
@@ -85,3 +82,5 @@ export {
   AdminCreate,
   define as defineAdminCreate,
 } from './components/admin-create/admin-create.ts';
+
+export { renderHome } from './components/site-home/site-home.ts';

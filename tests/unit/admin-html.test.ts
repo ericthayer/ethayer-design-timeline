@@ -9,9 +9,14 @@ const body = (html: string): string => /<body>[\s\S]*<\/body>/.exec(html)?.[0] ?
 const head = (html: string): string => /<head>[\s\S]*<\/head>/.exec(html)?.[0] ?? '';
 
 describe('admin.html entry (spec 004 FR-340, FR-344)', () => {
-  it('has a body byte-identical to index.html', () => {
-    expect(body(admin)).not.toBe('');
-    expect(body(admin)).toBe(body(index));
+  it('retains the editor timeline navigation while the public shell gains Overview', () => {
+    expect(body(admin)).toContain('data-view="experience" aria-current="page"');
+    expect(body(admin)).not.toContain('data-view="overview"');
+    expect(body(index)).toContain('data-view="overview" aria-current="page"');
+    for (const shell of [admin, index]) {
+      expect(body(shell)).toContain('<main id="main" tabindex="-1">');
+      expect(body(shell)).toContain('<motion-toggle></motion-toggle>');
+    }
   });
 
   it('differs in the head only by title, robots meta, and entry script', () => {
