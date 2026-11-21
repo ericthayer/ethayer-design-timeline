@@ -1,0 +1,95 @@
+@media (max-width: 900px) {
+  .review-nav span {
+    display: none;
+  }
+  .review-hero__foot {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+  .review-category {
+    gap: 2rem;
+  }
+}
+@media (max-width: 700px) {
+  .review-nav {
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .review-nav nav {
+    gap: 1rem;
+    font-size: 0.75rem;
+  }
+  .review-hero,
+  .review-banner,
+  .review-banner--career {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 2rem 1rem;
+    gap: 2.5rem;
+  }
+  .review-hero h1 {
+    font-size: clamp(2.75rem, 10.5vw, 4.5rem);
+    max-width: 14ch;
+  }
+  .review-hero__copy {
+    gap: 2rem;
+  }
+  .review-art {
+    width: 80%;
+    justify-self: end;
+  }
+  .review-selection,
+  .review-categories,
+  .review-roles {
+    padding: 4rem 1rem;
+  }
+  .review-section-head {
+    margin-bottom: 2rem;
+  }
+  .review-section-head h2 {
+    font-size: 1.75rem;
+  }
+  .review-selected {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .review-card--tall {
+    aspect-ratio: 1 / 1.35;
+  }
+  .review-banner__copy {
+    min-height: 16rem;
+  }
+  .review-banner .review-art {
+    width: 75%;
+  }
+  .review-banner--career .review-art,
+  .review-banner--career .review-banner__copy {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .review-banner--career .review-art {
+    justify-self: end;
+  }
+  .review-category {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding-bottom: 3rem;
+  }
+  .review-category__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .review-role {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .review-cta span {
+    transition: none;
+  }
+}

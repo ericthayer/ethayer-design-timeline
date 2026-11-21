@@ -7,3 +7,11 @@ Sources for the homepage mockup versions reviewed in the Artifact board (version
 - `mock2.cjs`: Playwright script that builds each version on the live site and writes full-page captures at 1280 and 390 px. Run it from this folder with `node mock2.cjs <letters>`, for example `node mock2.cjs q`. The `CAREER_ART` environment variable swaps the Career banner artwork.
 
 The captures and the review board are not committed. Their live location is the Artifact board.
+
+## Swiss art direction review
+
+Run `npx vite --host 127.0.0.1 --port 5174` from the repository root, then open
+`http://127.0.0.1:5174/docs/design-explorations/homepage/swiss-review.html`.
+This standalone review uses the real project-card components and revised SVG generators
+in the proposed homepage composition. It is not the production homepage. Artwork is
+contained, section type and art occupy separate columns, and the mobile layout stacks.
